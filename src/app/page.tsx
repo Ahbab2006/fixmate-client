@@ -564,6 +564,56 @@ export default function Home() {
 </section>
 
 
+
+
+{/* Call To Action Section */}
+<section className="bg-white px-4 py-16 sm:py-20">
+  <div className="mx-auto max-w-7xl">
+    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-700 to-blue-500 px-6 py-14 text-center shadow-xl sm:px-12 sm:py-16">
+
+      {/* Background Decorations */}
+      <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/10" />
+      <div className="absolute -bottom-20 -left-16 h-64 w-64 rounded-full bg-white/10" />
+
+      <div className="relative z-10">
+        <span className="inline-block rounded-full bg-white/20 px-4 py-2 text-sm font-semibold text-white">
+          Let's Get Started
+        </span>
+
+        <h2 className="mx-auto mt-6 max-w-3xl text-3xl font-extrabold leading-tight text-white sm:text-4xl lg:text-5xl">
+          Need a Repair?
+          <br />
+          We're Here to Help!
+        </h2>
+
+        <p className="mx-auto mt-5 max-w-2xl leading-7 text-blue-100">
+          Don't let household problems interrupt your day.
+          Find a skilled technician and get your repair done
+          with FixMate.
+        </p>
+
+        <div className="mt-9 flex flex-col justify-center gap-4 sm:flex-row">
+          <Link
+            href="/services"
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-white px-7 py-3.5 font-bold text-blue-700 shadow-lg transition hover:bg-blue-50"
+          >
+            Book a Service
+            <ArrowRight size={20} />
+          </Link>
+
+          <Link
+            href="/register"
+            className="inline-flex items-center justify-center rounded-lg border-2 border-white/80 px-7 py-3.5 font-bold text-white transition hover:bg-white/10"
+          >
+            Join as Technician
+          </Link>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
     </main>
   );
 }
