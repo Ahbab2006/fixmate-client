@@ -312,6 +312,258 @@ export default function Home() {
           )}
         </div>
       </section>
+
+
+{/* How It Works Section */}
+<section className="bg-white px-4 py-16 sm:py-20">
+  <div className="mx-auto max-w-7xl">
+    <div className="mb-14 text-center">
+      <span className="text-sm font-bold uppercase tracking-wider text-blue-600">
+        Simple Process
+      </span>
+
+      <h2 className="mt-3 text-3xl font-bold text-gray-900 sm:text-4xl">
+        How FixMate Works
+      </h2>
+
+      <p className="mx-auto mt-4 max-w-2xl text-gray-600">
+        Getting your home repaired has never been easier.
+        Follow these three simple steps.
+      </p>
+    </div>
+
+    <div className="grid gap-8 md:grid-cols-3">
+      {/* Step 1 */}
+      <div className="relative rounded-2xl border border-gray-100 bg-gray-50 p-8 text-center transition hover:-translate-y-1 hover:shadow-lg">
+        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-blue-100 text-4xl">
+          🔍
+        </div>
+
+        <span className="mt-5 inline-block rounded-full bg-blue-100 px-4 py-1 text-sm font-bold text-blue-700">
+          Step 01
+        </span>
+
+        <h3 className="mt-4 text-xl font-bold text-gray-900">
+          Choose a Service
+        </h3>
+
+        <p className="mt-3 leading-7 text-gray-600">
+          Browse our service categories and find the right
+          professional for your repair needs.
+        </p>
+      </div>
+
+      {/* Step 2 */}
+      <div className="relative rounded-2xl border border-gray-100 bg-gray-50 p-8 text-center transition hover:-translate-y-1 hover:shadow-lg">
+        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-blue-100 text-4xl">
+          📅
+        </div>
+
+        <span className="mt-5 inline-block rounded-full bg-blue-100 px-4 py-1 text-sm font-bold text-blue-700">
+          Step 02
+        </span>
+
+        <h3 className="mt-4 text-xl font-bold text-gray-900">
+          Book Your Service
+        </h3>
+
+        <p className="mt-3 leading-7 text-gray-600">
+          Submit your repair request with your preferred date
+          and provide the necessary details.
+        </p>
+      </div>
+
+      {/* Step 3 */}
+      <div className="relative rounded-2xl border border-gray-100 bg-gray-50 p-8 text-center transition hover:-translate-y-1 hover:shadow-lg">
+        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-blue-100 text-4xl">
+          🛠️
+        </div>
+
+        <span className="mt-5 inline-block rounded-full bg-blue-100 px-4 py-1 text-sm font-bold text-blue-700">
+          Step 03
+        </span>
+
+        <h3 className="mt-4 text-xl font-bold text-gray-900">
+          Get It Fixed
+        </h3>
+
+        <p className="mt-3 leading-7 text-gray-600">
+          Connect with your technician, get your repair done
+          and enjoy a hassle-free experience.
+        </p>
+      </div>
+    </div>
+
+    <div className="mt-12 text-center">
+      <Link
+        href="/services"
+        className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-7 py-3.5 font-semibold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700"
+      >
+        Book a Service Now
+        <ArrowRight size={20} />
+      </Link>
+    </div>
+  </div>
+</section>
+
+
+{/* Why Choose FixMate Section */}
+<section className="bg-blue-50 px-4 py-16 sm:py-20">
+  <div className="mx-auto grid max-w-7xl items-center gap-12 md:grid-cols-2">
+
+    {/* Left Content */}
+    <div>
+      <span className="text-sm font-bold uppercase tracking-wider text-blue-600">
+        Why FixMate
+      </span>
+
+      <h2 className="mt-3 text-3xl font-bold leading-tight text-gray-900 sm:text-4xl">
+        Making Home Services
+        <span className="text-blue-600"> Simple & Reliable</span>
+      </h2>
+
+      <p className="mt-5 leading-7 text-gray-600">
+        FixMate connects you with skilled technicians to make
+        your home repair experience easier, safer and more convenient.
+      </p>
+
+      <div className="mt-8 space-y-6">
+
+        <div className="flex gap-4">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white text-2xl shadow-sm">
+            🛡️
+          </div>
+          <div>
+            <h3 className="font-bold text-gray-900">
+              Verified Service Providers
+            </h3>
+            <p className="mt-1 text-sm leading-6 text-gray-600">
+              Find professionals whose services are reviewed
+              and approved by our platform.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex gap-4">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white text-2xl shadow-sm">
+            ⚡
+          </div>
+          <div>
+            <h3 className="font-bold text-gray-900">
+              Quick & Easy Booking
+            </h3>
+            <p className="mt-1 text-sm leading-6 text-gray-600">
+              Request a service online without unnecessary
+              calls or complicated processes.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex gap-4">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white text-2xl shadow-sm">
+            💳
+          </div>
+          <div>
+            <h3 className="font-bold text-gray-900">
+              Secure Online Payments
+            </h3>
+            <p className="mt-1 text-sm leading-6 text-gray-600">
+              Pay online through our integrated Stripe
+              checkout after your service is completed.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex gap-4">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white text-2xl shadow-sm">
+            📋
+          </div>
+          <div>
+            <h3 className="font-bold text-gray-900">
+              Track Your Service Requests
+            </h3>
+            <p className="mt-1 text-sm leading-6 text-gray-600">
+              Monitor booking progress and payment status
+              from your personal dashboard.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <Link
+        href="/services"
+        className="mt-9 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3.5 font-semibold text-white transition hover:bg-blue-700"
+      >
+        Explore Services
+        <ArrowRight size={20} />
+      </Link>
+    </div>
+
+    {/* Right Content */}
+    <div className="relative">
+      <div className="absolute -left-5 -top-5 h-32 w-32 rounded-full bg-blue-200/60 blur-2xl" />
+
+      <div className="relative rounded-3xl bg-white p-8 shadow-xl sm:p-10">
+        <div className="grid grid-cols-2 gap-5">
+
+          <div className="rounded-2xl bg-blue-50 p-6 text-center">
+            <span className="text-4xl">👨‍🔧</span>
+            <h3 className="mt-4 font-bold text-gray-900">
+              Skilled
+            </h3>
+            <p className="mt-1 text-sm text-gray-500">
+              Technicians
+            </p>
+          </div>
+
+          <div className="rounded-2xl bg-blue-50 p-6 text-center">
+            <span className="text-4xl">🏠</span>
+            <h3 className="mt-4 font-bold text-gray-900">
+              Home
+            </h3>
+            <p className="mt-1 text-sm text-gray-500">
+              Repair Solutions
+            </p>
+          </div>
+
+          <div className="rounded-2xl bg-blue-50 p-6 text-center">
+            <span className="text-4xl">🔒</span>
+            <h3 className="mt-4 font-bold text-gray-900">
+              Secure
+            </h3>
+            <p className="mt-1 text-sm text-gray-500">
+              Booking & Payment
+            </p>
+          </div>
+
+          <div className="rounded-2xl bg-blue-50 p-6 text-center">
+            <span className="text-4xl">⭐</span>
+            <h3 className="mt-4 font-bold text-gray-900">
+              Reliable
+            </h3>
+            <p className="mt-1 text-sm text-gray-500">
+              Service Experience
+            </p>
+          </div>
+
+        </div>
+
+        <div className="mt-6 rounded-2xl bg-blue-600 p-6 text-center text-white">
+          <h3 className="text-xl font-bold">
+            Your Home, Our Responsibility
+          </h3>
+          <p className="mt-2 text-sm text-blue-100">
+            Making everyday repairs easier with FixMate.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
     </main>
   );
 }
