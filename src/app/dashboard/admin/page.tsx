@@ -50,6 +50,12 @@ type Payment = {
   stripeSessionId?: string;
   createdAt: string;
 };
+type ServiceStats = {
+  totalServices: number;
+  approvedServices: number;
+  pendingServices: number;
+  rejectedServices: number;
+};
 
 export default function AdminDashboard() {
   const [users, setUsers] = useState<User[]>([]);
@@ -58,6 +64,14 @@ export default function AdminDashboard() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [loading, setLoading] = useState(true);
+
+const [serviceStats, setServiceStats] = useState<ServiceStats>({
+  totalServices: 0,
+  approvedServices: 0,
+  pendingServices: 0,
+  rejectedServices: 0,
+});
+
 
   const fetchDashboardData = async () => {
     try {
@@ -79,6 +93,7 @@ export default function AdminDashboard() {
         "http://localhost:5000/api/services/admin/pending",
         "http://localhost:5000/api/bookings/admin/all",
         "http://localhost:5000/api/payments/admin/all",
+          "http://localhost:5000/api/services/admin/stats",
       ];
 
       const responses = await Promise.all(
@@ -97,7 +112,15 @@ export default function AdminDashboard() {
         })
       );
 
-      const [usersData, servicesData, bookingsData, paymentsData] = results;
+ const [
+  usersData,
+  servicesData,
+  bookingsData,
+  paymentsData,
+  serviceStatsData,
+] = results;
+
+setServiceStats(serviceStatsData.stats);
 
       setUsers(usersData.users || []);
       setServices(servicesData.services || []);
@@ -183,12 +206,30 @@ export default function AdminDashboard() {
       icon: ShieldCheck,
       color: "bg-orange-100 text-orange-600",
     },
-    {
-      title: "Pending Services",
-      value: services.length,
-      icon: Clock,
-      color: "bg-yellow-100 text-yellow-600",
-    },
+   {
+  title: "Total Services",
+  value: serviceStats.totalServices,
+  icon: Wrench,
+  color: "bg-blue-100 text-blue-600",
+},
+{
+  title: "Approved Services",
+  value: serviceStats.approvedServices,
+  icon: CheckCircle,
+  color: "bg-green-100 text-green-600",
+},
+{
+  title: "Pending Services",
+  value: serviceStats.pendingServices,
+  icon: Clock,
+  color: "bg-yellow-100 text-yellow-600",
+},
+{
+  title: "Rejected Services",
+  value: serviceStats.rejectedServices,
+  icon: ShieldCheck,
+  color: "bg-red-100 text-red-600",
+},
     {
       title: "Total Bookings",
       value: bookings.length,
