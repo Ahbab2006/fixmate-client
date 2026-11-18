@@ -67,6 +67,17 @@ export default function ServicesPage() {
     fetchServices();
   }, []);
 
+
+useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
+  const categoryFromURL = params.get("category");
+
+  if (categoryFromURL && categories.includes(categoryFromURL)) {
+    setSelectedCategory(categoryFromURL);
+  }
+}, []);
+
+
   const filteredServices = useMemo(() => {
     return services.filter((service) => {
       const matchesCategory =
