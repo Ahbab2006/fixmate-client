@@ -1,11 +1,29 @@
-
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { apiUrl } from "@/lib/api";
 import { toast } from "sonner";
+import {
+  Sparkles,
+  Wrench,
+  Tag,
+  FileText,
+  DollarSign,
+  Clock,
+  Briefcase,
+  MapPin,
+  ImagePlus,
+  UserCheck,
+  Mail,
+  Lock,
+  ArrowLeft,
+  Send,
+  Loader2,
+  CheckCircle2,
+} from "lucide-react";
 
 const categories = [
   "Smartphone",
@@ -25,6 +43,7 @@ export default function AddServicePage() {
 
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -35,6 +54,14 @@ export default function AddServicePage() {
     serviceMode: "",
     serviceArea: "",
   });
+
+  useEffect(() => {
+    return () => {
+      if (imagePreview) {
+        URL.revokeObjectURL(imagePreview);
+      }
+    };
+  }, [imagePreview]);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -66,7 +93,12 @@ export default function AddServicePage() {
       return;
     }
 
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview);
+    }
+
     setImage(file);
+    setImagePreview(URL.createObjectURL(file));
   };
 
   const handleSubmit = async (
@@ -175,6 +207,7 @@ export default function AddServicePage() {
       });
 
       setImage(null);
+      setImagePreview(null);
 
       router.push("/dashboard/technician/my-services");
       router.refresh();
@@ -191,197 +224,348 @@ export default function AddServicePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-5 md:p-8">
-      <div className="mx-auto max-w-3xl">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
-            Add New Service
-          </h1>
-          <p className="mt-2 text-gray-600">
-            Submit your repair service for admin approval.
-          </p>
+    <div className="min-h-screen bg-slate-50 pb-12 text-slate-900">
+      <div className="mx-auto max-w-6xl space-y-8">
+        {/* ================= TOP DARK PREMIUM BANNER ================= */}
+        <div className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8">
+          <div className="pointer-events-none absolute -top-20 right-10 h-64 w-64 rounded-full bg-blue-600/25 blur-[90px]" />
+          <div className="pointer-events-none absolute -bottom-20 left-10 h-64 w-64 rounded-full bg-indigo-500/20 blur-[90px]" />
+
+          <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <div className="inline-flex items-center gap-1.5 rounded-full border border-blue-400/20 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-300">
+                <Sparkles size={13} className="text-blue-400" />
+                <span>Technician Studio</span>
+              </div>
+              <h1 className="mt-3 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+                Add New{" "}
+                <span className="bg-gradient-to-r from-blue-400 to-sky-300 bg-clip-text text-transparent">
+                  Service
+                </span>
+              </h1>
+              <p className="mt-1.5 text-sm text-slate-300">
+                Publish a professional repair service package and submit it for
+                admin verification.
+              </p>
+            </div>
+
+            <Link
+              href="/dashboard/technician/my-services"
+              className="inline-flex items-center justify-center gap-2 self-start rounded-xl border border-white/15 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:border-blue-400/40 hover:bg-blue-600 sm:self-auto"
+            >
+              <ArrowLeft size={16} />
+              My Services
+            </Link>
+          </div>
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-6 rounded-xl border bg-white p-6 shadow-sm"
-        >
-          <div>
-            <label className="mb-2 block font-medium text-gray-700">
-              Service Title
-            </label>
-            <input
-              type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              placeholder="e.g. Laptop Repair Service"
-              className="w-full rounded-lg border px-4 py-3 outline-none focus:border-blue-500"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="mb-2 block font-medium text-gray-700">
-              Category
-            </label>
-            <select
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              className="w-full rounded-lg border bg-white px-4 py-3 outline-none focus:border-blue-500"
-              required
-            >
-              <option value="">Select Category</option>
-              {categories.map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="mb-2 block font-medium text-gray-700">
-              Description
-            </label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              rows={4}
-              placeholder="Describe your repair service..."
-              className="w-full rounded-lg border px-4 py-3 outline-none focus:border-blue-500"
-              required
-            />
-          </div>
-
-          <div className="grid gap-5 md:grid-cols-2">
-            <div>
-              <label className="mb-2 block font-medium text-gray-700">
-                Base Price ($)
-              </label>
-              <input
-                type="number"
-                name="basePrice"
-                value={formData.basePrice}
-                onChange={handleChange}
-                min="1"
-                placeholder="50"
-                className="w-full rounded-lg border px-4 py-3 outline-none focus:border-blue-500"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="mb-2 block font-medium text-gray-700">
-                Estimated Duration
-              </label>
-              <input
-                type="text"
-                name="estimatedDuration"
-                value={formData.estimatedDuration}
-                onChange={handleChange}
-                placeholder="e.g. 2-3 Hours"
-                className="w-full rounded-lg border px-4 py-3 outline-none focus:border-blue-500"
-                required
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="mb-2 block font-medium text-gray-700">
-              Service Mode
-            </label>
-            <select
-              name="serviceMode"
-              value={formData.serviceMode}
-              onChange={handleChange}
-              className="w-full rounded-lg border bg-white px-4 py-3 outline-none focus:border-blue-500"
-              required
-            >
-              <option value="">Select Service Mode</option>
-              {serviceModes.map((mode) => (
-                <option key={mode} value={mode}>
-                  {mode}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="mb-2 block font-medium text-gray-700">
-              Service Area
-            </label>
-            <input
-              type="text"
-              name="serviceArea"
-              value={formData.serviceArea}
-              onChange={handleChange}
-              placeholder="e.g. Sylhet City"
-              className="w-full rounded-lg border px-4 py-3 outline-none focus:border-blue-500"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="mb-2 block font-medium text-gray-700">
-              Service Image
-            </label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="w-full rounded-lg border p-3"
-              required
-            />
-            <p className="mt-2 text-sm text-gray-500">
-              Maximum image size: 5MB.
-            </p>
-            {image && (
-              <p className="mt-2 text-sm text-green-700">
-                Selected: {image.name}
-              </p>
-            )}
-          </div>
-
-          <div className="rounded-lg bg-gray-50 p-4">
-            <h3 className="mb-3 font-semibold text-gray-800">
-              Technician Information
-            </h3>
-
-            <div className="space-y-3">
-              <div>
-                <label className="mb-1 block text-sm text-gray-500">
-                  Technician Name
-                </label>
-                <input
-                  value={session?.user?.name || ""}
-                  readOnly
-                  className="w-full rounded-lg border bg-gray-100 px-4 py-3"
-                />
+        {/* ================= MAIN FORM GRID ================= */}
+        <form onSubmit={handleSubmit} className="grid gap-8 lg:grid-cols-12">
+          {/* Left Column: Service Details Card */}
+          <div className="space-y-6 lg:col-span-7">
+            <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-8">
+              <div className="border-b border-slate-100 pb-5">
+                <h2 className="text-xl font-extrabold text-slate-900">
+                  Service Information
+                </h2>
+                <p className="mt-1 text-sm text-slate-500">
+                  Provide clear, accurate details so customers can easily find
+                  and book your service.
+                </p>
               </div>
 
-              <div>
-                <label className="mb-1 block text-sm text-gray-500">
-                  Technician Email
-                </label>
-                <input
-                  value={session?.user?.email || ""}
-                  readOnly
-                  className="w-full rounded-lg border bg-gray-100 px-4 py-3"
-                />
+              <div className="mt-6 space-y-6">
+                {/* Service Title */}
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                    Service Title <span className="text-rose-500">*</span>
+                  </label>
+                  <div className="relative mt-2">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                      <Wrench size={17} />
+                    </div>
+                    <input
+                      type="text"
+                      name="title"
+                      value={formData.title}
+                      onChange={handleChange}
+                      placeholder="e.g. Complete Laptop Diagnostics & Repair"
+                      className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15"
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* Category & Service Mode */}
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                      Category <span className="text-rose-500">*</span>
+                    </label>
+                    <div className="relative mt-2">
+                      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                        <Tag size={17} />
+                      </div>
+                      <select
+                        name="category"
+                        value={formData.category}
+                        onChange={handleChange}
+                        className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15"
+                        required
+                      >
+                        <option value="">Select Category</option>
+                        {categories.map((category) => (
+                          <option key={category} value={category}>
+                            {category}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                      Service Mode <span className="text-rose-500">*</span>
+                    </label>
+                    <div className="relative mt-2">
+                      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                        <Briefcase size={17} />
+                      </div>
+                      <select
+                        name="serviceMode"
+                        value={formData.serviceMode}
+                        onChange={handleChange}
+                        className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15"
+                        required
+                      >
+                        <option value="">Select Service Mode</option>
+                        {serviceModes.map((mode) => (
+                          <option key={mode} value={mode}>
+                            {mode}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Base Price & Estimated Duration */}
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                      Base Price ($) <span className="text-rose-500">*</span>
+                    </label>
+                    <div className="relative mt-2">
+                      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                        <DollarSign size={17} />
+                      </div>
+                      <input
+                        type="number"
+                        name="basePrice"
+                        value={formData.basePrice}
+                        onChange={handleChange}
+                        min="1"
+                        placeholder="50"
+                        className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                      Estimated Duration{" "}
+                      <span className="text-rose-500">*</span>
+                    </label>
+                    <div className="relative mt-2">
+                      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                        <Clock size={17} />
+                      </div>
+                      <input
+                        type="text"
+                        name="estimatedDuration"
+                        value={formData.estimatedDuration}
+                        onChange={handleChange}
+                        placeholder="e.g. 2-3 Hours"
+                        className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Service Area */}
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                    Service Area <span className="text-rose-500">*</span>
+                  </label>
+                  <div className="relative mt-2">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                      <MapPin size={17} />
+                    </div>
+                    <input
+                      type="text"
+                      name="serviceArea"
+                      value={formData.serviceArea}
+                      onChange={handleChange}
+                      placeholder="e.g. Sylhet City"
+                      className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15"
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* Description */}
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                    Service Description <span className="text-rose-500">*</span>
+                  </label>
+                  <div className="relative mt-2">
+                    <div className="pointer-events-none absolute top-3.5 left-0 flex items-start pl-3.5 text-slate-400">
+                      <FileText size={17} />
+                    </div>
+                    <textarea
+                      name="description"
+                      value={formData.description}
+                      onChange={handleChange}
+                      rows={4}
+                      placeholder="Describe what is included in this repair service, tools/parts handled, and warranty details..."
+                      className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15"
+                      required
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {loading ? "Submitting..." : "Submit Service"}
-          </button>
+          {/* Right Column: Image Upload & Technician Info */}
+          <div className="space-y-6 lg:col-span-5">
+            {/* Image Upload Card */}
+            <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-7">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-lg font-extrabold text-slate-900">
+                    Service Cover Image <span className="text-rose-500">*</span>
+                  </h2>
+                  <p className="mt-0.5 text-xs text-slate-500">
+                    High-quality cover photo attracts more bookings
+                  </p>
+                </div>
+                <span className="rounded-full bg-blue-50 px-2.5 py-1 text-[11px] font-bold text-blue-600">
+                  Max 5MB
+                </span>
+              </div>
+
+              {/* Preview Box */}
+              {imagePreview && (
+                <div className="relative mt-4 h-48 overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-100">
+                  <img
+                    src={imagePreview}
+                    alt="Service cover preview"
+                    className="h-full w-full object-cover"
+                  />
+                  <div className="absolute right-3 bottom-3 left-3 flex items-center gap-2 rounded-xl bg-slate-950/75 px-3 py-2 text-xs font-medium text-white backdrop-blur-md">
+                    <CheckCircle2
+                      size={15}
+                      className="shrink-0 text-emerald-400"
+                    />
+                    <span className="truncate">{image?.name}</span>
+                  </div>
+                </div>
+              )}
+
+              {/* File Picker Input */}
+              <label className="mt-4 flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50/70 p-6 text-center transition hover:border-blue-400 hover:bg-blue-50/40">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600/10 text-blue-600">
+                  <ImagePlus size={24} />
+                </div>
+                <p className="mt-3 text-sm font-bold text-slate-800">
+                  {image ? "Change Service Image" : "Click to Upload Image"}
+                </p>
+                <p className="mt-1 text-xs text-slate-500">
+                  Supports JPG, PNG, WEBP up to 5MB
+                </p>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="sr-only"
+                  required
+                />
+              </label>
+            </div>
+
+            {/* Technician Information Card */}
+            <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-7">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                <div>
+                  <h3 className="text-base font-extrabold text-slate-900">
+                    Technician Information
+                  </h3>
+                  <p className="mt-0.5 text-xs text-slate-500">
+                    Automatically linked from your verified account
+                  </p>
+                </div>
+                <span className="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-500">
+                  <Lock size={10} /> Verified
+                </span>
+              </div>
+
+              <div className="mt-5 space-y-4">
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500">
+                    Technician Name
+                  </label>
+                  <div className="relative mt-1.5">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                      <UserCheck size={16} />
+                    </div>
+                    <input
+                      value={session?.user?.name || ""}
+                      readOnly
+                      className="w-full cursor-not-allowed rounded-xl border border-slate-200 bg-slate-100/80 py-2.5 pr-4 pl-10 text-sm font-semibold text-slate-600"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500">
+                    Technician Email
+                  </label>
+                  <div className="relative mt-1.5">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                      <Mail size={16} />
+                    </div>
+                    <input
+                      value={session?.user?.email || ""}
+                      readOnly
+                      className="w-full cursor-not-allowed rounded-xl border border-slate-200 bg-slate-100/80 py-2.5 pr-4 pl-10 text-sm font-medium text-slate-500"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex w-full items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 text-base font-bold text-white shadow-lg shadow-blue-600/25 transition-all hover:from-blue-500 hover:to-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {loading ? (
+                <>
+                  <Loader2 size={20} className="animate-spin" />
+                  <span>Submitting Service...</span>
+                </>
+              ) : (
+                <>
+                  <Send size={19} />
+                  <span>Submit Service for Approval</span>
+                </>
+              )}
+            </button>
+          </div>
         </form>
       </div>
     </div>
