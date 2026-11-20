@@ -46,8 +46,6 @@ export default function CustomerPaymentsPage() {
 
   const fetchPayments = useCallback(async () => {
     try {
-      setLoading(true);
-
       const tokenResult = await authClient.token();
       const token = tokenResult.data?.token;
 
@@ -82,9 +80,19 @@ export default function CustomerPaymentsPage() {
   }, []);
 
   useEffect(() => {
+    let isMounted = true;
+
     if (session) {
-      fetchPayments();
+      (async () => {
+        if (isMounted) {
+          await fetchPayments();
+        }
+      })();
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [session, fetchPayments]);
 
   const formatDate = (date?: string) => {
@@ -138,7 +146,10 @@ export default function CustomerPaymentsPage() {
             </div>
 
             <button
-              onClick={fetchPayments}
+              onClick={() => {
+                setLoading(true);
+                fetchPayments();
+              }}
               className="inline-flex items-center justify-center gap-2 self-start rounded-xl border border-white/15 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:border-blue-400/40 hover:bg-blue-600 sm:self-auto"
             >
               <RefreshCw size={16} />

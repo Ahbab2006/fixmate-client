@@ -130,19 +130,23 @@ function DashboardLayoutContent({
   useEffect(() => {
     if (!userEmail) return;
 
-    if (typeof window !== "undefined" && cacheKey) {
-      try {
-        const cached = localStorage.getItem(cacheKey);
-        if (cached) {
-          const parsed = JSON.parse(cached);
-          if (parsed && typeof parsed === "object") {
-            setProfileData(parsed);
+    let isMounted = true;
+
+    (async () => {
+      if (typeof window !== "undefined" && cacheKey) {
+        try {
+          const cached = localStorage.getItem(cacheKey);
+          if (cached && isMounted) {
+            const parsed = JSON.parse(cached);
+            if (parsed && typeof parsed === "object") {
+              setProfileData(parsed);
+            }
           }
+        } catch {
+          // Silently ignore storage issues
         }
-      } catch {
-        // Silently ignore storage issues
       }
-    }
+    })();
 
     const handleProfileUpdate = (event: Event) => {
       const customEvent = event as CustomEvent<{
@@ -165,6 +169,7 @@ function DashboardLayoutContent({
     window.addEventListener("profile-updated", handleProfileUpdate);
 
     return () => {
+      isMounted = false;
       window.removeEventListener(
         "fixmate:profile-updated",
         handleProfileUpdate

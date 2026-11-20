@@ -43,9 +43,6 @@ export default function TechnicianDashboard() {
 
   const fetchDashboardData = async () => {
     try {
-      setLoading(true);
-      setError("");
-
       const { data, error: tokenError } = await authClient.token();
 
       if (tokenError || !data?.token) {
@@ -82,7 +79,17 @@ export default function TechnicianDashboard() {
   };
 
   useEffect(() => {
-    fetchDashboardData();
+    let isMounted = true;
+
+    (async () => {
+      if (isMounted) {
+        await fetchDashboardData();
+      }
+    })();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const pendingServices = services.filter(
@@ -184,7 +191,11 @@ export default function TechnicianDashboard() {
 
             <div className="flex flex-wrap items-center gap-3">
               <button
-                onClick={fetchDashboardData}
+                onClick={() => {
+                  setLoading(true);
+                  setError("");
+                  fetchDashboardData();
+                }}
                 disabled={loading}
                 className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-semibold text-white backdrop-blur-md transition-all hover:border-blue-400/40 hover:bg-white/15 disabled:opacity-50"
               >
@@ -221,7 +232,11 @@ export default function TechnicianDashboard() {
                 <span>{error}</span>
               </div>
               <button
-                onClick={fetchDashboardData}
+                onClick={() => {
+                  setLoading(true);
+                  setError("");
+                  fetchDashboardData();
+                }}
                 className="rounded-lg bg-rose-600 px-3.5 py-1.5 text-xs font-bold text-white transition hover:bg-rose-700"
               >
                 Try again

@@ -53,8 +53,6 @@ export default function MyServicesPage() {
 
   const fetchServices = useCallback(async () => {
     try {
-      setLoading(true);
-
       const tokenResult = await authClient.token();
       const token = tokenResult.data?.token;
 
@@ -91,9 +89,19 @@ export default function MyServicesPage() {
   }, []);
 
   useEffect(() => {
+    let isMounted = true;
+
     if (session) {
-      fetchServices();
+      (async () => {
+        if (isMounted) {
+          await fetchServices();
+        }
+      })();
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [session, fetchServices]);
 
   const handleAvailability = async (service: Service) => {
@@ -278,7 +286,10 @@ export default function MyServicesPage() {
 
             <div className="flex flex-wrap items-center gap-3">
               <button
-                onClick={fetchServices}
+                onClick={() => {
+                  setLoading(true);
+                  fetchServices();
+                }}
                 className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:border-blue-400/40 hover:bg-white/15"
               >
                 <RefreshCw size={16} />

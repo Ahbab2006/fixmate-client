@@ -39,8 +39,6 @@ export default function AdminTransactionsPage() {
 
   const fetchPayments = async () => {
     try {
-      setLoading(true);
-
       const tokenResponse = await authClient.token();
       const token = tokenResponse.data?.token;
 
@@ -73,7 +71,17 @@ export default function AdminTransactionsPage() {
   };
 
   useEffect(() => {
-    fetchPayments();
+    let isMounted = true;
+
+    (async () => {
+      if (isMounted) {
+        await fetchPayments();
+      }
+    })();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const formatDate = (date?: string) => {
@@ -113,7 +121,10 @@ export default function AdminTransactionsPage() {
           </div>
 
           <button
-            onClick={fetchPayments}
+            onClick={() => {
+              setLoading(true);
+              fetchPayments();
+            }}
             disabled={loading}
             className="inline-flex items-center justify-center gap-2 self-start rounded-xl border border-white/15 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:border-blue-400/40 hover:bg-blue-600 disabled:opacity-50 sm:self-auto"
           >

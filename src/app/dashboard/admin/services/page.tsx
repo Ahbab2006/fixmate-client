@@ -48,8 +48,6 @@ export default function AdminServicesPage() {
 
   const fetchServices = async (targetFilter: FilterStatus = filter) => {
     try {
-      setLoading(true);
-
       const tokenResponse = await authClient.token();
       const token = tokenResponse.data?.token;
 
@@ -84,11 +82,22 @@ export default function AdminServicesPage() {
   };
 
   useEffect(() => {
-    fetchServices("pending");
+    let isMounted = true;
+
+    (async () => {
+      if (isMounted) {
+        await fetchServices("pending");
+      }
+    })();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleFilterChange = (newFilter: FilterStatus) => {
     setFilter(newFilter);
+    setLoading(true);
     fetchServices(newFilter);
   };
 
@@ -244,7 +253,10 @@ export default function AdminServicesPage() {
             </div>
 
             <button
-              onClick={() => fetchServices(filter)}
+              onClick={() => {
+                setLoading(true);
+                fetchServices(filter);
+              }}
               disabled={loading}
               className="inline-flex items-center justify-center gap-2 self-start rounded-xl border border-white/15 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:border-blue-400/40 hover:bg-blue-600 disabled:opacity-50 sm:self-auto"
             >

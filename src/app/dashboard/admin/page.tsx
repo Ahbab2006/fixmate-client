@@ -78,8 +78,6 @@ export default function AdminDashboard() {
 
   const fetchDashboardData = async () => {
     try {
-      setLoading(true);
-
       const tokenResponse = await authClient.token();
       const token = tokenResponse.data?.token;
 
@@ -140,7 +138,17 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
-    fetchDashboardData();
+    let isMounted = true;
+
+    (async () => {
+      if (isMounted) {
+        await fetchDashboardData();
+      }
+    })();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const customers = users.filter((user) => user.role === "customer").length;
@@ -332,7 +340,10 @@ export default function AdminDashboard() {
           </div>
 
           <button
-            onClick={fetchDashboardData}
+            onClick={() => {
+              setLoading(true);
+              fetchDashboardData();
+            }}
             disabled={loading}
             className="inline-flex items-center justify-center gap-2 self-start rounded-xl border border-white/15 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:border-blue-400/40 hover:bg-blue-600 disabled:opacity-50 sm:self-auto"
           >

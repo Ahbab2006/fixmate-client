@@ -18,6 +18,32 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
+function ProfileAvatar({
+  size = "h-9 w-9",
+  image,
+  name,
+}: {
+  size?: string;
+  image?: string | null;
+  name?: string;
+}) {
+  return (
+    <div
+      className={`${size} flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-blue-500/20 to-indigo-500/20 text-blue-300 ring-1 ring-blue-400/30`}
+    >
+      {image ? (
+        <img
+          src={image}
+          alt={name || "User"}
+          className="h-full w-full object-cover"
+        />
+      ) : (
+        <User size={18} />
+      )}
+    </div>
+  );
+}
+
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
@@ -52,29 +78,35 @@ export default function Navbar() {
 
   // Sync profile data from backend API to keep Navbar accurate across refreshes
   useEffect(() => {
-    if (!userEmail) {
-      setProfileData(null);
-      return;
-    }
-
-    // Read immediate cached data if available to prevent flicker
-    if (typeof window !== "undefined" && cacheKey) {
-      try {
-        const cached = localStorage.getItem(cacheKey);
-        if (cached) {
-          const parsed = JSON.parse(cached);
-          if (parsed && typeof parsed === "object") {
-            setProfileData(parsed);
-          }
-        }
-      } catch {
-        // Silently ignore storage issues
-      }
-    }
-
     let isMounted = true;
 
+    if (!userEmail) {
+      (async () => {
+        if (isMounted) {
+          setProfileData(null);
+        }
+      })();
+      return () => {
+        isMounted = false;
+      };
+    }
+
     const syncProfile = async () => {
+      // Read immediate cached data if available to prevent flicker
+      if (typeof window !== "undefined" && cacheKey) {
+        try {
+          const cached = localStorage.getItem(cacheKey);
+          if (cached && isMounted) {
+            const parsed = JSON.parse(cached);
+            if (parsed && typeof parsed === "object") {
+              setProfileData(parsed);
+            }
+          }
+        } catch {
+          // Silently ignore storage issues
+        }
+      }
+
       try {
         const tokenResult = await authClient.token();
         const token = tokenResult.data?.token;
@@ -113,7 +145,11 @@ export default function Navbar() {
       }
     };
 
-    syncProfile();
+    (async () => {
+      if (isMounted) {
+        await syncProfile();
+      }
+    })();
 
     return () => {
       isMounted = false;
@@ -232,21 +268,7 @@ export default function Navbar() {
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 
-  const ProfileAvatar = ({ size = "h-9 w-9" }: { size?: string }) => (
-    <div
-      className={`${size} flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-blue-500/20 to-indigo-500/20 text-blue-300 ring-1 ring-blue-400/30`}
-    >
-      {displayImage ? (
-        <img
-          src={displayImage}
-          alt={displayName || "User"}
-          className="h-full w-full object-cover"
-        />
-      ) : (
-        <User size={18} />
-      )}
-    </div>
-  );
+
 
   // Hide public navbar on all dashboard routes
   if (pathname?.startsWith("/dashboard")) {
@@ -306,7 +328,7 @@ export default function Navbar() {
                 aria-label="Open profile menu"
                 aria-expanded={profileMenuOpen}
               >
-                <ProfileAvatar />
+                <ProfileAvatar image={displayImage} name={displayName} />
                 <span className="max-w-28 truncate text-sm font-semibold text-slate-100">
                   {displayName || "My Account"}
                 </span>
@@ -423,7 +445,7 @@ export default function Navbar() {
               ) : user ? (
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-900/90 p-3.5">
-                    <ProfileAvatar size="h-10 w-10" />
+                    <ProfileAvatar size="h-10 w-10" image={displayImage} name={displayName} />
                     <div className="min-w-0">
                       <p className="truncate text-sm font-bold text-white">
                         {displayName || "My Account"}

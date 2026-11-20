@@ -34,8 +34,6 @@ export default function ManageUsersPage() {
 
   const fetchUsers = async () => {
     try {
-      setLoading(true);
-
       const tokenResponse = await authClient.token();
       const token = tokenResponse.data?.token;
 
@@ -67,7 +65,17 @@ export default function ManageUsersPage() {
   };
 
   useEffect(() => {
-    fetchUsers();
+    let isMounted = true;
+
+    (async () => {
+      if (isMounted) {
+        await fetchUsers();
+      }
+    })();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleRoleChange = async (userId: string, role: string) => {
@@ -175,7 +183,10 @@ export default function ManageUsersPage() {
           </div>
 
           <button
-            onClick={fetchUsers}
+            onClick={() => {
+              setLoading(true);
+              fetchUsers();
+            }}
             disabled={loading}
             className="inline-flex items-center justify-center gap-2 self-start rounded-xl border border-white/15 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:border-blue-400/40 hover:bg-blue-600 disabled:opacity-50 sm:self-auto"
           >

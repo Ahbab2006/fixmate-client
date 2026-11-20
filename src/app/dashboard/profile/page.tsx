@@ -57,8 +57,6 @@ export default function ProfilePage() {
   // Fetch authenticated user profile from backend
   const fetchProfile = useCallback(async () => {
     try {
-      setLoading(true);
-
       const tokenResult = await authClient.token();
       const token = tokenResult.data?.token;
 
@@ -98,9 +96,19 @@ export default function ProfilePage() {
   }, []);
 
   useEffect(() => {
+    let isMounted = true;
+
     if (!sessionLoading) {
-      fetchProfile();
+      (async () => {
+        if (isMounted) {
+          await fetchProfile();
+        }
+      })();
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [sessionLoading, fetchProfile]);
 
   // Clean up object URL when component unmounts or preview changes
@@ -376,7 +384,10 @@ export default function ProfilePage() {
             Please make sure you are signed in and try again.
           </p>
           <button
-            onClick={fetchProfile}
+            onClick={() => {
+              setLoading(true);
+              fetchProfile();
+            }}
             className="mt-5 inline-flex items-center gap-2 rounded-xl bg-rose-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-rose-700"
           >
             <RefreshCw size={16} />
@@ -415,7 +426,10 @@ export default function ProfilePage() {
 
             <button
               type="button"
-              onClick={fetchProfile}
+              onClick={() => {
+                setLoading(true);
+                fetchProfile();
+              }}
               disabled={loading || saving}
               className="inline-flex items-center justify-center gap-2 self-start rounded-xl border border-white/15 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:border-blue-400/40 hover:bg-blue-600 disabled:opacity-50 sm:self-auto"
             >

@@ -54,45 +54,30 @@ export default function ServicesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const [search, setSearch] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [selectedMode, setSelectedMode] = useState("All");
-  const [sort, setSort] = useState("newest");
+  const [search, setSearch] = useState(() => {
+    if (typeof window === "undefined") return "";
+    return new URLSearchParams(window.location.search).get("search") || "";
+  });
+  const [selectedCategory, setSelectedCategory] = useState(() => {
+    if (typeof window === "undefined") return "All";
+    const cat = new URLSearchParams(window.location.search).get("category");
+    return cat && categories.includes(cat) ? cat : "All";
+  });
+  const [selectedMode, setSelectedMode] = useState(() => {
+    if (typeof window === "undefined") return "All";
+    const mode = new URLSearchParams(window.location.search).get("serviceMode");
+    return mode && serviceModes.includes(mode) ? mode : "All";
+  });
+  const [sort, setSort] = useState(() => {
+    if (typeof window === "undefined") return "newest";
+    const s = new URLSearchParams(window.location.search).get("sort");
+    return s && ["newest", "price-low", "price-high"].includes(s) ? s : "newest";
+  });
 
-  const [initialized, setInitialized] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
-
-  // Read filters from URL on page load
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-
-    const category = params.get("category");
-    const mode = params.get("serviceMode");
-    const sortValue = params.get("sort");
-
-    setSearch(params.get("search") || "");
-
-    if (category && categories.includes(category)) {
-      setSelectedCategory(category);
-    }
-
-    if (mode && serviceModes.includes(mode)) {
-      setSelectedMode(mode);
-    }
-
-    if (
-      sortValue &&
-      ["newest", "price-low", "price-high"].includes(sortValue)
-    ) {
-      setSort(sortValue);
-    }
-
-    setInitialized(true);
-  }, []);
 
   // Update URL and fetch filtered services
   useEffect(() => {
-    if (!initialized) return;
 
     const params = new URLSearchParams();
 
@@ -181,7 +166,6 @@ export default function ServicesPage() {
       controller.abort();
     };
   }, [
-    initialized,
     search,
     selectedCategory,
     selectedMode,
