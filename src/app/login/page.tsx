@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
+import { FcGoogle } from "react-icons/fc";
 import {
   Wrench,
   Mail,
@@ -51,6 +52,7 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<{
     email?: string;
     password?: string;
@@ -155,6 +157,35 @@ function LoginForm() {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    setGoogleLoading(true);
+
+    try {
+      const redirectParam =
+        searchParams.get("redirect") ||
+        searchParams.get("callbackUrl") ||
+        searchParams.get("returnUrl");
+      const safeRedirect = getSafeRedirectUrl(redirectParam);
+      const callbackURL = safeRedirect || "/dashboard/customer";
+
+      const res = await authClient.signIn.social({
+        provider: "google",
+        callbackURL,
+      });
+
+      if (res?.error) {
+        toast.error(
+          res.error.message ||
+            "Failed to initialize Google sign-in. Please try again."
+        );
+        setGoogleLoading(false);
+      }
+    } catch {
+      toast.error("Something went wrong during Google sign-in. Please try again.");
+      setGoogleLoading(false);
+    }
+  };
+
   // Prevent flash of sign-in form for already-authenticated users
   if (sessionLoading || session?.user) {
     return (
@@ -218,6 +249,7 @@ function LoginForm() {
               <input
                 type="email"
                 value={email}
+                disabled={loading || googleLoading}
                 onChange={(e) => {
                   setEmail(e.target.value);
                   if (fieldErrors.email) {
@@ -226,7 +258,7 @@ function LoginForm() {
                 }}
                 required
                 placeholder="you@example.com"
-                className={`w-full rounded-xl border bg-slate-50/50 py-3 pr-4 pl-10 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:bg-white focus:ring-2 ${
+                className={`w-full rounded-xl border bg-slate-50/50 py-3 pr-4 pl-10 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:bg-white focus:ring-2 disabled:cursor-not-allowed disabled:opacity-60 ${
                   fieldErrors.email
                     ? "border-rose-500 focus:border-rose-500 focus:ring-rose-500/15"
                     : "border-slate-200 focus:border-blue-600 focus:ring-blue-600/15"
@@ -253,6 +285,7 @@ function LoginForm() {
               <input
                 type={showPassword ? "text" : "password"}
                 value={password}
+                disabled={loading || googleLoading}
                 onChange={(e) => {
                   setPassword(e.target.value);
                   if (fieldErrors.password) {
@@ -264,7 +297,7 @@ function LoginForm() {
                 }}
                 required
                 placeholder="Enter your password"
-                className={`w-full rounded-xl border bg-slate-50/50 py-3 pr-11 pl-10 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:bg-white focus:ring-2 ${
+                className={`w-full rounded-xl border bg-slate-50/50 py-3 pr-11 pl-10 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:bg-white focus:ring-2 disabled:cursor-not-allowed disabled:opacity-60 ${
                   fieldErrors.password
                     ? "border-rose-500 focus:border-rose-500 focus:ring-rose-500/15"
                     : "border-slate-200 focus:border-blue-600 focus:ring-blue-600/15"
@@ -272,9 +305,10 @@ function LoginForm() {
               />
               <button
                 type="button"
+                disabled={loading || googleLoading}
                 onClick={() => setShowPassword((prev) => !prev)}
                 aria-label={showPassword ? "Hide password" : "Show password"}
-                className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 transition hover:text-slate-600"
+                className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 transition hover:text-slate-600 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
               </button>
@@ -290,7 +324,7 @@ function LoginForm() {
           {/* Submit Button */}
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || googleLoading}
             className="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-600/25 transition-all duration-300 hover:from-blue-500 hover:to-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {loading ? (
@@ -309,6 +343,38 @@ function LoginForm() {
             )}
           </button>
         </form>
+
+        {/* Divider */}
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-slate-200" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-white px-3 font-semibold text-slate-400">
+              Or continue with
+            </span>
+          </div>
+        </div>
+
+        {/* Google Sign-In Button */}
+        <button
+          type="button"
+          onClick={handleGoogleSignIn}
+          disabled={loading || googleLoading}
+          className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white py-3 text-sm font-bold text-slate-700 shadow-sm transition-all duration-200 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {googleLoading ? (
+            <>
+              <Loader2 size={18} className="animate-spin text-blue-600" />
+              <span>Connecting to Google...</span>
+            </>
+          ) : (
+            <>
+              <FcGoogle size={20} />
+              <span>Continue with Google</span>
+            </>
+          )}
+        </button>
 
         {/* Link to Sign Up */}
         <div className="mt-7 border-t border-slate-100 pt-6 text-center">
