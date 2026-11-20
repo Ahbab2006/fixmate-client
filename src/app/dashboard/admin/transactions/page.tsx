@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -9,6 +8,11 @@ import {
   CreditCard,
   Wallet,
   TrendingUp,
+  Sparkles,
+  CalendarDays,
+  Loader2,
+  Hash,
+  CheckCircle2,
 } from "lucide-react";
 import { apiUrl } from "@/lib/api";
 
@@ -45,14 +49,11 @@ export default function AdminTransactionsPage() {
         return;
       }
 
-      const response = await fetch(
-        apiUrl("/api/admin/payments"),
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(apiUrl("/api/admin/payments"), {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const data = await response.json();
 
@@ -87,55 +88,95 @@ export default function AdminTransactionsPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">
-            Transactions & Revenue
-          </h1>
-          <p className="mt-1 text-sm text-gray-500">
-            Monitor all customer payments and platform revenue.
+    <div className="space-y-8 pb-8">
+      {/* ================= TOP DARK PREMIUM BANNER ================= */}
+      <div className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8">
+        <div className="pointer-events-none absolute -top-20 right-10 h-64 w-64 rounded-full bg-blue-600/25 blur-[90px]" />
+        <div className="pointer-events-none absolute -bottom-20 left-10 h-64 w-64 rounded-full bg-indigo-500/20 blur-[90px]" />
+
+        <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-blue-400/20 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-300">
+              <Sparkles size={13} className="text-blue-400" />
+              <span>Financial Overview</span>
+            </div>
+            <h1 className="mt-3 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+              Transactions &amp;{" "}
+              <span className="bg-gradient-to-r from-blue-400 to-sky-300 bg-clip-text text-transparent">
+                Revenue
+              </span>
+            </h1>
+            <p className="mt-1.5 text-sm text-slate-300">
+              Monitor all verified Stripe customer payments and total platform
+              earnings.
+            </p>
+          </div>
+
+          <button
+            onClick={fetchPayments}
+            disabled={loading}
+            className="inline-flex items-center justify-center gap-2 self-start rounded-xl border border-white/15 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:border-blue-400/40 hover:bg-blue-600 disabled:opacity-50 sm:self-auto"
+          >
+            <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
+            Refresh
+          </button>
+        </div>
+      </div>
+
+      {/* ================= KPI SUMMARY CARDS ================= */}
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Total Transactions */}
+        <div className="group rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg hover:shadow-blue-900/5">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-semibold text-slate-500">
+              Total Transactions
+            </p>
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600 transition-transform group-hover:scale-110">
+              <CreditCard size={21} />
+            </div>
+          </div>
+          <h2 className="mt-4 text-3xl font-extrabold text-slate-900">
+            {payments.length}
+          </h2>
+          <p className="mt-1 text-xs text-slate-400">
+            Completed checkout records
           </p>
         </div>
 
-        <button
-          onClick={fetchPayments}
-          disabled={loading}
-          className="flex items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium hover:bg-gray-50 disabled:opacity-50"
-        >
-          <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
-          Refresh
-        </button>
-      </div>
-
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <div className="rounded-xl border bg-white p-5">
-          <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-500">Total Transactions</p>
-            <CreditCard size={22} className="text-blue-600" />
+        {/* Total Revenue (Highlighted Premium Card) */}
+        <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 p-6 text-white shadow-lg transition-all duration-300 hover:-translate-y-1">
+          <div className="pointer-events-none absolute -right-8 -bottom-8 h-32 w-32 rounded-full bg-emerald-500/20 blur-2xl" />
+          <div className="relative flex items-center justify-between">
+            <p className="text-sm font-semibold text-slate-300">
+              Total Revenue
+            </p>
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-400/30 transition-transform group-hover:scale-110">
+              <Wallet size={21} />
+            </div>
           </div>
-          <h2 className="mt-3 text-2xl font-bold">{payments.length}</h2>
-        </div>
-
-        <div className="rounded-xl border bg-white p-5">
-          <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-500">Total Revenue</p>
-            <Wallet size={22} className="text-green-600" />
-          </div>
-          <h2 className="mt-3 text-2xl font-bold">
-            ${totalRevenue.toLocaleString("en-US", {
+          <h2 className="relative mt-4 text-3xl font-extrabold text-white">
+            $
+            {totalRevenue.toLocaleString("en-US", {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
             })}
           </h2>
+          <p className="relative mt-1 text-xs text-emerald-300/90">
+            Cumulative platform volume
+          </p>
         </div>
 
-        <div className="rounded-xl border bg-white p-5">
+        {/* Average Payment */}
+        <div className="group rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-900/5 sm:col-span-2 lg:col-span-1">
           <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-500">Average Payment</p>
-            <TrendingUp size={22} className="text-purple-600" />
+            <p className="text-sm font-semibold text-slate-500">
+              Average Payment
+            </p>
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 transition-transform group-hover:scale-110">
+              <TrendingUp size={21} />
+            </div>
           </div>
-          <h2 className="mt-3 text-2xl font-bold">
+          <h2 className="mt-4 text-3xl font-extrabold text-slate-900">
             $
             {payments.length
               ? (totalRevenue / payments.length).toLocaleString("en-US", {
@@ -144,41 +185,69 @@ export default function AdminTransactionsPage() {
                 })
               : "0.00"}
           </h2>
+          <p className="mt-1 text-xs text-slate-400">
+            Mean value per service booking
+          </p>
         </div>
       </div>
 
-      <div className="rounded-xl border bg-white p-5">
-        <h2 className="mb-5 text-lg font-semibold">Payment History</h2>
+      {/* ================= PAYMENT HISTORY TABLE CARD ================= */}
+      <div className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm">
+        {/* Table Header Bar */}
+        <div className="flex flex-col gap-2 border-b border-slate-100 bg-slate-50/60 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="text-lg font-bold text-slate-900">
+              Payment History
+            </h2>
+            <p className="mt-0.5 text-xs text-slate-500">
+              Verified Stripe payment logs across all completed services
+            </p>
+          </div>
 
+          {!loading && payments.length > 0 && (
+            <span className="inline-flex items-center gap-1.5 self-start rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 ring-1 ring-emerald-600/20 sm:self-auto">
+              <CheckCircle2 size={13} />
+              {payments.length} Settled
+            </span>
+          )}
+        </div>
+
+        {/* Table Content */}
         {loading ? (
-          <div className="py-12 text-center text-gray-500">
-            Loading transactions...
+          <div className="flex min-h-64 flex-col items-center justify-center py-16 text-center">
+            <Loader2 className="animate-spin text-blue-600" size={34} />
+            <p className="mt-3 text-sm font-medium text-slate-500">
+              Loading transaction records...
+            </p>
           </div>
         ) : payments.length === 0 ? (
-          <div className="py-12 text-center">
-            <CreditCard className="mx-auto mb-3 text-gray-400" size={40} />
-            <h3 className="font-semibold text-gray-700">
+          <div className="py-16 text-center">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+              <CreditCard size={26} />
+            </div>
+            <h3 className="mt-4 text-base font-bold text-slate-900">
               No Transactions Yet
             </h3>
-            <p className="mt-1 text-sm text-gray-500">
-              Customer payments will appear here after successful payments.
+            <p className="mx-auto mt-1 max-w-md text-sm text-slate-500">
+              Customer payments will appear here automatically after successful
+              Stripe checkouts.
             </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[900px] text-left text-sm">
+            <table className="w-full min-w-[920px] text-left text-sm">
               <thead>
-                <tr className="border-b bg-gray-50 text-gray-500">
-                  <th className="px-4 py-3 font-medium">Transaction ID</th>
-                  <th className="px-4 py-3 font-medium">Customer</th>
-                  <th className="px-4 py-3 font-medium">Technician</th>
-                  <th className="px-4 py-3 font-medium">Service</th>
-                  <th className="px-4 py-3 font-medium">Amount</th>
-                  <th className="px-4 py-3 font-medium">Payment Date</th>
+                <tr className="border-b border-slate-100 bg-slate-50/80 text-xs font-bold uppercase tracking-wider text-slate-500">
+                  <th className="px-6 py-4">Transaction ID</th>
+                  <th className="px-6 py-4">Customer</th>
+                  <th className="px-6 py-4">Technician</th>
+                  <th className="px-6 py-4">Service</th>
+                  <th className="px-6 py-4">Amount</th>
+                  <th className="px-6 py-4">Payment Date</th>
                 </tr>
               </thead>
 
-              <tbody>
+              <tbody className="divide-y divide-slate-100">
                 {payments.map((payment) => {
                   const txnId =
                     payment.transactionId ||
@@ -189,46 +258,73 @@ export default function AdminTransactionsPage() {
                   const paymentDate = payment.paidAt || payment.createdAt;
 
                   return (
-                    <tr key={payment._id} className="border-b last:border-0 hover:bg-gray-50/50">
-                      <td className="px-4 py-4 font-mono text-xs font-medium text-gray-900 max-w-[180px] truncate" title={txnId}>
-                        {txnId}
+                    <tr
+                      key={payment._id}
+                      className="transition-colors hover:bg-slate-50/90"
+                    >
+                      {/* Transaction ID */}
+                      <td className="px-6 py-4">
+                        <div
+                          className="inline-flex max-w-[190px] items-center gap-1.5 rounded-lg border border-slate-200/80 bg-slate-50 px-2.5 py-1.5 font-mono text-xs font-semibold text-slate-700"
+                          title={txnId}
+                        >
+                          <Hash size={12} className="shrink-0 text-slate-400" />
+                          <span className="truncate">{txnId}</span>
+                        </div>
                       </td>
 
-                      <td className="px-4 py-4 text-gray-700">
-                        <p className="font-medium text-gray-900">
+                      {/* Customer */}
+                      <td className="px-6 py-4">
+                        <p className="font-bold text-slate-900">
                           {payment.customerName || "Customer"}
                         </p>
-                        <p className="text-xs text-gray-500 truncate max-w-[170px]">
+                        <p className="mt-0.5 max-w-[180px] truncate text-xs text-slate-500">
                           {payment.customerEmail || "N/A"}
                         </p>
                       </td>
 
-                      <td className="px-4 py-4 text-gray-700">
-                        <p className="font-medium text-gray-900">
+                      {/* Technician */}
+                      <td className="px-6 py-4">
+                        <p className="font-semibold text-slate-800">
                           {payment.technicianName || "N/A"}
                         </p>
                         {payment.technicianEmail && (
-                          <p className="text-xs text-gray-500 truncate max-w-[170px]">
+                          <p className="mt-0.5 max-w-[180px] truncate text-xs text-slate-500">
                             {payment.technicianEmail}
                           </p>
                         )}
                       </td>
 
-                      <td className="px-4 py-4 text-gray-700 max-w-[180px] truncate" title={payment.serviceTitle || "N/A"}>
-                        {payment.serviceTitle || "N/A"}
+                      {/* Service */}
+                      <td className="px-6 py-4">
+                        <span
+                          className="block max-w-[200px] truncate font-medium text-slate-700"
+                          title={payment.serviceTitle || "N/A"}
+                        >
+                          {payment.serviceTitle || "N/A"}
+                        </span>
                       </td>
 
-                      <td className="px-4 py-4 font-semibold text-gray-900 whitespace-nowrap">
-                        ${payment.amount !== undefined && payment.amount !== null
-                          ? payment.amount.toLocaleString("en-US", {
-                              minimumFractionDigits: 2,
-                              maximumFractionDigits: 2,
-                            })
-                          : "0.00"}
+                      {/* Amount */}
+                      <td className="whitespace-nowrap px-6 py-4">
+                        <span className="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-sm font-extrabold text-emerald-700 ring-1 ring-emerald-600/20">
+                          $
+                          {payment.amount !== undefined &&
+                          payment.amount !== null
+                            ? payment.amount.toLocaleString("en-US", {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                              })
+                            : "0.00"}
+                        </span>
                       </td>
 
-                      <td className="px-4 py-4 text-gray-600 whitespace-nowrap">
-                        {formatDate(paymentDate)}
+                      {/* Payment Date */}
+                      <td className="whitespace-nowrap px-6 py-4 text-slate-600">
+                        <div className="inline-flex items-center gap-1.5 font-medium">
+                          <CalendarDays size={15} className="text-slate-400" />
+                          <span>{formatDate(paymentDate)}</span>
+                        </div>
                       </td>
                     </tr>
                   );
