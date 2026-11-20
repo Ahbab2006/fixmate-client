@@ -5,6 +5,17 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
+import {
+  Wrench,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  ArrowRight,
+  Loader2,
+  ShieldCheck,
+  AlertCircle,
+} from "lucide-react";
 
 function getSafeRedirectUrl(url: string | null): string | null {
   if (!url) return null;
@@ -38,6 +49,7 @@ function LoginForm() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<{
     email?: string;
@@ -146,75 +158,131 @@ function LoginForm() {
   // Prevent flash of sign-in form for already-authenticated users
   if (sessionLoading || session?.user) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-gray-100 px-4 py-12">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+      <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-4 py-12">
+        <div className="pointer-events-none absolute top-1/4 left-1/3 h-80 w-80 rounded-full bg-blue-600/20 blur-[110px]" />
+        <div className="rounded-3xl border border-white/10 bg-slate-900/80 p-8 text-center backdrop-blur-xl">
+          <Loader2 className="mx-auto animate-spin text-blue-400" size={34} />
+          <p className="mt-3 text-sm font-medium text-slate-300">
+            Verifying session...
+          </p>
+        </div>
       </main>
     );
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-100 px-4 py-12">
-      <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-lg">
-        <h1 className="mb-2 text-center text-3xl font-bold text-gray-900">
-          Welcome Back
-        </h1>
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-4 py-16 sm:px-6">
+      {/* Ambient Background Glows & Grid */}
+      <div className="pointer-events-none absolute -top-24 left-1/4 h-96 w-96 rounded-full bg-blue-600/20 blur-[120px]" />
+      <div className="pointer-events-none absolute right-1/4 -bottom-24 h-96 w-96 rounded-full bg-indigo-500/20 blur-[120px]" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:36px_36px]" />
 
-        <p className="mb-6 text-center text-gray-500">
-          Sign in to your FixMate account
-        </p>
+      {/* Sign In Card */}
+      <div className="relative z-10 w-full max-w-md overflow-hidden rounded-3xl border border-white/15 bg-white p-8 shadow-2xl shadow-blue-950/50 sm:p-10">
+        {/* Top Brand Emblem */}
+        <div className="flex flex-col items-center text-center">
+          <Link
+            href="/"
+            className="group inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/30 transition-transform duration-300 hover:scale-105"
+          >
+            <Wrench size={22} />
+          </Link>
 
-        <form onSubmit={handleLogin} className="space-y-4" noValidate>
+          <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-600 ring-1 ring-blue-600/15">
+            <ShieldCheck size={13} />
+            <span>Secure Account Access</span>
+          </div>
+
+          <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900">
+            Welcome Back
+          </h1>
+
+          <p className="mt-2 text-sm text-slate-500">
+            Sign in to your{" "}
+            <span className="font-bold text-slate-800">FixMate</span> account
+            to manage your services
+          </p>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleLogin} className="mt-8 space-y-5" noValidate>
           {/* Email */}
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Email
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+              Email Address
             </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                if (fieldErrors.email) {
-                  setFieldErrors((prev) => ({ ...prev, email: undefined }));
-                }
-              }}
-              required
-              placeholder="Enter your email"
-              className={`w-full rounded-lg border px-4 py-2 text-gray-900 outline-none transition focus:border-blue-500 ${
-                fieldErrors.email ? "border-red-500" : "border-gray-300"
-              }`}
-            />
+            <div className="relative mt-2">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                <Mail size={17} />
+              </div>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (fieldErrors.email) {
+                    setFieldErrors((prev) => ({ ...prev, email: undefined }));
+                  }
+                }}
+                required
+                placeholder="you@example.com"
+                className={`w-full rounded-xl border bg-slate-50/50 py-3 pr-4 pl-10 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:bg-white focus:ring-2 ${
+                  fieldErrors.email
+                    ? "border-rose-500 focus:border-rose-500 focus:ring-rose-500/15"
+                    : "border-slate-200 focus:border-blue-600 focus:ring-blue-600/15"
+                }`}
+              />
+            </div>
             {fieldErrors.email && (
-              <p className="mt-1 text-xs text-red-600">{fieldErrors.email}</p>
+              <p className="mt-1.5 flex items-center gap-1 text-xs font-medium text-rose-600">
+                <AlertCircle size={13} />
+                <span>{fieldErrors.email}</span>
+              </p>
             )}
           </div>
 
           {/* Password */}
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
               Password
             </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                if (fieldErrors.password) {
-                  setFieldErrors((prev) => ({
-                    ...prev,
-                    password: undefined,
-                  }));
-                }
-              }}
-              required
-              placeholder="Enter your password"
-              className={`w-full rounded-lg border px-4 py-2 text-gray-900 outline-none transition focus:border-blue-500 ${
-                fieldErrors.password ? "border-red-500" : "border-gray-300"
-              }`}
-            />
+            <div className="relative mt-2">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                <Lock size={17} />
+              </div>
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (fieldErrors.password) {
+                    setFieldErrors((prev) => ({
+                      ...prev,
+                      password: undefined,
+                    }));
+                  }
+                }}
+                required
+                placeholder="Enter your password"
+                className={`w-full rounded-xl border bg-slate-50/50 py-3 pr-11 pl-10 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:bg-white focus:ring-2 ${
+                  fieldErrors.password
+                    ? "border-rose-500 focus:border-rose-500 focus:ring-rose-500/15"
+                    : "border-slate-200 focus:border-blue-600 focus:ring-blue-600/15"
+                }`}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 transition hover:text-slate-600"
+              >
+                {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+              </button>
+            </div>
             {fieldErrors.password && (
-              <p className="mt-1 text-xs text-red-600">
-                {fieldErrors.password}
+              <p className="mt-1.5 flex items-center gap-1 text-xs font-medium text-rose-600">
+                <AlertCircle size={13} />
+                <span>{fieldErrors.password}</span>
               </p>
             )}
           </div>
@@ -223,22 +291,37 @@ function LoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-blue-600 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+            className="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-600/25 transition-all duration-300 hover:from-blue-500 hover:to-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {loading ? "Signing in..." : "Sign In"}
+            {loading ? (
+              <>
+                <Loader2 size={18} className="animate-spin" />
+                <span>Signing in...</span>
+              </>
+            ) : (
+              <>
+                <span>Sign In</span>
+                <ArrowRight
+                  size={17}
+                  className="transition-transform group-hover:translate-x-1"
+                />
+              </>
+            )}
           </button>
         </form>
 
         {/* Link to Sign Up */}
-        <p className="mt-6 text-center text-sm text-gray-600">
-          Don&apos;t have an account?{" "}
-          <Link
-            href="/sign-up"
-            className="font-semibold text-blue-600 hover:text-blue-700 hover:underline"
-          >
-            Sign Up
-          </Link>
-        </p>
+        <div className="mt-7 border-t border-slate-100 pt-6 text-center">
+          <p className="text-sm text-slate-600">
+            Don&apos;t have an account?{" "}
+            <Link
+              href="/sign-up"
+              className="font-bold text-blue-600 transition hover:text-indigo-600 hover:underline"
+            >
+              Create Account
+            </Link>
+          </p>
+        </div>
       </div>
     </main>
   );
@@ -248,8 +331,10 @@ export default function LoginPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen items-center justify-center bg-gray-100">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+        <div className="flex min-h-screen items-center justify-center bg-slate-950">
+          <div className="rounded-3xl border border-white/10 bg-slate-900/80 p-8 text-center backdrop-blur-xl">
+            <Loader2 className="mx-auto animate-spin text-blue-400" size={34} />
+          </div>
         </div>
       }
     >
