@@ -19,6 +19,8 @@ import {
   User,
   PanelLeftClose,
   PanelLeftOpen,
+  ShieldCheck,
+  Loader2,
 } from "lucide-react";
 
 const navigation = {
@@ -223,10 +225,12 @@ function DashboardLayoutContent({
 
   if (isPending || !session) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
-          <p className="mt-4 text-gray-600">Loading Dashboard...</p>
+      <div className="flex min-h-screen items-center justify-center bg-slate-50">
+        <div className="rounded-3xl border border-slate-200/80 bg-white px-10 py-12 text-center shadow-sm">
+          <Loader2 className="mx-auto animate-spin text-blue-600" size={38} />
+          <p className="mt-4 text-sm font-semibold text-slate-600">
+            Loading Dashboard...
+          </p>
         </div>
       </div>
     );
@@ -257,51 +261,53 @@ function DashboardLayoutContent({
         : navigation.customer;
 
   return (
-    <div className="min-h-screen bg-gray-50 md:flex">
-
-      {/* Mobile Drawer (Slide-in) */}
+    <div className="min-h-screen bg-slate-50 text-slate-900 md:flex">
+      {/* ================= MOBILE DRAWER (SLIDE-IN DARK SIDEBAR) ================= */}
       {mobileDrawerOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
           {/* Backdrop overlay */}
           <div
-            className="fixed inset-0 bg-black/50 transition-opacity"
+            className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm transition-opacity"
             onClick={() => setMobileDrawerOpen(false)}
             aria-hidden="true"
           />
 
           {/* Drawer Panel */}
-          <div className="fixed inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col bg-white shadow-2xl">
+          <div className="fixed inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col border-r border-white/10 bg-slate-950 text-white shadow-2xl">
             {/* Drawer Header */}
-            <div className="flex items-center justify-between border-b px-5 py-4">
-              <div className="flex items-center gap-2">
-                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-white">
+            <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
+              <div className="flex items-center gap-3">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/25">
                   <Wrench size={19} />
                 </span>
                 <div>
                   <Link
                     href="/"
                     onClick={() => setMobileDrawerOpen(false)}
-                    className="text-xl font-bold text-gray-900"
+                    className="text-xl font-extrabold tracking-tight text-white"
                   >
-                    Fix<span className="text-blue-600">Mate</span>
+                    Fix
+                    <span className="bg-gradient-to-r from-blue-400 to-sky-300 bg-clip-text text-transparent">
+                      Mate
+                    </span>
                   </Link>
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">
-                    {role} Dashboard
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-blue-300/80">
+                    {role} Portal
                   </p>
                 </div>
               </div>
 
               <button
                 onClick={() => setMobileDrawerOpen(false)}
-                className="rounded-lg p-2 text-gray-500 hover:bg-gray-100"
+                className="rounded-xl border border-white/10 bg-white/5 p-2 text-slate-300 transition hover:bg-white/10 hover:text-white"
                 aria-label="Close sidebar"
               >
-                <X size={20} />
+                <X size={19} />
               </button>
             </div>
 
             {/* Drawer Navigation Links */}
-            <nav className="flex-1 space-y-1 overflow-y-auto p-4">
+            <nav className="flex-1 space-y-1.5 overflow-y-auto p-4">
               {menu.map((item) => {
                 const Icon = item.icon;
                 const isActive =
@@ -314,13 +320,16 @@ function DashboardLayoutContent({
                     key={item.href}
                     href={item.href}
                     onClick={() => setMobileDrawerOpen(false)}
-                    className={`flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-semibold transition ${
+                    className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-all ${
                       isActive
-                        ? "bg-blue-600 text-white shadow-sm"
-                        : "text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+                        ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/25"
+                        : "text-slate-300 hover:bg-white/5 hover:text-white"
                     }`}
                   >
-                    <Icon size={19} />
+                    <Icon
+                      size={19}
+                      className={isActive ? "text-white" : "text-slate-400"}
+                    />
                     {item.label}
                   </Link>
                 );
@@ -328,20 +337,24 @@ function DashboardLayoutContent({
             </nav>
 
             {/* Drawer Footer Links */}
-            <div className="border-t p-4 space-y-2">
+            <div className="space-y-1.5 border-t border-white/10 p-4">
               <Link
                 href="/dashboard/profile"
                 onClick={() => setMobileDrawerOpen(false)}
-                className="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+                className={`flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-semibold transition ${
+                  isProfileRoute
+                    ? "bg-white/10 text-white"
+                    : "text-slate-300 hover:bg-white/5 hover:text-white"
+                }`}
               >
-                <Settings size={18} />
+                <Settings size={18} className="text-blue-400" />
                 Profile Settings
               </Link>
 
               <Link
                 href="/"
                 onClick={() => setMobileDrawerOpen(false)}
-                className="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-semibold text-blue-600 hover:bg-blue-50"
+                className="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-semibold text-blue-300 transition hover:bg-blue-500/10 hover:text-blue-200"
               >
                 <Home size={18} />
                 Public Home
@@ -351,33 +364,42 @@ function DashboardLayoutContent({
         </div>
       )}
 
-      {/* Desktop Collapsible Sidebar */}
+      {/* ================= DESKTOP COLLAPSIBLE DARK SIDEBAR ================= */}
       <aside
-        className={`hidden border-r border-gray-200 bg-white transition-all duration-300 md:flex md:flex-col md:shrink-0 ${
-          isCollapsed ? "md:w-20" : "md:w-64"
+        className={`relative hidden overflow-hidden border-r border-white/10 bg-slate-950 text-white transition-all duration-300 md:flex md:shrink-0 md:flex-col ${
+          isCollapsed ? "md:w-20" : "md:w-68"
         }`}
       >
+        {/* Subtle Ambient Glow */}
+        <div className="pointer-events-none absolute -top-20 -left-16 h-52 w-52 rounded-full bg-blue-600/20 blur-[80px]" />
+
         {/* Sidebar Header */}
-        <div className="flex h-16 items-center border-b border-gray-200 px-4">
+        <div className="relative flex h-16 items-center border-b border-white/10 px-4">
           {isCollapsed ? (
             <Link
               href="/"
-              className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm"
+              className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/25 transition-transform hover:scale-105"
               title="FixMate Home"
             >
               <Wrench size={20} />
             </Link>
           ) : (
-            <div className="flex items-center gap-2">
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-white">
+            <div className="flex items-center gap-3">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/25">
                 <Wrench size={19} />
               </span>
               <div>
-                <Link href="/" className="text-xl font-bold text-gray-900">
-                  Fix<span className="text-blue-600">Mate</span>
+                <Link
+                  href="/"
+                  className="text-xl font-extrabold tracking-tight text-white"
+                >
+                  Fix
+                  <span className="bg-gradient-to-r from-blue-400 to-sky-300 bg-clip-text text-transparent">
+                    Mate
+                  </span>
                 </Link>
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">
-                  {role} Dashboard
+                <p className="text-[10px] font-bold uppercase tracking-widest text-blue-300/80">
+                  {role} Portal
                 </p>
               </div>
             </div>
@@ -385,7 +407,7 @@ function DashboardLayoutContent({
         </div>
 
         {/* Sidebar Navigation */}
-        <nav className="flex-1 space-y-1.5 overflow-y-auto p-3">
+        <nav className="relative flex-1 space-y-1.5 overflow-y-auto p-3.5">
           {menu.map((item) => {
             const Icon = item.icon;
             const isActive =
@@ -398,17 +420,22 @@ function DashboardLayoutContent({
                 key={item.href}
                 href={item.href}
                 title={item.label}
-                className={`flex items-center rounded-lg py-3 text-sm font-semibold transition ${
-                  isCollapsed
-                    ? "justify-center px-2"
-                    : "gap-3 px-4"
+                className={`group flex items-center rounded-xl py-3 text-sm font-semibold transition-all duration-200 ${
+                  isCollapsed ? "justify-center px-2" : "gap-3.5 px-4"
                 } ${
                   isActive
-                    ? "bg-blue-600 text-white shadow-sm"
-                    : "text-gray-600 hover:bg-blue-50 hover:text-blue-600"
+                    ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/25"
+                    : "text-slate-300 hover:bg-white/[0.06] hover:text-white"
                 }`}
               >
-                <Icon size={20} className="shrink-0" />
+                <Icon
+                  size={19}
+                  className={`shrink-0 transition-colors ${
+                    isActive
+                      ? "text-white"
+                      : "text-slate-400 group-hover:text-blue-400"
+                  }`}
+                />
                 {!isCollapsed && <span className="truncate">{item.label}</span>}
               </Link>
             );
@@ -416,67 +443,75 @@ function DashboardLayoutContent({
         </nav>
 
         {/* Sidebar Footer Link to Profile */}
-        <div className="border-t border-gray-200 p-3">
+        <div className="relative space-y-1.5 border-t border-white/10 p-3.5">
           <Link
             href="/dashboard/profile"
             title="Profile Settings"
-            className={`flex items-center rounded-lg py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition ${
-              isCollapsed ? "justify-center px-2" : "gap-3 px-3"
+            className={`group flex items-center rounded-xl py-2.5 text-sm font-semibold transition-all ${
+              isCollapsed ? "justify-center px-2" : "gap-3.5 px-4"
+            } ${
+              isProfileRoute
+                ? "bg-white/10 text-white"
+                : "text-slate-300 hover:bg-white/[0.06] hover:text-white"
             }`}
           >
-            <Settings size={19} className="shrink-0" />
+            <Settings
+              size={19}
+              className="shrink-0 text-slate-400 transition-colors group-hover:text-blue-400"
+            />
             {!isCollapsed && <span>Profile Settings</span>}
           </Link>
         </div>
       </aside>
 
-      {/* Right Column: Topbar + Page Content */}
+      {/* ================= RIGHT COLUMN: TOPBAR + PAGE CONTENT ================= */}
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Dashboard Topbar */}
-        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-gray-200 bg-white px-4 sm:px-6">
+        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-slate-200/80 bg-white/90 px-4 backdrop-blur-xl sm:px-6 lg:px-8">
           {/* Left: Mobile drawer toggle & Desktop collapse toggle & Home Link */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3">
             {/* Mobile drawer toggle */}
             <button
               onClick={() => setMobileDrawerOpen(true)}
-              className="rounded-lg p-2 text-gray-600 hover:bg-gray-100 md:hidden"
+              className="rounded-xl border border-slate-200 bg-white p-2 text-slate-700 shadow-sm transition hover:bg-slate-50 md:hidden"
               aria-label="Open sidebar menu"
             >
-              <Menu size={22} />
+              <Menu size={20} />
             </button>
 
             {/* Desktop collapse/expand toggle */}
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="hidden rounded-lg p-2 text-gray-600 hover:bg-gray-100 md:flex"
+              className="hidden rounded-xl border border-slate-200 bg-white p-2 text-slate-600 shadow-sm transition hover:border-blue-300 hover:text-blue-600 md:flex"
               aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
               title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             >
               {isCollapsed ? (
-                <PanelLeftOpen size={20} />
+                <PanelLeftOpen size={19} />
               ) : (
-                <PanelLeftClose size={20} />
+                <PanelLeftClose size={19} />
               )}
             </button>
 
             {/* Home link */}
             <Link
               href="/"
-              className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-semibold text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition"
+              className="inline-flex items-center gap-2 rounded-xl border border-slate-200/80 bg-slate-50/80 px-3.5 py-2 text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600 sm:text-sm"
               title="Back to Public Home"
             >
-              <Home size={18} />
-              <span className="hidden sm:inline">Home</span>
+              <Home size={16} className="text-blue-600" />
+              <span className="hidden sm:inline">Public Home</span>
             </Link>
           </div>
 
           {/* Right: User Display Name, Role Badge, Avatar */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3.5">
             <div className="hidden text-right sm:block">
-              <p className="max-w-40 truncate text-sm font-bold text-gray-900">
+              <p className="max-w-44 truncate text-sm font-bold text-slate-900">
                 {displayName}
               </p>
-              <span className="inline-block rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold capitalize text-blue-700">
+              <span className="mt-0.5 inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-0.5 text-[11px] font-bold capitalize text-blue-700 ring-1 ring-blue-600/15">
+                <ShieldCheck size={11} />
                 {role}
               </span>
             </div>
@@ -484,10 +519,10 @@ function DashboardLayoutContent({
             {/* Avatar */}
             <Link
               href="/dashboard/profile"
-              className="flex shrink-0 items-center rounded-full ring-2 ring-transparent transition hover:ring-blue-400"
+              className="flex shrink-0 items-center rounded-full ring-2 ring-slate-200 transition hover:ring-blue-500"
               title="Update Profile"
             >
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-blue-100 text-blue-700">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 text-blue-700">
                 {displayImage ? (
                   <img
                     src={displayImage}
@@ -495,7 +530,7 @@ function DashboardLayoutContent({
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  <User size={20} />
+                  <User size={19} />
                 )}
               </div>
             </Link>
@@ -503,11 +538,8 @@ function DashboardLayoutContent({
         </header>
 
         {/* Main Content */}
-        <main className="min-w-0 flex-1">
-          {children}
-        </main>
+        <main className="min-w-0 flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
       </div>
-
     </div>
   );
 }
@@ -520,10 +552,12 @@ export default function DashboardLayout({
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen items-center justify-center bg-gray-50">
-          <div className="text-center">
-            <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
-            <p className="mt-4 text-gray-600">Loading Dashboard...</p>
+        <div className="flex min-h-screen items-center justify-center bg-slate-50">
+          <div className="rounded-3xl border border-slate-200/80 bg-white px-10 py-12 text-center shadow-sm">
+            <Loader2 className="mx-auto animate-spin text-blue-600" size={38} />
+            <p className="mt-4 text-sm font-semibold text-slate-600">
+              Loading Dashboard...
+            </p>
           </div>
         </div>
       }
