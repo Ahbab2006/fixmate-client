@@ -2,7 +2,13 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { AlertTriangle, Home, RefreshCw } from "lucide-react";
+import {
+  AlertTriangle,
+  Home,
+  RefreshCw,
+  ShieldAlert,
+  Terminal,
+} from "lucide-react";
 
 export default function ErrorPage({
   error,
@@ -16,42 +22,66 @@ export default function ErrorPage({
   }, [error]);
 
   return (
-    <main className="flex min-h-[70vh] items-center justify-center bg-gray-50 px-4 py-16">
-      <div className="w-full max-w-lg rounded-2xl border border-red-100 bg-white p-8 text-center shadow-lg">
-        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-red-50">
-          <AlertTriangle size={40} className="text-red-600" />
+    <main className="relative flex min-h-[85vh] items-center justify-center overflow-hidden bg-slate-950 px-4 py-16 sm:px-6">
+      {/* Ambient Glows & Subtle Grid */}
+      <div className="pointer-events-none absolute -top-24 left-1/4 h-96 w-96 rounded-full bg-rose-500/15 blur-[120px]" />
+      <div className="pointer-events-none absolute right-1/4 -bottom-24 h-96 w-96 rounded-full bg-blue-600/20 blur-[120px]" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:36px_36px]" />
+
+      {/* Error Card */}
+      <div className="relative z-10 w-full max-w-lg overflow-hidden rounded-3xl border border-white/15 bg-white p-8 text-center shadow-2xl shadow-slate-950/60 sm:p-10">
+        {/* Icon Emblem */}
+        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-rose-50 text-rose-600 ring-8 ring-rose-50/60">
+          <AlertTriangle size={40} strokeWidth={2.2} />
         </div>
 
-        <h1 className="mt-6 text-2xl font-bold text-gray-900 sm:text-3xl">
+        {/* Status Pill */}
+        <div className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-3.5 py-1 text-xs font-bold text-rose-700 ring-1 ring-rose-600/20">
+          <ShieldAlert size={13} />
+          <span>Unexpected Error</span>
+        </div>
+
+        <h1 className="mt-4 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
           Something went wrong
         </h1>
 
-        <p className="mt-3 leading-7 text-gray-600">
-          We could not load this page. Please try again, or head back to the
-          home page if the problem continues.
+        <p className="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">
+          We couldn&apos;t load this page properly. Please try refreshing the
+          view, or return to the home page if the issue persists.
         </p>
 
+        {/* Development Error Log Box */}
         {process.env.NODE_ENV === "development" && error instanceof Error && (
-          <pre className="mt-4 max-h-32 overflow-auto whitespace-pre-wrap break-words rounded-lg bg-gray-50 px-4 py-3 text-left text-xs text-gray-500">
-            {error.message}
-          </pre>
+          <div className="mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-slate-950 text-left">
+            <div className="flex items-center gap-1.5 border-b border-white/10 bg-white/5 px-3.5 py-2 text-[11px] font-semibold text-slate-400">
+              <Terminal size={13} className="text-rose-400" />
+              <span>Development Error Trace</span>
+            </div>
+            <pre className="max-h-32 overflow-auto whitespace-pre-wrap break-words px-4 py-3 font-mono text-xs text-rose-300">
+              {error.message}
+            </pre>
+          </div>
         )}
 
+        {/* Action Buttons */}
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
           <button
             onClick={() => retry()}
-            className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700"
+            className="group inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-600/25 transition-all duration-300 hover:from-blue-500 hover:to-indigo-500"
           >
-            <RefreshCw size={18} />
-            Try Again
+            <RefreshCw
+              size={17}
+              className="transition-transform duration-300 group-hover:rotate-180"
+            />
+            <span>Try Again</span>
           </button>
 
           <Link
             href="/"
-            className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-6 py-3 font-semibold text-gray-700 transition hover:bg-gray-50"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-6 py-3.5 text-sm font-bold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
           >
-            <Home size={18} />
-            Back to Home
+            <Home size={17} />
+            <span>Back to Home</span>
           </Link>
         </div>
       </div>
