@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
@@ -13,6 +12,13 @@ import {
   CheckCircle,
   XCircle,
   Clock,
+  Sparkles,
+  Mail,
+  FileText,
+  DollarSign,
+  Play,
+  Loader2,
+  Wrench,
 } from "lucide-react";
 import { apiUrl } from "@/lib/api";
 import ConfirmationModal from "@/components/shared/ConfirmationModal";
@@ -223,16 +229,32 @@ export default function TechnicianRequestsPage() {
   const getStatusStyle = (status: Booking["status"]) => {
     switch (status) {
       case "accepted":
-        return "bg-blue-100 text-blue-700";
+        return "bg-blue-50 text-blue-700 ring-1 ring-blue-600/20";
       case "rejected":
       case "cancelled":
-        return "bg-red-100 text-red-700";
+        return "bg-rose-50 text-rose-700 ring-1 ring-rose-600/20";
       case "in-progress":
-        return "bg-purple-100 text-purple-700";
+        return "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-600/20";
       case "completed":
-        return "bg-green-100 text-green-700";
+        return "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20";
       default:
-        return "bg-yellow-100 text-yellow-700";
+        return "bg-amber-50 text-amber-700 ring-1 ring-amber-600/20";
+    }
+  };
+
+  const getStatusDot = (status: Booking["status"]) => {
+    switch (status) {
+      case "accepted":
+        return "bg-blue-500";
+      case "rejected":
+      case "cancelled":
+        return "bg-rose-500";
+      case "in-progress":
+        return "bg-indigo-500";
+      case "completed":
+        return "bg-emerald-500";
+      default:
+        return "bg-amber-500";
     }
   };
 
@@ -273,121 +295,146 @@ export default function TechnicianRequestsPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <div className="text-center">
-          <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
-          <p className="mt-4 text-gray-600">Loading requests...</p>
+      <div className="flex min-h-[65vh] items-center justify-center">
+        <div className="rounded-3xl border border-slate-200/80 bg-white px-10 py-12 text-center shadow-sm">
+          <Loader2 className="mx-auto animate-spin text-blue-600" size={38} />
+          <p className="mt-4 text-sm font-semibold text-slate-600">
+            Loading booking requests...
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-5 md:p-8">
-      <div className="mx-auto max-w-7xl">
+    <div className="min-h-screen bg-slate-50 pb-12 text-slate-900">
+      <div className="mx-auto max-w-7xl space-y-8">
+        {/* ================= TOP DARK PREMIUM BANNER ================= */}
+        <div className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8">
+          <div className="pointer-events-none absolute -top-20 right-10 h-64 w-64 rounded-full bg-blue-600/25 blur-[90px]" />
+          <div className="pointer-events-none absolute -bottom-20 left-10 h-64 w-64 rounded-full bg-indigo-500/20 blur-[90px]" />
 
-        {/* Header */}
-        <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">
-              Booking Requests
-            </h1>
-            <p className="mt-2 text-gray-600">
-              Manage customer requests and repair jobs.
-            </p>
+          <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <div className="inline-flex items-center gap-1.5 rounded-full border border-blue-400/20 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-300">
+                <Sparkles size={13} className="text-blue-400" />
+                <span>Job Dispatch</span>
+              </div>
+              <h1 className="mt-3 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+                Booking{" "}
+                <span className="bg-gradient-to-r from-blue-400 to-sky-300 bg-clip-text text-transparent">
+                  Requests
+                </span>
+              </h1>
+              <p className="mt-1.5 text-sm text-slate-300">
+                Review incoming customer repair requests, update job progress,
+                and finalize service billing.
+              </p>
+            </div>
+
+            <button
+              onClick={fetchBookings}
+              className="inline-flex items-center justify-center gap-2 self-start rounded-xl border border-white/15 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:border-blue-400/40 hover:bg-blue-600 sm:self-auto"
+            >
+              <RefreshCw size={16} />
+              Refresh
+            </button>
           </div>
-
-          <button
-            onClick={fetchBookings}
-            className="flex items-center gap-2 rounded-lg border bg-white px-4 py-2.5 font-medium hover:bg-gray-100"
-          >
-            <RefreshCw size={18} />
-            Refresh
-          </button>
         </div>
 
-        {/* Statistics */}
-        <div className="mb-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {/* ================= KPI SUMMARY CARDS ================= */}
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard
             title="Total Bookings"
             value={bookings.length}
-            icon={<CalendarDays size={22} />}
+            subtitle="All assigned requests"
+            icon={<CalendarDays size={21} />}
+            accent="bg-blue-50 text-blue-600"
           />
 
           <StatCard
             title="New Requests"
             value={requestedCount}
-            icon={<Clock size={22} />}
+            subtitle="Awaiting confirmation"
+            icon={<Clock size={21} />}
+            accent="bg-amber-50 text-amber-600"
           />
 
           <StatCard
             title="Active Jobs"
             value={activeCount}
-            icon={<User size={22} />}
+            subtitle="Accepted or in progress"
+            icon={<Wrench size={21} />}
+            accent="bg-indigo-50 text-indigo-600"
           />
 
           <StatCard
             title="Completed"
             value={completedCount}
-            icon={<CheckCircle size={22} />}
+            subtitle="Successfully finished"
+            icon={<CheckCircle size={21} />}
+            accent="bg-emerald-50 text-emerald-600"
           />
         </div>
 
-        {/* Status Filter Tabs */}
-        <div className="mb-6 flex flex-wrap gap-2">
-          {filterTabs.map((tab) => (
-            <button
-              key={tab.value}
-              onClick={() => setStatusFilter(tab.value)}
-              className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition ${
-                statusFilter === tab.value
-                  ? "bg-blue-600 text-white shadow-sm"
-                  : "border bg-white text-gray-700 hover:bg-gray-100"
-              }`}
-            >
-              <span>{tab.label}</span>
-              <span
-                className={`rounded-full px-2 py-0.5 text-xs ${
-                  statusFilter === tab.value
-                    ? "bg-blue-700 text-white"
-                    : "bg-gray-100 text-gray-600"
+        {/* ================= STATUS FILTER TABS ================= */}
+        <div className="inline-flex flex-wrap gap-2 rounded-2xl border border-slate-200/80 bg-white p-1.5 shadow-sm">
+          {filterTabs.map((tab) => {
+            const active = statusFilter === tab.value;
+            return (
+              <button
+                key={tab.value}
+                onClick={() => setStatusFilter(tab.value)}
+                className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-all ${
+                  active
+                    ? "bg-slate-900 text-white shadow-sm"
+                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                 }`}
               >
-                {tab.count}
-              </span>
-            </button>
-          ))}
+                <span>{tab.label}</span>
+                <span
+                  className={`rounded-full px-2 py-0.5 text-xs font-extrabold ${
+                    active
+                      ? "bg-blue-600 text-white"
+                      : "bg-slate-100 text-slate-600"
+                  }`}
+                >
+                  {tab.count}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
-        {/* Booking List */}
+        {/* ================= BOOKING LIST ================= */}
         {bookings.length === 0 ? (
-          <div className="rounded-xl border bg-white p-12 text-center">
-            <CalendarDays
-              size={45}
-              className="mx-auto mb-4 text-gray-400"
-            />
+          <div className="rounded-3xl border border-dashed border-slate-300 bg-white py-20 text-center">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+              <CalendarDays size={32} />
+            </div>
 
-            <h2 className="text-xl font-semibold text-gray-800">
+            <h2 className="mt-4 text-xl font-extrabold text-slate-900">
               No Booking Requests
             </h2>
 
-            <p className="mt-2 text-gray-500">
-              New customer requests will appear here.
+            <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-500">
+              New customer service requests will appear here as soon as clients
+              book your services.
             </p>
           </div>
         ) : filteredBookings.length === 0 ? (
-          <div className="rounded-xl border bg-white p-12 text-center">
-            <CalendarDays
-              size={45}
-              className="mx-auto mb-4 text-gray-400"
-            />
+          <div className="rounded-3xl border border-dashed border-slate-300 bg-white py-20 text-center">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+              <CalendarDays size={32} />
+            </div>
 
-            <h2 className="text-xl font-semibold text-gray-800">
+            <h2 className="mt-4 text-xl font-extrabold text-slate-900">
               No Requests Found
             </h2>
 
-            <p className="mt-2 text-gray-500">
-              No bookings found with status &quot;{filterTabs.find((t) => t.value === statusFilter)?.label}&quot;.
+            <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-500">
+              No bookings found with status &quot;
+              {filterTabs.find((t) => t.value === statusFilter)?.label}&quot;.
             </p>
           </div>
         ) : (
@@ -395,120 +442,191 @@ export default function TechnicianRequestsPage() {
             {filteredBookings.map((booking) => (
               <div
                 key={booking._id}
-                className="overflow-hidden rounded-xl border bg-white shadow-sm"
+                className="group overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm transition-all duration-300 hover:border-blue-200 hover:shadow-xl hover:shadow-slate-900/5"
               >
-                <div className="grid md:grid-cols-[220px_1fr]">
-
+                <div className="grid md:grid-cols-[250px_1fr] lg:grid-cols-[280px_1fr]">
                   {/* Service Image */}
-                  <img
-                    src={booking.serviceImage}
-                    alt={booking.serviceTitle}
-                    className="h-52 w-full object-cover md:h-full"
-                  />
+                  <div className="relative h-56 overflow-hidden bg-slate-100 md:h-full">
+                    <img
+                      src={booking.serviceImage}
+                      alt={booking.serviceTitle}
+                      className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent md:hidden" />
+                    <span className="absolute top-4 left-4 rounded-full border border-white/40 bg-white/95 px-3.5 py-1 text-xs font-bold text-slate-800 shadow-sm backdrop-blur-md">
+                      {booking.category}
+                    </span>
+                  </div>
 
-                  <div className="p-5 md:p-6">
+                  {/* Job Details */}
+                  <div className="flex flex-col justify-between p-6 sm:p-7">
+                    <div>
+                      {/* Title & Status */}
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                          <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                            {booking.category}
+                          </span>
 
-                    {/* Service Details */}
-                    <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-                      <div>
-                        <span className="text-sm font-medium text-blue-600">
-                          {booking.category}
+                          <h2 className="mt-1 text-xl font-extrabold text-slate-900 sm:text-2xl">
+                            {booking.serviceTitle}
+                          </h2>
+                        </div>
+
+                        <span
+                          className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold capitalize ${getStatusStyle(
+                            booking.status
+                          )}`}
+                        >
+                          <span
+                            className={`h-1.5 w-1.5 rounded-full ${getStatusDot(
+                              booking.status
+                            )}`}
+                          />
+                          {booking.status.replace("-", " ")}
                         </span>
-
-                        <h2 className="mt-1 text-xl font-bold text-gray-900">
-                          {booking.serviceTitle}
-                        </h2>
                       </div>
 
-                      <span
-                        className={`rounded-full px-3 py-1 text-sm font-semibold capitalize ${getStatusStyle(
-                          booking.status
-                        )}`}
-                      >
-                        {booking.status.replace("-", " ")}
-                      </span>
-                    </div>
+                      {/* Customer Information Grid */}
+                      <div className="mt-5 grid gap-3.5 rounded-2xl border border-slate-100 bg-slate-50/80 p-4 text-sm sm:grid-cols-2">
+                        <div className="flex items-start gap-2.5">
+                          <User
+                            size={16}
+                            className="mt-0.5 shrink-0 text-blue-600"
+                          />
+                          <div>
+                            <p className="text-xs font-medium text-slate-400">
+                              Customer
+                            </p>
+                            <p className="font-bold text-slate-900">
+                              {booking.customerName}
+                            </p>
+                          </div>
+                        </div>
 
-                    {/* Customer Information */}
-                    <div className="grid gap-3 text-sm text-gray-600 sm:grid-cols-2">
-                      <p className="flex items-center gap-2">
-                        <User size={17} />
-                        {booking.customerName}
-                      </p>
+                        <div className="flex items-start gap-2.5">
+                          <Phone
+                            size={16}
+                            className="mt-0.5 shrink-0 text-emerald-600"
+                          />
+                          <div>
+                            <p className="text-xs font-medium text-slate-400">
+                              Phone Number
+                            </p>
+                            <p className="font-bold text-slate-800">
+                              {booking.customerPhone}
+                            </p>
+                          </div>
+                        </div>
 
-                      <p>
-                        <strong>Email:</strong>{" "}
-                        {booking.customerEmail}
-                      </p>
+                        <div className="flex items-start gap-2.5">
+                          <Mail
+                            size={16}
+                            className="mt-0.5 shrink-0 text-indigo-600"
+                          />
+                          <div className="min-w-0">
+                            <p className="text-xs font-medium text-slate-400">
+                              Email Address
+                            </p>
+                            <p className="truncate font-semibold text-slate-700">
+                              {booking.customerEmail}
+                            </p>
+                          </div>
+                        </div>
 
-                      <p className="flex items-center gap-2">
-                        <Phone size={17} />
-                        {booking.customerPhone}
-                      </p>
+                        <div className="flex items-start gap-2.5">
+                          <CalendarDays
+                            size={16}
+                            className="mt-0.5 shrink-0 text-sky-600"
+                          />
+                          <div>
+                            <p className="text-xs font-medium text-slate-400">
+                              Preferred Date
+                            </p>
+                            <p className="font-bold text-slate-800">
+                              {new Date(
+                                booking.preferredDate
+                              ).toLocaleDateString()}
+                            </p>
+                          </div>
+                        </div>
 
-                      <p className="flex items-center gap-2">
-                        <CalendarDays size={17} />
-                        {new Date(
-                          booking.preferredDate
-                        ).toLocaleDateString()}
-                      </p>
+                        <div className="flex items-start gap-2.5 sm:col-span-2">
+                          <MapPin
+                            size={16}
+                            className="mt-0.5 shrink-0 text-rose-500"
+                          />
+                          <div>
+                            <p className="text-xs font-medium text-slate-400">
+                              Service Address
+                            </p>
+                            <p className="font-semibold text-slate-800">
+                              {booking.address}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
 
-                      <p className="flex items-center gap-2 sm:col-span-2">
-                        <MapPin size={17} />
-                        {booking.address}
-                      </p>
-                    </div>
+                      {/* Problem Description */}
+                      <div className="mt-4 rounded-2xl border border-slate-200/70 bg-white p-4">
+                        <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500">
+                          <FileText size={14} className="text-blue-600" />
+                          <span>Customer Problem</span>
+                        </div>
 
-                    {/* Problem Description */}
-                    <div className="mt-5 rounded-lg bg-gray-50 p-4">
-                      <p className="mb-1 font-semibold text-gray-800">
-                        Customer Problem
-                      </p>
-
-                      <p className="text-sm text-gray-600">
-                        {booking.problemDescription}
-                      </p>
-                    </div>
-
-                    {/* Price */}
-                    <div className="mt-4 flex flex-wrap gap-5 text-sm">
-                      <p>
-                        <strong>Base Price:</strong> $
-                        {booking.basePrice}
-                      </p>
-
-                      {booking.finalAmount !== undefined && (
-                        <p>
-                          <strong>Final Amount:</strong> $
-                          {booking.finalAmount}
+                        <p className="mt-1.5 text-sm leading-relaxed text-slate-600">
+                          {booking.problemDescription}
                         </p>
-                      )}
+                      </div>
 
-                      <p>
-                        <strong>Payment:</strong>{" "}
-                        <span className="capitalize">
-                          {booking.paymentStatus}
-                        </span>
-                      </p>
+                      {/* Pricing & Payment Strip */}
+                      <div className="mt-4 flex flex-wrap items-center gap-4 text-sm">
+                        <div className="inline-flex items-center gap-1.5 rounded-xl bg-slate-100/80 px-3.5 py-1.5">
+                          <DollarSign size={15} className="text-slate-500" />
+                          <span className="text-slate-600">Base Price:</span>
+                          <strong className="font-extrabold text-slate-900">
+                            ${booking.basePrice}
+                          </strong>
+                        </div>
+
+                        {booking.finalAmount !== undefined && (
+                          <div className="inline-flex items-center gap-1.5 rounded-xl bg-blue-50 px-3.5 py-1.5">
+                            <DollarSign size={15} className="text-blue-600" />
+                            <span className="text-blue-700">Final Amount:</span>
+                            <strong className="font-extrabold text-blue-700">
+                              ${booking.finalAmount}
+                            </strong>
+                          </div>
+                        )}
+
+                        <div className="inline-flex items-center gap-1.5 rounded-xl bg-slate-100/80 px-3.5 py-1.5">
+                          <span className="text-slate-600">Payment:</span>
+                          <span
+                            className={`font-bold capitalize ${
+                              booking.paymentStatus === "paid"
+                                ? "text-emerald-600"
+                                : "text-amber-600"
+                            }`}
+                          >
+                            {booking.paymentStatus}
+                          </span>
+                        </div>
+                      </div>
                     </div>
 
-                    {/* Actions */}
-                    <div className="mt-5 border-t pt-5">
-
+                    {/* Workflow Actions */}
+                    <div className="mt-5 border-t border-slate-100 pt-5">
                       {booking.status === "requested" && (
                         <div className="flex flex-wrap gap-3">
                           <button
                             onClick={() =>
-                              updateStatus(
-                                booking._id,
-                                "accepted"
-                              )
+                              updateStatus(booking._id, "accepted")
                             }
                             disabled={updatingId === booking._id}
-                            className="flex items-center gap-2 rounded-lg bg-green-600 px-5 py-2.5 font-semibold text-white hover:bg-green-700 disabled:opacity-50"
+                            className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-emerald-700 disabled:opacity-50"
                           >
                             <CheckCircle size={17} />
-                            Accept
+                            Accept Request
                           </button>
 
                           <button
@@ -517,7 +635,7 @@ export default function TechnicianRequestsPage() {
                               setRejectError(null);
                             }}
                             disabled={updatingId === booking._id}
-                            className="flex items-center gap-2 rounded-lg bg-red-600 px-5 py-2.5 font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+                            className="inline-flex items-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-6 py-2.5 text-sm font-bold text-rose-600 transition hover:bg-rose-600 hover:text-white disabled:opacity-50"
                           >
                             <XCircle size={17} />
                             Reject
@@ -528,75 +646,75 @@ export default function TechnicianRequestsPage() {
                       {booking.status === "accepted" && (
                         <button
                           onClick={() =>
-                            updateStatus(
-                              booking._id,
-                              "in-progress"
-                            )
+                            updateStatus(booking._id, "in-progress")
                           }
                           disabled={updatingId === booking._id}
-                          className="rounded-lg bg-blue-600 px-5 py-2.5 font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+                          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-600/20 transition hover:from-blue-500 hover:to-indigo-500 disabled:opacity-50"
                         >
+                          <Play size={16} />
                           Start Repair
                         </button>
                       )}
 
                       {booking.status === "in-progress" && (
-                        <div className="flex flex-wrap items-end gap-3">
-                          <div>
-                            <label className="mb-2 block text-sm font-medium text-gray-700">
+                        <div className="flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-slate-50/70 p-4 sm:flex-row sm:items-end">
+                          <div className="flex-1 sm:max-w-xs">
+                            <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700">
                               Final Amount ($)
                             </label>
 
-                            <input
-                              type="number"
-                              min="1"
-                              placeholder="Enter final amount"
-                              value={finalAmounts[booking._id] || ""}
-                              onChange={(e) =>
-                                setFinalAmounts((prev) => ({
-                                  ...prev,
-                                  [booking._id]: e.target.value,
-                                }))
-                              }
-                              className="rounded-lg border px-4 py-2.5 outline-none focus:border-blue-500"
-                            />
+                            <div className="relative">
+                              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                                <DollarSign size={16} />
+                              </div>
+                              <input
+                                type="number"
+                                min="1"
+                                placeholder="Enter final amount"
+                                value={finalAmounts[booking._id] || ""}
+                                onChange={(e) =>
+                                  setFinalAmounts((prev) => ({
+                                    ...prev,
+                                    [booking._id]: e.target.value,
+                                  }))
+                                }
+                                className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pr-4 pl-9 text-sm font-semibold text-slate-900 shadow-sm outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15"
+                              />
+                            </div>
                           </div>
 
                           <button
                             onClick={() =>
-                              updateStatus(
-                                booking._id,
-                                "completed"
-                              )
+                              updateStatus(booking._id, "completed")
                             }
                             disabled={updatingId === booking._id}
-                            className="rounded-lg bg-green-600 px-5 py-2.5 font-semibold text-white hover:bg-green-700 disabled:opacity-50"
+                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-700 disabled:opacity-50"
                           >
+                            <CheckCircle size={17} />
                             Complete Job
                           </button>
                         </div>
                       )}
 
                       {booking.status === "completed" && (
-                        <p className="font-medium text-green-600">
-                          <CheckCircle
-                            size={18}
-                            className="mr-2 inline"
-                          />
-                          Repair completed successfully.
-                        </p>
+                        <div className="inline-flex items-center gap-2 text-sm font-bold text-emerald-600">
+                          <CheckCircle size={18} />
+                          <span>Repair completed successfully.</span>
+                        </div>
                       )}
 
                       {booking.status === "rejected" && (
-                        <p className="font-medium text-red-600">
-                          This booking request was rejected.
-                        </p>
+                        <div className="inline-flex items-center gap-2 text-sm font-semibold text-rose-600">
+                          <XCircle size={17} />
+                          <span>This booking request was rejected.</span>
+                        </div>
                       )}
 
                       {booking.status === "cancelled" && (
-                        <p className="font-medium text-gray-500">
-                          Customer cancelled this booking.
-                        </p>
+                        <div className="inline-flex items-center gap-2 text-sm font-medium text-slate-500">
+                          <XCircle size={17} />
+                          <span>Customer cancelled this booking.</span>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -637,22 +755,29 @@ export default function TechnicianRequestsPage() {
 function StatCard({
   title,
   value,
+  subtitle,
   icon,
+  accent,
 }: {
   title: string;
   value: number;
+  subtitle: string;
   icon: React.ReactNode;
+  accent: string;
 }) {
   return (
-    <div className="rounded-xl border bg-white p-5 shadow-sm">
+    <div className="group rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg hover:shadow-blue-900/5">
       <div className="flex items-center justify-between">
-        <p className="text-sm font-medium text-gray-600">{title}</p>
-        <span className="text-blue-600">{icon}</span>
+        <p className="text-sm font-semibold text-slate-500">{title}</p>
+        <span
+          className={`flex h-11 w-11 items-center justify-center rounded-xl transition-transform group-hover:scale-110 ${accent}`}
+        >
+          {icon}
+        </span>
       </div>
 
-      <p className="mt-3 text-3xl font-bold text-gray-900">
-        {value}
-      </p>
+      <p className="mt-4 text-3xl font-extrabold text-slate-900">{value}</p>
+      <p className="mt-1 text-xs text-slate-400">{subtitle}</p>
     </div>
   );
 }
