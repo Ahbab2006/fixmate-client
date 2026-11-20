@@ -5,7 +5,21 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
-import { Check, X, User, Wrench } from "lucide-react";
+import {
+  Check,
+  X,
+  User,
+  Wrench,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  ArrowRight,
+  Loader2,
+  Sparkles,
+  AlertCircle,
+  CheckCircle2,
+} from "lucide-react";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -14,6 +28,7 @@ export default function SignUpPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState<"customer" | "technician">("customer");
 
   const [loading, setLoading] = useState(false);
@@ -136,143 +151,228 @@ export default function SignUpPage() {
 
   if (sessionLoading || session?.user) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+      <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-4">
+        <div className="pointer-events-none absolute top-1/4 left-1/3 h-80 w-80 rounded-full bg-blue-600/20 blur-[110px]" />
+        <div className="rounded-3xl border border-white/10 bg-slate-900/80 p-8 text-center backdrop-blur-xl">
+          <Loader2 className="mx-auto animate-spin text-blue-400" size={34} />
+          <p className="mt-3 text-sm font-medium text-slate-300">
+            Redirecting...
+          </p>
+        </div>
       </main>
     );
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-100 px-4 py-12">
-      <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-lg">
-        <h1 className="mb-2 text-center text-3xl font-bold text-gray-900">
-          Create Account
-        </h1>
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-4 py-16 sm:px-6">
+      {/* Ambient Background Glows & Subtle Grid */}
+      <div className="pointer-events-none absolute -top-24 left-1/4 h-96 w-96 rounded-full bg-blue-600/20 blur-[120px]" />
+      <div className="pointer-events-none absolute right-1/4 -bottom-24 h-96 w-96 rounded-full bg-indigo-500/20 blur-[120px]" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:36px_36px]" />
 
-        <p className="mb-6 text-center text-gray-500">
-          Join FixMate today
-        </p>
+      {/* Sign Up Card */}
+      <div className="relative z-10 w-full max-w-lg overflow-hidden rounded-3xl border border-white/15 bg-white p-8 shadow-2xl shadow-blue-950/50 sm:p-10">
+        {/* Top Brand Header */}
+        <div className="flex flex-col items-center text-center">
+          <Link
+            href="/"
+            className="group inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/30 transition-transform duration-300 hover:scale-105"
+          >
+            <Wrench size={22} />
+          </Link>
 
-        <form onSubmit={handleSignUp} className="space-y-4" noValidate>
+          <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-600 ring-1 ring-blue-600/15">
+            <Sparkles size={13} />
+            <span>Join FixMate Ecosystem</span>
+          </div>
+
+          <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900">
+            Create Account
+          </h1>
+
+          <p className="mt-2 text-sm text-slate-500">
+            Get started as a homeowner or certified repair technician
+          </p>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSignUp} className="mt-8 space-y-5" noValidate>
           {/* Full Name */}
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
               Full Name
             </label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => {
-                setName(e.target.value);
-                if (fieldErrors.name) {
-                  setFieldErrors((prev) => ({ ...prev, name: undefined }));
-                }
-              }}
-              required
-              className={`w-full rounded-lg border px-4 py-2 text-gray-900 outline-none transition focus:border-blue-500 ${
-                fieldErrors.name ? "border-red-500" : "border-gray-300"
-              }`}
-              placeholder="Enter your name"
-            />
+            <div className="relative mt-2">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                <User size={17} />
+              </div>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  if (fieldErrors.name) {
+                    setFieldErrors((prev) => ({ ...prev, name: undefined }));
+                  }
+                }}
+                required
+                className={`w-full rounded-xl border bg-slate-50/50 py-3 pr-4 pl-10 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:bg-white focus:ring-2 ${
+                  fieldErrors.name
+                    ? "border-rose-500 focus:border-rose-500 focus:ring-rose-500/15"
+                    : "border-slate-200 focus:border-blue-600 focus:ring-blue-600/15"
+                }`}
+                placeholder="Enter your full name"
+              />
+            </div>
             {fieldErrors.name && (
-              <p className="mt-1 text-xs text-red-600">{fieldErrors.name}</p>
+              <p className="mt-1.5 flex items-center gap-1 text-xs font-medium text-rose-600">
+                <AlertCircle size={13} />
+                <span>{fieldErrors.name}</span>
+              </p>
             )}
           </div>
 
           {/* Email */}
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Email
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+              Email Address
             </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                if (fieldErrors.email) {
-                  setFieldErrors((prev) => ({ ...prev, email: undefined }));
-                }
-              }}
-              required
-              className={`w-full rounded-lg border px-4 py-2 text-gray-900 outline-none transition focus:border-blue-500 ${
-                fieldErrors.email ? "border-red-500" : "border-gray-300"
-              }`}
-              placeholder="Enter your email"
-            />
+            <div className="relative mt-2">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                <Mail size={17} />
+              </div>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (fieldErrors.email) {
+                    setFieldErrors((prev) => ({ ...prev, email: undefined }));
+                  }
+                }}
+                required
+                className={`w-full rounded-xl border bg-slate-50/50 py-3 pr-4 pl-10 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:bg-white focus:ring-2 ${
+                  fieldErrors.email
+                    ? "border-rose-500 focus:border-rose-500 focus:ring-rose-500/15"
+                    : "border-slate-200 focus:border-blue-600 focus:ring-blue-600/15"
+                }`}
+                placeholder="you@example.com"
+              />
+            </div>
             {fieldErrors.email && (
-              <p className="mt-1 text-xs text-red-600">{fieldErrors.email}</p>
+              <p className="mt-1.5 flex items-center gap-1 text-xs font-medium text-rose-600">
+                <AlertCircle size={13} />
+                <span>{fieldErrors.email}</span>
+              </p>
             )}
           </div>
 
           {/* Password with real-time requirement indicator */}
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
               Password
             </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                if (fieldErrors.password) {
-                  setFieldErrors((prev) => ({ ...prev, password: undefined }));
-                }
-              }}
-              required
-              className={`w-full rounded-lg border px-4 py-2 text-gray-900 outline-none transition focus:border-blue-500 ${
-                fieldErrors.password ? "border-red-500" : "border-gray-300"
-              }`}
-              placeholder="Enter your password"
-            />
+            <div className="relative mt-2">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                <Lock size={17} />
+              </div>
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (fieldErrors.password) {
+                    setFieldErrors((prev) => ({
+                      ...prev,
+                      password: undefined,
+                    }));
+                  }
+                }}
+                required
+                className={`w-full rounded-xl border bg-slate-50/50 py-3 pr-11 pl-10 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:bg-white focus:ring-2 ${
+                  fieldErrors.password
+                    ? "border-rose-500 focus:border-rose-500 focus:ring-rose-500/15"
+                    : "border-slate-200 focus:border-blue-600 focus:ring-blue-600/15"
+                }`}
+                placeholder="Create a strong password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 transition hover:text-slate-600"
+              >
+                {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+              </button>
+            </div>
             {fieldErrors.password && (
-              <p className="mt-1 text-xs text-red-600">
-                {fieldErrors.password}
+              <p className="mt-1.5 flex items-center gap-1 text-xs font-medium text-rose-600">
+                <AlertCircle size={13} />
+                <span>{fieldErrors.password}</span>
               </p>
             )}
 
             {/* Password Validation Checklist */}
             {password.length > 0 && (
-              <div className="mt-2 space-y-1 rounded-lg bg-gray-50 p-3 text-xs">
-                <p className="font-semibold text-gray-700">
+              <div className="mt-3 space-y-1.5 rounded-2xl border border-slate-100 bg-slate-50/90 p-3.5 text-xs">
+                <p className="font-bold text-slate-700">
                   Password Requirements:
                 </p>
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-2">
                   {hasMinLength ? (
-                    <Check size={14} className="text-green-600" />
+                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+                      <Check size={11} strokeWidth={3} />
+                    </span>
                   ) : (
-                    <X size={14} className="text-red-500" />
+                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-rose-100 text-rose-600">
+                      <X size={11} strokeWidth={3} />
+                    </span>
                   )}
                   <span
                     className={
-                      hasMinLength ? "text-green-700 font-medium" : "text-gray-600"
+                      hasMinLength
+                        ? "font-semibold text-emerald-700"
+                        : "text-slate-500"
                     }
                   >
                     At least 6 characters
                   </span>
                 </div>
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-2">
                   {hasUppercase ? (
-                    <Check size={14} className="text-green-600" />
+                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+                      <Check size={11} strokeWidth={3} />
+                    </span>
                   ) : (
-                    <X size={14} className="text-red-500" />
+                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-rose-100 text-rose-600">
+                      <X size={11} strokeWidth={3} />
+                    </span>
                   )}
                   <span
                     className={
-                      hasUppercase ? "text-green-700 font-medium" : "text-gray-600"
+                      hasUppercase
+                        ? "font-semibold text-emerald-700"
+                        : "text-slate-500"
                     }
                   >
                     At least one uppercase letter (A-Z)
                   </span>
                 </div>
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-2">
                   {hasLowercase ? (
-                    <Check size={14} className="text-green-600" />
+                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+                      <Check size={11} strokeWidth={3} />
+                    </span>
                   ) : (
-                    <X size={14} className="text-red-500" />
+                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-rose-100 text-rose-600">
+                      <X size={11} strokeWidth={3} />
+                    </span>
                   )}
                   <span
                     className={
-                      hasLowercase ? "text-green-700 font-medium" : "text-gray-600"
+                      hasLowercase
+                        ? "font-semibold text-emerald-700"
+                        : "text-slate-500"
                     }
                   >
                     At least one lowercase letter (a-z)
@@ -284,16 +384,20 @@ export default function SignUpPage() {
 
           {/* Role Selection: Selectable Cards / Radio Buttons */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-gray-700">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
               Register As
             </label>
-            <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label="Register As">
+            <div
+              className="mt-2 grid grid-cols-2 gap-3.5"
+              role="radiogroup"
+              aria-label="Register As"
+            >
               {/* Customer */}
               <label
-                className={`flex cursor-pointer flex-col items-center justify-center rounded-xl border p-4 text-center transition ${
+                className={`relative flex cursor-pointer flex-col items-center justify-center rounded-2xl border p-4 text-center transition-all duration-200 ${
                   role === "customer"
-                    ? "border-blue-600 bg-blue-50/60 ring-2 ring-blue-600/20"
-                    : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50"
+                    ? "border-blue-600 bg-blue-50/70 shadow-sm ring-2 ring-blue-600/20"
+                    : "border-slate-200 bg-slate-50/40 hover:border-slate-300 hover:bg-white"
                 }`}
               >
                 <input
@@ -304,27 +408,35 @@ export default function SignUpPage() {
                   onChange={() => setRole("customer")}
                   className="sr-only"
                 />
+                {role === "customer" && (
+                  <CheckCircle2
+                    size={16}
+                    className="absolute top-3 right-3 text-blue-600"
+                  />
+                )}
                 <div
-                  className={`mb-2 rounded-full p-2.5 ${
+                  className={`mb-2.5 flex h-11 w-11 items-center justify-center rounded-xl transition-colors ${
                     role === "customer"
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-100 text-gray-600"
+                      ? "bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-600/25"
+                      : "bg-slate-200/70 text-slate-600"
                   }`}
                 >
                   <User size={20} />
                 </div>
-                <span className="font-semibold text-gray-900">Customer</span>
-                <span className="mt-1 text-xs text-gray-500">
+                <span className="text-sm font-extrabold text-slate-900">
+                  Customer
+                </span>
+                <span className="mt-0.5 text-xs text-slate-500">
                   Book repair services
                 </span>
               </label>
 
               {/* Technician */}
               <label
-                className={`flex cursor-pointer flex-col items-center justify-center rounded-xl border p-4 text-center transition ${
+                className={`relative flex cursor-pointer flex-col items-center justify-center rounded-2xl border p-4 text-center transition-all duration-200 ${
                   role === "technician"
-                    ? "border-blue-600 bg-blue-50/60 ring-2 ring-blue-600/20"
-                    : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50"
+                    ? "border-blue-600 bg-blue-50/70 shadow-sm ring-2 ring-blue-600/20"
+                    : "border-slate-200 bg-slate-50/40 hover:border-slate-300 hover:bg-white"
                 }`}
               >
                 <input
@@ -335,17 +447,25 @@ export default function SignUpPage() {
                   onChange={() => setRole("technician")}
                   className="sr-only"
                 />
+                {role === "technician" && (
+                  <CheckCircle2
+                    size={16}
+                    className="absolute top-3 right-3 text-blue-600"
+                  />
+                )}
                 <div
-                  className={`mb-2 rounded-full p-2.5 ${
+                  className={`mb-2.5 flex h-11 w-11 items-center justify-center rounded-xl transition-colors ${
                     role === "technician"
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-100 text-gray-600"
+                      ? "bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-600/25"
+                      : "bg-slate-200/70 text-slate-600"
                   }`}
                 >
                   <Wrench size={20} />
                 </div>
-                <span className="font-semibold text-gray-900">Technician</span>
-                <span className="mt-1 text-xs text-gray-500">
+                <span className="text-sm font-extrabold text-slate-900">
+                  Technician
+                </span>
+                <span className="mt-0.5 text-xs text-slate-500">
                   Provide repair services
                 </span>
               </label>
@@ -356,22 +476,37 @@ export default function SignUpPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-blue-600 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+            className="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-600/25 transition-all duration-300 hover:from-blue-500 hover:to-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {loading ? "Creating Account..." : "Create Account"}
+            {loading ? (
+              <>
+                <Loader2 size={18} className="animate-spin" />
+                <span>Creating Account...</span>
+              </>
+            ) : (
+              <>
+                <span>Create Account</span>
+                <ArrowRight
+                  size={17}
+                  className="transition-transform group-hover:translate-x-1"
+                />
+              </>
+            )}
           </button>
         </form>
 
         {/* Link to Sign In */}
-        <p className="mt-6 text-center text-sm text-gray-600">
-          Already have an account?{" "}
-          <Link
-            href="/sign-in"
-            className="font-semibold text-blue-600 hover:text-blue-700 hover:underline"
-          >
-            Sign In
-          </Link>
-        </p>
+        <div className="mt-7 border-t border-slate-100 pt-6 text-center">
+          <p className="text-sm text-slate-600">
+            Already have an account?{" "}
+            <Link
+              href="/sign-in"
+              className="font-bold text-blue-600 transition hover:text-indigo-600 hover:underline"
+            >
+              Sign In
+            </Link>
+          </p>
+        </div>
       </div>
     </main>
   );
