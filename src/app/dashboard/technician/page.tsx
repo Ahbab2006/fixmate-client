@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -13,6 +12,10 @@ import {
   CalendarDays,
   TrendingUp,
   RefreshCw,
+  Sparkles,
+  User,
+  Loader2,
+  AlertCircle,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { apiUrl } from "@/lib/api";
@@ -90,91 +93,136 @@ export default function TechnicianDashboard() {
     (service) => service.approvalStatus === "approved"
   ).length;
 
+  const getStatusStyle = (status: string) => {
+    switch (status) {
+      case "completed":
+        return "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20";
+      case "accepted":
+      case "in-progress":
+        return "bg-blue-50 text-blue-700 ring-1 ring-blue-600/20";
+      case "rejected":
+      case "cancelled":
+        return "bg-rose-50 text-rose-700 ring-1 ring-rose-600/20";
+      default:
+        return "bg-amber-50 text-amber-700 ring-1 ring-amber-600/20";
+    }
+  };
+
+  const getStatusDot = (status: string) => {
+    switch (status) {
+      case "completed":
+        return "bg-emerald-500";
+      case "accepted":
+      case "in-progress":
+        return "bg-blue-500";
+      case "rejected":
+      case "cancelled":
+        return "bg-rose-500";
+      default:
+        return "bg-amber-500";
+    }
+  };
+
   const stats = [
     {
       title: "Total Services",
+      subtitle: "Published service packages",
       value: services.length,
       icon: Wrench,
-      color: "bg-blue-100 text-blue-600",
+      color: "bg-blue-50 text-blue-600 ring-1 ring-blue-600/15",
     },
     {
       title: "Pending Services",
+      subtitle: "Awaiting admin approval",
       value: pendingServices,
       icon: Clock,
-      color: "bg-amber-100 text-amber-600",
+      color: "bg-amber-50 text-amber-600 ring-1 ring-amber-600/15",
     },
     {
       title: "Approved Services",
+      subtitle: "Live on marketplace",
       value: approvedServices,
       icon: CheckCircle2,
-      color: "bg-green-100 text-green-600",
+      color: "bg-emerald-50 text-emerald-600 ring-1 ring-emerald-600/15",
     },
     {
       title: "Booking Requests",
+      subtitle: "Total customer jobs",
       value: bookings.length,
       icon: ClipboardList,
-      color: "bg-purple-100 text-purple-600",
+      color: "bg-indigo-50 text-indigo-600 ring-1 ring-indigo-600/15",
     },
   ];
 
   return (
-    <main className="min-h-screen bg-slate-50 p-4 sm:p-6 lg:p-8">
+    <main className="min-h-screen bg-slate-50 pb-12 text-slate-900">
       <div className="mx-auto max-w-7xl space-y-8">
+        {/* ================= TOP DARK PREMIUM WELCOME BANNER ================= */}
+        <section className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8">
+          <div className="pointer-events-none absolute -top-20 right-10 h-64 w-64 rounded-full bg-blue-600/25 blur-[90px]" />
+          <div className="pointer-events-none absolute -bottom-20 left-10 h-64 w-64 rounded-full bg-indigo-500/20 blur-[90px]" />
 
-        {/* Welcome Section */}
-        <section className="flex flex-col justify-between gap-5 rounded-2xl bg-blue-600 p-6 text-white shadow-sm sm:flex-row sm:items-center sm:p-8">
-          <div>
-            <p className="text-sm font-medium text-blue-100">
-              Technician Workspace
-            </p>
-
-            <h1 className="mt-2 text-2xl font-bold sm:text-3xl">
-              Welcome Back!
-            </h1>
-
-            <p className="mt-2 max-w-xl text-sm leading-6 text-blue-100">
-              Manage your repair services, track booking requests
-              and keep your customers updated.
-            </p>
-          </div>
-
-          <Link
-            href="/dashboard/technician/add-service"
-            className="inline-flex w-fit items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-blue-700 transition hover:bg-blue-50"
-          >
-            <Plus size={18} />
-            Add New Service
-          </Link>
-        </section>
-
-        {/* Statistics */}
-        <section>
-          <div className="mb-5 flex items-center justify-between gap-3">
+          <div className="relative flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
             <div>
-              <h2 className="text-xl font-bold text-slate-800">
-                Overview
-              </h2>
-              <p className="mt-1 text-sm text-slate-500">
-                Your real-time workspace summary.
+              <div className="inline-flex items-center gap-1.5 rounded-full border border-blue-400/20 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-300">
+                <Sparkles size={13} className="text-blue-400" />
+                <span>Technician Workspace</span>
+              </div>
+
+              <h1 className="mt-3 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+                Welcome{" "}
+                <span className="bg-gradient-to-r from-blue-400 to-sky-300 bg-clip-text text-transparent">
+                  Back!
+                </span>
+              </h1>
+
+              <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-300">
+                Manage your repair services, track incoming booking requests,
+                and deliver top-rated service to your customers.
               </p>
             </div>
 
-            <button
-              onClick={fetchDashboardData}
-              disabled={loading}
-              className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 disabled:opacity-50"
-            >
-              <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
-              Refresh
-            </button>
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                onClick={fetchDashboardData}
+                disabled={loading}
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-semibold text-white backdrop-blur-md transition-all hover:border-blue-400/40 hover:bg-white/15 disabled:opacity-50"
+              >
+                <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
+                Refresh
+              </button>
+
+              <Link
+                href="/dashboard/technician/add-service"
+                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-blue-600/25 transition-all hover:from-blue-500 hover:to-indigo-500"
+              >
+                <Plus size={18} />
+                Add New Service
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* ================= OVERVIEW & KPI CARDS ================= */}
+        <section className="space-y-5">
+          <div>
+            <h2 className="text-xl font-extrabold tracking-tight text-slate-900">
+              Overview
+            </h2>
+            <p className="mt-0.5 text-xs text-slate-500">
+              Your real-time workspace summary and service metrics
+            </p>
           </div>
 
           {error && (
-            <div className="mb-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600">
-              {error}
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-rose-200 bg-rose-50/90 p-4 text-sm text-rose-700">
+              <div className="flex items-center gap-2.5 font-medium">
+                <AlertCircle size={18} className="shrink-0 text-rose-600" />
+                <span>{error}</span>
+              </div>
               <button
                 onClick={fetchDashboardData}
-                className="ml-2 font-semibold underline"
+                className="rounded-lg bg-rose-600 px-3.5 py-1.5 text-xs font-bold text-white transition hover:bg-rose-700"
               >
                 Try again
               </button>
@@ -188,145 +236,182 @@ export default function TechnicianDashboard() {
               return (
                 <div
                   key={item.title}
-                  className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+                  className="group rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg hover:shadow-blue-900/5"
                 >
                   <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-slate-500">
-                        {item.title}
-                      </p>
+                    <p className="text-sm font-semibold text-slate-500">
+                      {item.title}
+                    </p>
 
-                      <h3 className="mt-3 text-3xl font-bold text-slate-800">
-                        {loading ? "..." : item.value}
-                      </h3>
-                    </div>
-
-                    <div className={`rounded-xl p-3 ${item.color}`}>
-                      <Icon size={23} />
+                    <div
+                      className={`flex h-11 w-11 items-center justify-center rounded-xl transition-transform group-hover:scale-110 ${item.color}`}
+                    >
+                      <Icon size={21} />
                     </div>
                   </div>
+
+                  <h3 className="mt-4 text-3xl font-extrabold text-slate-900">
+                    {loading ? "..." : item.value}
+                  </h3>
+                  <p className="mt-1 text-xs text-slate-400">{item.subtitle}</p>
                 </div>
               );
             })}
           </div>
         </section>
 
-        {/* Quick Actions */}
-        <section>
-          <h2 className="mb-5 text-xl font-bold text-slate-800">
-            Quick Actions
-          </h2>
+        {/* ================= QUICK ACTIONS ================= */}
+        <section className="space-y-5">
+          <div>
+            <h2 className="text-xl font-extrabold tracking-tight text-slate-900">
+              Quick Actions
+            </h2>
+            <p className="mt-0.5 text-xs text-slate-500">
+              Jump directly to your catalog or active repair requests
+            </p>
+          </div>
 
           <div className="grid gap-5 md:grid-cols-2">
             <Link
               href="/dashboard/technician/my-services"
-              className="group flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:border-blue-300 hover:shadow-md"
+              className="group flex items-center justify-between rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-900/5"
             >
               <div className="flex items-center gap-4">
-                <div className="rounded-xl bg-blue-100 p-3 text-blue-600">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 ring-1 ring-blue-600/15 transition-transform duration-300 group-hover:scale-110">
                   <Wrench size={24} />
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-slate-800">
+                  <h3 className="text-base font-extrabold text-slate-900 transition-colors group-hover:text-blue-600">
                     Manage My Services
                   </h3>
                   <p className="mt-1 text-sm text-slate-500">
-                    View, edit and manage your services.
+                    View, edit pricing, and control availability of your
+                    listings.
                   </p>
                 </div>
               </div>
 
-              <ArrowRight className="text-slate-400 transition group-hover:translate-x-1 group-hover:text-blue-600" />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-50 text-slate-400 transition-all group-hover:bg-blue-600 group-hover:text-white">
+                <ArrowRight
+                  size={18}
+                  className="transition-transform group-hover:translate-x-0.5"
+                />
+              </div>
             </Link>
 
             <Link
               href="/dashboard/technician/requests"
-              className="group flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:border-purple-300 hover:shadow-md"
+              className="group flex items-center justify-between rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-indigo-300 hover:shadow-xl hover:shadow-indigo-900/5"
             >
               <div className="flex items-center gap-4">
-                <div className="rounded-xl bg-purple-100 p-3 text-purple-600">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 ring-1 ring-indigo-600/15 transition-transform duration-300 group-hover:scale-110">
                   <ClipboardList size={24} />
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-slate-800">
+                  <h3 className="text-base font-extrabold text-slate-900 transition-colors group-hover:text-indigo-600">
                     Booking Requests
                   </h3>
                   <p className="mt-1 text-sm text-slate-500">
-                    Review and manage customer requests.
+                    Accept new jobs, start repairs, and submit final billing.
                   </p>
                 </div>
               </div>
 
-              <ArrowRight className="text-slate-400 transition group-hover:translate-x-1 group-hover:text-purple-600" />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-50 text-slate-400 transition-all group-hover:bg-indigo-600 group-hover:text-white">
+                <ArrowRight
+                  size={18}
+                  className="transition-transform group-hover:translate-x-0.5"
+                />
+              </div>
             </Link>
           </div>
         </section>
 
-        {/* Recent Activity */}
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between">
+        {/* ================= RECENT ACTIVITY ================= */}
+        <section className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm">
+          <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/60 px-6 py-5">
             <div>
-              <h2 className="text-xl font-bold text-slate-800">
+              <h2 className="text-lg font-extrabold text-slate-900">
                 Recent Activity
               </h2>
-              <p className="mt-1 text-sm text-slate-500">
-                Your latest booking activities.
+              <p className="mt-0.5 text-xs text-slate-500">
+                Your latest 5 customer booking updates
               </p>
             </div>
 
-            <CalendarDays className="text-slate-400" size={23} />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+              <CalendarDays size={20} />
+            </div>
           </div>
 
           {loading ? (
-            <p className="py-12 text-center text-sm text-slate-500">
-              Loading activities...
-            </p>
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <Loader2 className="animate-spin text-blue-600" size={32} />
+              <p className="mt-3 text-sm font-medium text-slate-500">
+                Loading recent activities...
+              </p>
+            </div>
           ) : bookings.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="rounded-full bg-slate-100 p-4 text-slate-400">
-                <TrendingUp size={30} />
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+                <TrendingUp size={28} />
               </div>
 
-              <h3 className="mt-4 font-semibold text-slate-700">
+              <h3 className="mt-4 text-base font-bold text-slate-900">
                 No recent activity
               </h3>
 
-              <p className="mt-2 text-sm text-slate-500">
-                Your booking activities will appear here.
+              <p className="mt-1 text-sm text-slate-500">
+                Your customer booking activities will appear here.
               </p>
             </div>
           ) : (
-            <div className="mt-5 divide-y divide-slate-100">
+            <div className="divide-y divide-slate-100">
               {bookings.slice(0, 5).map((booking) => (
                 <div
                   key={booking._id}
-                  className="flex flex-col justify-between gap-3 py-4 sm:flex-row sm:items-center"
+                  className="flex flex-col justify-between gap-3 px-6 py-4 transition-colors hover:bg-slate-50/90 sm:flex-row sm:items-center"
                 >
-                  <div>
-                    <h3 className="font-semibold text-slate-800">
+                  <div className="space-y-1">
+                    <h3 className="font-bold text-slate-900">
                       {booking.serviceTitle}
                     </h3>
 
-                    <p className="mt-1 text-sm text-slate-500">
-                      Customer: {booking.customerName}
-                    </p>
+                    <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-slate-500">
+                      <span className="inline-flex items-center gap-1.5">
+                        <User size={13} className="text-blue-600" />
+                        Customer:{" "}
+                        <strong className="font-semibold text-slate-700">
+                          {booking.customerName}
+                        </strong>
+                      </span>
 
-                    <p className="mt-1 text-xs text-slate-400">
-                      {new Date(booking.createdAt).toLocaleDateString()}
-                    </p>
+                      <span className="inline-flex items-center gap-1.5">
+                        <CalendarDays size={13} className="text-slate-400" />
+                        {new Date(booking.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
                   </div>
 
-                  <span className="w-fit rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold capitalize text-blue-700">
-                    {booking.status}
+                  <span
+                    className={`inline-flex w-fit items-center gap-1.5 rounded-full px-3.5 py-1 text-xs font-bold capitalize ${getStatusStyle(
+                      booking.status
+                    )}`}
+                  >
+                    <span
+                      className={`h-1.5 w-1.5 rounded-full ${getStatusDot(
+                        booking.status
+                      )}`}
+                    />
+                    {booking.status.replace("-", " ")}
                   </span>
                 </div>
               ))}
             </div>
           )}
         </section>
-
       </div>
     </main>
   );
