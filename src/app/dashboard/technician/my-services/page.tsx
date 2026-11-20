@@ -1,7 +1,7 @@
-
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -11,10 +11,15 @@ import {
   Clock,
   CheckCircle,
   XCircle,
-  ToggleLeft,
-  ToggleRight,
-    Pencil,
+  Pencil,
   Trash2,
+  Sparkles,
+  Plus,
+  DollarSign,
+  Timer,
+  Briefcase,
+  MapPin,
+  Loader2,
 } from "lucide-react";
 import { apiUrl } from "@/lib/api";
 import ConfirmationModal from "@/components/shared/ConfirmationModal";
@@ -44,7 +49,7 @@ export default function MyServicesPage() {
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-const router = useRouter();
+  const router = useRouter();
 
   const fetchServices = useCallback(async () => {
     try {
@@ -146,7 +151,6 @@ const router = useRouter();
     }
   };
 
-
   const confirmDeleteService = async () => {
     if (!serviceToDelete || isDeleting) return;
 
@@ -199,9 +203,6 @@ const router = useRouter();
     }
   };
 
-
-
-
   const pendingCount = services.filter(
     (service) => service.approvalStatus === "pending"
   ).length;
@@ -217,209 +218,313 @@ const router = useRouter();
   const getStatusStyle = (status: Service["approvalStatus"]) => {
     switch (status) {
       case "approved":
-        return "bg-green-100 text-green-700";
+        return "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20";
       case "rejected":
-        return "bg-red-100 text-red-700";
+        return "bg-rose-50 text-rose-700 ring-1 ring-rose-600/20";
       default:
-        return "bg-yellow-100 text-yellow-700";
+        return "bg-amber-50 text-amber-700 ring-1 ring-amber-600/20";
+    }
+  };
+
+  const getStatusDot = (status: Service["approvalStatus"]) => {
+    switch (status) {
+      case "approved":
+        return "bg-emerald-500";
+      case "rejected":
+        return "bg-rose-500";
+      default:
+        return "bg-amber-500";
     }
   };
 
   if (loading) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <div className="text-center">
-          <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
-          <p className="mt-4 text-gray-600">Loading services...</p>
+      <div className="flex min-h-[65vh] items-center justify-center">
+        <div className="rounded-3xl border border-slate-200/80 bg-white px-10 py-12 text-center shadow-sm">
+          <Loader2 className="mx-auto animate-spin text-blue-600" size={38} />
+          <p className="mt-4 text-sm font-semibold text-slate-600">
+            Loading your services...
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-5 md:p-8">
-      <div className="mx-auto max-w-7xl">
+    <div className="min-h-screen bg-slate-50 pb-12 text-slate-900">
+      <div className="mx-auto max-w-7xl space-y-8">
+        {/* ================= TOP DARK PREMIUM BANNER ================= */}
+        <div className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8">
+          <div className="pointer-events-none absolute -top-20 right-10 h-64 w-64 rounded-full bg-blue-600/25 blur-[90px]" />
+          <div className="pointer-events-none absolute -bottom-20 left-10 h-64 w-64 rounded-full bg-indigo-500/20 blur-[90px]" />
 
-        {/* Header */}
-        <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">
-              My Services
-            </h1>
-            <p className="mt-2 text-gray-600">
-              Manage and monitor all your repair services.
-            </p>
+          <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <div className="inline-flex items-center gap-1.5 rounded-full border border-blue-400/20 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-300">
+                <Sparkles size={13} className="text-blue-400" />
+                <span>Technician Catalog</span>
+              </div>
+              <h1 className="mt-3 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+                My{" "}
+                <span className="bg-gradient-to-r from-blue-400 to-sky-300 bg-clip-text text-transparent">
+                  Services
+                </span>
+              </h1>
+              <p className="mt-1.5 text-sm text-slate-300">
+                Manage your published repair listings, update pricing, and
+                control live booking availability.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                onClick={fetchServices}
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:border-blue-400/40 hover:bg-white/15"
+              >
+                <RefreshCw size={16} />
+                Refresh
+              </button>
+
+              <Link
+                href="/dashboard/technician/add-service"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-600/25 transition-all hover:from-blue-500 hover:to-indigo-500"
+              >
+                <Plus size={17} />
+                Add Service
+              </Link>
+            </div>
           </div>
-
-          <button
-            onClick={fetchServices}
-            className="flex items-center gap-2 rounded-lg border bg-white px-4 py-2.5 font-medium text-gray-700 hover:bg-gray-100"
-          >
-            <RefreshCw size={18} />
-            Refresh
-          </button>
         </div>
 
-        {/* Statistics */}
-        <div className="mb-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {/* ================= KPI SUMMARY CARDS ================= */}
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard
             title="Total Services"
             value={services.length}
-            icon={<Package size={22} />}
+            subtitle="All listed packages"
+            icon={<Package size={21} />}
+            accent="bg-blue-50 text-blue-600"
           />
 
           <StatCard
             title="Pending"
             value={pendingCount}
-            icon={<Clock size={22} />}
+            subtitle="Awaiting admin review"
+            icon={<Clock size={21} />}
+            accent="bg-amber-50 text-amber-600"
           />
 
           <StatCard
             title="Approved"
             value={approvedCount}
-            icon={<CheckCircle size={22} />}
+            subtitle="Live on marketplace"
+            icon={<CheckCircle size={21} />}
+            accent="bg-emerald-50 text-emerald-600"
           />
 
           <StatCard
             title="Rejected"
             value={rejectedCount}
-            icon={<XCircle size={22} />}
+            subtitle="Requires revision"
+            icon={<XCircle size={21} />}
+            accent="bg-rose-50 text-rose-600"
           />
         </div>
 
-        {/* Services */}
+        {/* ================= SERVICES GRID ================= */}
         {services.length === 0 ? (
-          <div className="rounded-xl border bg-white p-12 text-center">
-            <Package
-              size={45}
-              className="mx-auto mb-4 text-gray-400"
-            />
+          <div className="rounded-3xl border border-dashed border-slate-300 bg-white py-20 text-center">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+              <Package size={32} />
+            </div>
 
-            <h2 className="text-xl font-semibold text-gray-800">
+            <h2 className="mt-4 text-xl font-extrabold text-slate-900">
               No Services Found
             </h2>
 
-            <p className="mt-2 text-gray-500">
-              You have not added any services yet.
+            <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-500">
+              You have not added any repair services yet. Publish your first
+              service to start receiving customer bookings.
             </p>
+
+            <Link
+              href="/dashboard/technician/add-service"
+              className="mt-6 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-600/25 transition hover:from-blue-500 hover:to-indigo-500"
+            >
+              <Plus size={17} />
+              Create Your First Service
+            </Link>
           </div>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-7 md:grid-cols-2 xl:grid-cols-3">
             {services.map((service) => (
               <div
                 key={service._id}
-                className="overflow-hidden rounded-xl border bg-white shadow-sm"
+                className="group flex flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-200 hover:shadow-xl hover:shadow-slate-900/5"
               >
-                <img
-                  src={service.image}
-                  alt={service.title}
-                  className="h-48 w-full object-cover"
-                />
+                {/* Cover Image */}
+                <div className="relative h-52 overflow-hidden bg-slate-100">
+                  <img
+                    src={service.image}
+                    alt={service.title}
+                    className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/45 via-transparent to-transparent" />
 
-                <div className="p-5">
+                  <span className="absolute top-4 left-4 rounded-full border border-white/40 bg-white/95 px-3.5 py-1 text-xs font-bold text-slate-800 shadow-sm backdrop-blur-md">
+                    {service.category}
+                  </span>
 
-                  <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-                    <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700">
-                      {service.category}
-                    </span>
-
+                  <span
+                    className={`absolute top-4 right-4 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1 text-xs font-bold capitalize shadow-sm backdrop-blur-md ${getStatusStyle(
+                      service.approvalStatus
+                    )}`}
+                  >
                     <span
-                      className={`rounded-full px-3 py-1 text-xs font-semibold capitalize ${getStatusStyle(
+                      className={`h-1.5 w-1.5 rounded-full ${getStatusDot(
                         service.approvalStatus
                       )}`}
-                    >
-                      {service.approvalStatus}
-                    </span>
+                    />
+                    {service.approvalStatus}
+                  </span>
+                </div>
+
+                {/* Card Body */}
+                <div className="flex flex-1 flex-col justify-between p-6">
+                  <div>
+                    <h2 className="line-clamp-1 text-xl font-bold text-slate-900 transition-colors group-hover:text-blue-600">
+                      {service.title}
+                    </h2>
+
+                    <p className="mt-2 line-clamp-2 min-h-[2.75rem] text-sm leading-relaxed text-slate-500">
+                      {service.description}
+                    </p>
+
+                    {/* Specs Box */}
+                    <div className="mt-5 grid grid-cols-2 gap-3 rounded-2xl border border-slate-100 bg-slate-50/80 p-4 text-xs">
+                      <div className="flex items-start gap-2">
+                        <DollarSign
+                          size={15}
+                          className="mt-0.5 shrink-0 text-emerald-600"
+                        />
+                        <div>
+                          <p className="font-medium text-slate-400">
+                            Base Price
+                          </p>
+                          <p className="text-sm font-extrabold text-slate-900">
+                            ${service.basePrice}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-2">
+                        <Timer
+                          size={15}
+                          className="mt-0.5 shrink-0 text-blue-600"
+                        />
+                        <div>
+                          <p className="font-medium text-slate-400">Duration</p>
+                          <p className="font-bold text-slate-800">
+                            {service.estimatedDuration}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-2">
+                        <Briefcase
+                          size={15}
+                          className="mt-0.5 shrink-0 text-indigo-600"
+                        />
+                        <div>
+                          <p className="font-medium text-slate-400">Mode</p>
+                          <p className="font-bold text-slate-800">
+                            {service.serviceMode}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-2">
+                        <MapPin
+                          size={15}
+                          className="mt-0.5 shrink-0 text-sky-600"
+                        />
+                        <div className="min-w-0">
+                          <p className="font-medium text-slate-400">Area</p>
+                          <p className="truncate font-bold text-slate-800">
+                            {service.serviceArea}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
-                  <h2 className="text-xl font-bold text-gray-900">
-                    {service.title}
-                  </h2>
-
-                  <p className="mt-2 line-clamp-2 text-sm text-gray-600">
-                    {service.description}
-                  </p>
-
-                  <div className="mt-4 space-y-2 border-t pt-4 text-sm text-gray-600">
-                    <p>
-                      <strong>Base Price:</strong> $
-                      {service.basePrice}
-                    </p>
-
-                    <p>
-                      <strong>Duration:</strong>{" "}
-                      {service.estimatedDuration}
-                    </p>
-
-                    <p>
-                      <strong>Mode:</strong> {service.serviceMode}
-                    </p>
-
-                    <p>
-                      <strong>Area:</strong> {service.serviceArea}
-                    </p>
-                  </div>
-
-
-                  {/* Edit and Delete Buttons */}
-<div className="mt-4 flex gap-3 border-t pt-4">
-  <button
-    onClick={() =>
-      router.push(
-        `/dashboard/technician/edit-service/${service._id}`
-      )
-    }
-    className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-blue-50 py-2.5 font-medium text-blue-600 hover:bg-blue-100"
-  >
-    <Pencil size={17} />
-    Edit
-  </button>
-
-  <button
-    onClick={() => {
-      setServiceToDelete(service);
-      setDeleteError(null);
-    }}
-    disabled={updatingId === service._id}
-    className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-red-50 py-2.5 font-medium text-red-600 hover:bg-red-100 disabled:opacity-50"
-  >
-    <Trash2 size={17} />
-    Delete
-  </button>
-</div>
-
-                  {/* Availability */}
-                  <div className="mt-5 flex items-center justify-between border-t pt-4">
-                    <div>
-                      <p className="font-semibold text-gray-800">
-                        Availability
-                      </p>
-
-                      <p
-                        className={`mt-1 text-sm ${
-                          service.isAvailable
-                            ? "text-green-600"
-                            : "text-red-600"
-                        }`}
+                  {/* Footer Controls */}
+                  <div className="mt-6 space-y-4 border-t border-slate-100 pt-4">
+                    {/* Edit and Delete Buttons */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <button
+                        onClick={() =>
+                          router.push(
+                            `/dashboard/technician/edit-service/${service._id}`
+                          )
+                        }
+                        className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-blue-200 bg-blue-50/70 py-2.5 text-sm font-bold text-blue-600 transition hover:bg-blue-600 hover:text-white"
                       >
-                        {service.isAvailable
-                          ? "Available"
-                          : "Unavailable"}
-                      </p>
+                        <Pencil size={15} />
+                        Edit
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setServiceToDelete(service);
+                          setDeleteError(null);
+                        }}
+                        disabled={updatingId === service._id}
+                        className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-rose-200 bg-rose-50/70 py-2.5 text-sm font-bold text-rose-600 transition hover:bg-rose-600 hover:text-white disabled:opacity-50"
+                      >
+                        <Trash2 size={15} />
+                        Delete
+                      </button>
                     </div>
 
-                    <button
-                      onClick={() => handleAvailability(service)}
-                      disabled={updatingId === service._id}
-                      className="text-blue-600 disabled:opacity-50"
-                      title="Toggle availability"
-                    >
-                      {service.isAvailable ? (
-                        <ToggleRight size={36} />
-                      ) : (
-                        <ToggleLeft size={36} />
-                      )}
-                    </button>
+                    {/* Availability Toggle Row */}
+                    <div className="flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50/80 px-4 py-3">
+                      <div>
+                        <p className="text-xs font-bold text-slate-800">
+                          Booking Availability
+                        </p>
+                        <p
+                          className={`mt-0.5 text-xs font-semibold ${
+                            service.isAvailable
+                              ? "text-emerald-600"
+                              : "text-rose-600"
+                          }`}
+                        >
+                          {service.isAvailable
+                            ? "Accepting bookings"
+                            : "Currently unavailable"}
+                        </p>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => handleAvailability(service)}
+                        disabled={updatingId === service._id}
+                        aria-label="Toggle availability"
+                        title="Toggle availability"
+                        className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-300 focus:outline-none disabled:opacity-50 ${
+                          service.isAvailable ? "bg-blue-600" : "bg-slate-300"
+                        }`}
+                      >
+                        <span
+                          className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition-transform duration-300 ${
+                            service.isAvailable
+                              ? "translate-x-6"
+                              : "translate-x-1"
+                          }`}
+                        />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -458,22 +563,29 @@ const router = useRouter();
 function StatCard({
   title,
   value,
+  subtitle,
   icon,
+  accent,
 }: {
   title: string;
   value: number;
+  subtitle: string;
   icon: React.ReactNode;
+  accent: string;
 }) {
   return (
-    <div className="rounded-xl border bg-white p-5 shadow-sm">
+    <div className="group rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg hover:shadow-blue-900/5">
       <div className="flex items-center justify-between">
-        <p className="text-sm font-medium text-gray-600">{title}</p>
-        <span className="text-blue-600">{icon}</span>
+        <p className="text-sm font-semibold text-slate-500">{title}</p>
+        <span
+          className={`flex h-11 w-11 items-center justify-center rounded-xl transition-transform group-hover:scale-110 ${accent}`}
+        >
+          {icon}
+        </span>
       </div>
 
-      <p className="mt-3 text-3xl font-bold text-gray-900">
-        {value}
-      </p>
+      <p className="mt-4 text-3xl font-extrabold text-slate-900">{value}</p>
+      <p className="mt-1 text-xs text-slate-400">{subtitle}</p>
     </div>
   );
 }
