@@ -1,9 +1,22 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Search, RefreshCw, ArrowRight } from "lucide-react";
+import {
+  Search,
+  RefreshCw,
+  ArrowRight,
+  Sparkles,
+  UserCheck,
+  Timer,
+  Briefcase,
+  SlidersHorizontal,
+  ArrowUpDown,
+  Wrench,
+  Loader2,
+  X,
+  AlertCircle,
+} from "lucide-react";
 import { apiUrl } from "@/lib/api";
 
 interface Service {
@@ -177,183 +190,262 @@ export default function ServicesPage() {
   ]);
 
   return (
-    <main className="min-h-screen bg-gray-50 px-4 py-12">
-      <div className="mx-auto max-w-7xl">
+    <main className="min-h-screen bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white">
+      {/* ================= DARK PREMIUM HERO & SEARCH HEADER ================= */}
+      <section className="relative overflow-hidden bg-slate-950 px-4 pt-16 pb-20 text-white sm:px-6 lg:px-8 lg:pt-20 lg:pb-24">
+        {/* Ambient Glows & Subtle Grid */}
+        <div className="pointer-events-none absolute -top-24 left-1/4 h-96 w-96 rounded-full bg-blue-600/20 blur-[120px]" />
+        <div className="pointer-events-none absolute right-1/4 bottom-0 h-80 w-80 rounded-full bg-indigo-500/15 blur-[120px]" />
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:36px_36px]" />
 
-        {/* Header */}
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">
-            Explore Our Services
+        <div className="relative mx-auto max-w-4xl text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-blue-400/20 bg-blue-500/10 px-4 py-1.5 text-sm font-medium text-blue-300 backdrop-blur-md">
+            <Sparkles size={15} className="text-blue-400" />
+            <span>Verified Repair Marketplace</span>
+          </div>
+
+          <h1 className="mt-5 text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
+            Explore Our{" "}
+            <span className="bg-gradient-to-r from-blue-400 via-sky-300 to-indigo-400 bg-clip-text text-transparent">
+              Services
+            </span>
           </h1>
 
-          <p className="mt-3 text-gray-600">
-            Find the right repair service for your device.
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-300">
+            Find certified specialists for your smartphone, laptop, AC, or home
+            appliances with transparent upfront pricing.
           </p>
+
+          {/* Elevated Search Bar */}
+          <div className="mx-auto mt-8 max-w-2xl">
+            <div className="flex items-center gap-3 rounded-2xl border border-white/15 bg-white p-2 pl-4 shadow-2xl shadow-blue-950/50 transition focus-within:border-blue-400 focus-within:ring-4 focus-within:ring-blue-500/20">
+              <Search className="shrink-0 text-slate-400" size={20} />
+
+              <input
+                type="text"
+                placeholder="Search by service, device, or issue..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full bg-transparent py-2 text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none sm:text-base"
+              />
+
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch("")}
+                  aria-label="Clear search"
+                  className="rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+                >
+                  <X size={17} />
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= FILTERS & CATALOG SECTION ================= */}
+      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+        {/* Category Pills */}
+        <div className="flex flex-wrap items-center justify-center gap-2.5">
+          {categories.map((category) => {
+            const active = selectedCategory === category;
+            return (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`rounded-full px-5 py-2.5 text-sm font-bold transition-all duration-200 ${
+                  active
+                    ? "bg-slate-900 text-white shadow-md shadow-slate-900/15"
+                    : "border border-slate-200/80 bg-white text-slate-600 hover:border-blue-300 hover:bg-blue-50/50 hover:text-blue-600"
+                }`}
+              >
+                {category}
+              </button>
+            );
+          })}
         </div>
 
-        {/* Search */}
-        <div className="mx-auto mb-6 flex max-w-xl items-center gap-3 rounded-xl border bg-white px-4 py-3 shadow-sm">
-          <Search className="text-gray-400" size={20} />
+        {/* Filter Bar: Count + Mode/Sort + Refresh */}
+        <div className="mt-10 flex flex-col justify-between gap-4 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:px-6">
+          <div className="flex items-center gap-2.5">
+            <span className="h-2.5 w-2.5 rounded-full bg-blue-600" />
+            <p className="text-sm font-bold text-slate-800">
+              {loading
+                ? "Searching services..."
+                : `${services.length} Service${services.length === 1 ? "" : "s"} Found`}
+            </p>
+          </div>
 
-          <input
-            type="text"
-            placeholder="Search services..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-transparent text-gray-800 outline-none"
-          />
-        </div>
+          <div className="flex flex-wrap items-center gap-3">
+            {/* Service Mode Select */}
+            <div className="relative inline-flex items-center">
+              <SlidersHorizontal
+                size={15}
+                className="pointer-events-none absolute left-3.5 text-slate-400"
+              />
+              <select
+                value={selectedMode}
+                onChange={(e) => setSelectedMode(e.target.value)}
+                className="rounded-xl border border-slate-200 bg-slate-50/70 py-2.5 pr-8 pl-9 text-xs font-bold text-slate-700 outline-none transition hover:border-slate-300 focus:border-blue-600 focus:bg-white focus:ring-2 focus:ring-blue-600/15 sm:text-sm"
+              >
+                {serviceModes.map((mode) => (
+                  <option key={mode} value={mode}>
+                    {mode === "All" ? "All Service Modes" : mode}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-        {/* Categories */}
-        <div className="mb-6 flex flex-wrap justify-center gap-3">
-          {categories.map((category) => (
+            {/* Sort Select */}
+            <div className="relative inline-flex items-center">
+              <ArrowUpDown
+                size={15}
+                className="pointer-events-none absolute left-3.5 text-slate-400"
+              />
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value)}
+                className="rounded-xl border border-slate-200 bg-slate-50/70 py-2.5 pr-8 pl-9 text-xs font-bold text-slate-700 outline-none transition hover:border-slate-300 focus:border-blue-600 focus:bg-white focus:ring-2 focus:ring-blue-600/15 sm:text-sm"
+              >
+                <option value="newest">Newest First</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+              </select>
+            </div>
+
+            {/* Refresh Button */}
             <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`rounded-full px-5 py-2 text-sm font-medium transition ${
-                selectedCategory === category
-                  ? "bg-blue-600 text-white"
-                  : "border bg-white text-gray-700 hover:border-blue-500 hover:text-blue-600"
-              }`}
+              onClick={() => setRefreshKey((prev) => prev + 1)}
+              className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600 sm:text-sm"
             >
-              {category}
+              <RefreshCw size={15} className={loading ? "animate-spin" : ""} />
+              <span>Refresh</span>
             </button>
-          ))}
+          </div>
         </div>
 
-        {/* Service Mode and Sorting */}
-        <div className="mb-8 flex flex-col justify-center gap-4 sm:flex-row">
-
-          <select
-            value={selectedMode}
-            onChange={(e) => setSelectedMode(e.target.value)}
-            className="rounded-lg border bg-white px-4 py-3 text-sm text-gray-700 outline-none focus:border-blue-500"
-          >
-            {serviceModes.map((mode) => (
-              <option key={mode} value={mode}>
-                {mode === "All" ? "All Service Modes" : mode}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={sort}
-            onChange={(e) => setSort(e.target.value)}
-            className="rounded-lg border bg-white px-4 py-3 text-sm text-gray-700 outline-none focus:border-blue-500"
-          >
-            <option value="newest">Newest First</option>
-            <option value="price-low">Price: Low to High</option>
-            <option value="price-high">Price: High to Low</option>
-          </select>
-        </div>
-
-        {/* Results */}
-        <div className="mb-5 flex items-center justify-between">
-          <p className="font-semibold text-gray-800">
-            {loading ? "Loading services..." : `${services.length} Services Found`}
-          </p>
-
-          <button
-            onClick={() => setRefreshKey((prev) => prev + 1)}
-            className="flex items-center gap-2 rounded-lg border bg-white px-4 py-2 text-sm hover:bg-gray-100"
-          >
-            <RefreshCw size={16} />
-            Refresh
-          </button>
-        </div>
-
-        {/* Loading */}
+        {/* ================= LOADING STATE ================= */}
         {loading && (
-          <div className="py-20 text-center text-gray-600">
-            Loading services...
+          <div className="mt-10 flex min-h-72 flex-col items-center justify-center rounded-3xl border border-slate-200/80 bg-white py-20 text-center shadow-sm">
+            <Loader2 className="animate-spin text-blue-600" size={38} />
+            <p className="mt-3 text-sm font-semibold text-slate-600">
+              Loading available services...
+            </p>
           </div>
         )}
 
-        {/* Error */}
+        {/* ================= ERROR STATE ================= */}
         {!loading && error && (
-          <div className="rounded-xl bg-red-50 p-6 text-center text-red-600">
-            <p>{error}</p>
+          <div className="mt-10 rounded-3xl border border-rose-200 bg-rose-50/90 p-8 text-center">
+            <AlertCircle className="mx-auto text-rose-600" size={34} />
+            <p className="mt-3 text-base font-bold text-rose-900">{error}</p>
 
             <button
               onClick={() => setRefreshKey((prev) => prev + 1)}
-              className="mt-3 font-semibold underline"
+              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-rose-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-rose-700"
             >
+              <RefreshCw size={15} />
               Try Again
             </button>
           </div>
         )}
 
-        {/* Empty State */}
+        {/* ================= EMPTY STATE ================= */}
         {!loading && !error && services.length === 0 && (
-          <div className="rounded-xl bg-white py-16 text-center shadow-sm">
-            <h2 className="text-xl font-semibold text-gray-800">
+          <div className="mt-10 rounded-3xl border border-dashed border-slate-300 bg-white py-20 text-center">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+              <Wrench size={30} />
+            </div>
+
+            <h2 className="mt-4 text-xl font-extrabold text-slate-900">
               No Services Found
             </h2>
 
-            <p className="mt-2 text-gray-500">
-              Try another search or filter.
+            <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-500">
+              We couldn&apos;t find any services matching your current search or
+              filters. Try adjusting your criteria.
             </p>
           </div>
         )}
 
-        {/* Service Cards */}
+        {/* ================= SERVICE CARDS GRID ================= */}
         {!loading && !error && services.length > 0 && (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-10 grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
             {services.map((service) => (
               <div
                 key={service._id}
-                className="overflow-hidden rounded-xl border bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+                className="group flex flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-200 hover:shadow-xl hover:shadow-slate-900/5"
               >
-                <img
-                  src={service.image}
-                  alt={service.title}
-                  className="h-52 w-full object-cover"
-                />
+                {/* Service Image */}
+                <div className="relative h-56 overflow-hidden bg-slate-100">
+                  <img
+                    src={service.image}
+                    alt={service.title}
+                    className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/45 via-transparent to-transparent" />
 
-                <div className="p-5">
-                  <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-600">
+                  <span className="absolute top-4 left-4 rounded-full border border-white/40 bg-white/95 px-3.5 py-1 text-xs font-bold text-slate-800 shadow-sm backdrop-blur-md">
                     {service.category}
                   </span>
 
-                  <h2 className="mt-3 text-xl font-bold text-gray-900">
-                    {service.title}
-                  </h2>
+                  <span className="absolute right-4 bottom-3.5 inline-flex items-center gap-1 rounded-lg bg-slate-950/75 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur-md">
+                    <Briefcase size={12} className="text-blue-400" />
+                    {service.serviceMode}
+                  </span>
+                </div>
 
-                  <p className="mt-2 line-clamp-2 text-sm text-gray-600">
-                    {service.description}
-                  </p>
+                {/* Card Body */}
+                <div className="flex flex-1 flex-col justify-between p-6">
+                  <div>
+                    <h2 className="line-clamp-1 text-xl font-bold text-slate-900 transition-colors group-hover:text-blue-600">
+                      {service.title}
+                    </h2>
 
-                  <div className="mt-4 space-y-2 text-sm text-gray-600">
-                    <p>
-                      <strong>Technician:</strong>{" "}
-                      {service.technicianName}
+                    <p className="mt-2.5 line-clamp-2 min-h-[3rem] text-sm leading-relaxed text-slate-500">
+                      {service.description}
                     </p>
 
-                    <p>
-                      <strong>Duration:</strong>{" "}
-                      {service.estimatedDuration}
-                    </p>
+                    {/* Metadata Pills */}
+                    <div className="mt-5 space-y-2 rounded-2xl border border-slate-100 bg-slate-50/80 p-3.5 text-xs">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="flex items-center gap-1.5 font-medium text-slate-500">
+                          <UserCheck size={14} className="text-blue-600" />
+                          Technician
+                        </span>
+                        <span className="truncate font-bold text-slate-800">
+                          {service.technicianName}
+                        </span>
+                      </div>
 
-                    <p>
-                      <strong>Service Mode:</strong>{" "}
-                      {service.serviceMode}
-                    </p>
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="flex items-center gap-1.5 font-medium text-slate-500">
+                          <Timer size={14} className="text-indigo-600" />
+                          Est. Duration
+                        </span>
+                        <span className="font-semibold text-slate-700">
+                          {service.estimatedDuration}
+                        </span>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="mt-5 flex items-center justify-between border-t pt-4">
+                  {/* Price & Details CTA Footer */}
+                  <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-4">
                     <div>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-[11px] font-medium uppercase tracking-wider text-slate-400">
                         Starting Price
                       </p>
 
-                      <p className="text-xl font-bold text-blue-600">
+                      <p className="text-2xl font-extrabold text-slate-900">
                         ${service.basePrice}
                       </p>
                     </div>
 
                     <Link
                       href={`/services/${service._id}`}
-                      className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+                      className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-blue-600 hover:shadow-md hover:shadow-blue-600/20"
                     >
                       Details
                       <ArrowRight size={16} />
@@ -364,7 +456,7 @@ export default function ServicesPage() {
             ))}
           </div>
         )}
-      </div>
+      </section>
     </main>
   );
 }
