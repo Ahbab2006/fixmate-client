@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -15,6 +14,7 @@ import {
   LayoutDashboard,
   ChevronDown,
   Settings,
+  ShieldCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -232,9 +232,9 @@ export default function Navbar() {
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 
-  const ProfileAvatar = ({ size = "h-10 w-10" }: { size?: string }) => (
+  const ProfileAvatar = ({ size = "h-9 w-9" }: { size?: string }) => (
     <div
-      className={`${size} flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-blue-100 text-blue-700`}
+      className={`${size} flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-blue-500/20 to-indigo-500/20 text-blue-300 ring-1 ring-blue-400/30`}
     >
       {displayImage ? (
         <img
@@ -243,7 +243,7 @@ export default function Navbar() {
           className="h-full w-full object-cover"
         />
       ) : (
-        <User size={20} />
+        <User size={18} />
       )}
     </div>
   );
@@ -254,99 +254,112 @@ export default function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-gray-100 bg-white shadow-sm">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/90 backdrop-blur-xl transition-all">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5 sm:px-6 lg:px-8">
         {/* Logo */}
-        <Link href="/" onClick={closeMenus} className="flex items-center gap-2">
-          <span className="rounded-lg bg-blue-600 p-2 text-white">
-            <Wrench size={22} />
+        <Link
+          href="/"
+          onClick={closeMenus}
+          className="group flex items-center gap-2.5"
+        >
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/25 transition-transform duration-300 group-hover:scale-105">
+            <Wrench size={20} />
           </span>
 
-          <span className="text-2xl font-bold text-gray-900">
-            Fix<span className="text-blue-600">Mate</span>
+          <span className="text-2xl font-extrabold tracking-tight text-white">
+            Fix
+            <span className="bg-gradient-to-r from-blue-400 to-sky-300 bg-clip-text text-transparent">
+              Mate
+            </span>
           </span>
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden items-center gap-8 md:flex">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`text-sm font-semibold transition hover:text-blue-600 ${
-                isActive(link.href)
-                  ? "text-blue-600"
-                  : "text-gray-600"
-              }`}
-            >
-              {link.name}
-            </Link>
-          ))}
+        <div className="hidden items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] p-1.5 md:flex">
+          {navLinks.map((link) => {
+            const active = isActive(link.href);
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 ${
+                  active
+                    ? "bg-white/10 text-white shadow-sm"
+                    : "text-slate-300 hover:bg-white/5 hover:text-white"
+                }`}
+              >
+                {link.name}
+              </Link>
+            );
+          })}
         </div>
 
         {/* Desktop Authentication */}
         <div className="hidden items-center gap-3 md:flex">
           {isPending ? (
-            <div className="h-10 w-24 animate-pulse rounded-lg bg-gray-100" />
+            <div className="h-10 w-28 animate-pulse rounded-xl bg-slate-800" />
           ) : user ? (
             <div className="relative">
               <button
                 onClick={() => setProfileMenuOpen(!profileMenuOpen)}
-                className="flex items-center gap-2 rounded-full border border-gray-200 p-1.5 pr-3 transition hover:bg-gray-50"
+                className="flex items-center gap-2.5 rounded-full border border-white/15 bg-slate-900/80 p-1.5 pr-3.5 text-left transition-all hover:border-blue-400/40 hover:bg-slate-800/90"
                 aria-label="Open profile menu"
                 aria-expanded={profileMenuOpen}
               >
                 <ProfileAvatar />
-                <span className="max-w-28 truncate text-sm font-semibold text-gray-700">
+                <span className="max-w-28 truncate text-sm font-semibold text-slate-100">
                   {displayName || "My Account"}
                 </span>
                 <ChevronDown
                   size={16}
-                  className={`text-gray-500 transition ${
-                    profileMenuOpen ? "rotate-180" : ""
+                  className={`text-slate-400 transition-transform duration-200 ${
+                    profileMenuOpen ? "rotate-180 text-blue-400" : ""
                   }`}
                 />
               </button>
 
               {profileMenuOpen && (
-                <div className="absolute right-0 top-full mt-3 w-64 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl">
-                  <div className="border-b bg-gray-50 px-4 py-4">
-                    <p className="truncate font-bold text-gray-900">
+                <div className="absolute right-0 top-full mt-3 w-68 overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-2xl shadow-slate-950/30 ring-1 ring-black/5">
+                  <div className="border-b border-slate-100 bg-slate-50/90 px-4 py-4">
+                    <p className="truncate text-sm font-bold text-slate-900">
                       {displayName || "My Account"}
                     </p>
-                    <p className="mt-1 truncate text-xs text-gray-500">
+                    <p className="mt-0.5 truncate text-xs text-slate-500">
                       {user.email}
                     </p>
 
-                    <span className="mt-3 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
+                    <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700 ring-1 ring-blue-600/15">
+                      <ShieldCheck size={13} />
                       {roleLabel}
                     </span>
                   </div>
 
-                  <div className="p-2">
+                  <div className="space-y-1 p-2">
                     <Link
                       href={dashboardPath}
                       onClick={closeMenus}
-                      className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+                      className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-blue-50 hover:text-blue-600"
                     >
-                      <LayoutDashboard size={18} />
+                      <LayoutDashboard size={17} className="text-slate-400" />
                       Dashboard
                     </Link>
 
                     <Link
                       href="/dashboard/profile"
                       onClick={closeMenus}
-                      className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+                      className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-blue-50 hover:text-blue-600"
                     >
-                      <Settings size={18} />
+                      <Settings size={17} className="text-slate-400" />
                       Update Profile
                     </Link>
 
+                    <div className="my-1 border-t border-slate-100" />
+
                     <button
                       onClick={handleLogout}
-                      className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-red-600 hover:bg-red-50"
+                      className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-rose-600 transition-colors hover:bg-rose-50"
                     >
-                      <LogOut size={18} />
+                      <LogOut size={17} />
                       Sign Out
                     </button>
                   </div>
@@ -357,14 +370,14 @@ export default function Navbar() {
             <>
               <Link
                 href="/sign-in"
-                className="rounded-lg px-4 py-2 text-sm font-semibold text-gray-700 transition hover:text-blue-600"
+                className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-300 transition-colors hover:bg-white/5 hover:text-white"
               >
                 Sign In
               </Link>
 
               <Link
                 href="/sign-up"
-                className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
+                className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-600/25 transition-all duration-300 hover:scale-[1.02] hover:from-blue-500 hover:to-indigo-500"
               >
                 Sign Up
               </Link>
@@ -375,44 +388,47 @@ export default function Navbar() {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="rounded-lg p-2 text-gray-700 hover:bg-gray-100 md:hidden"
+          className="rounded-xl border border-white/10 bg-white/5 p-2 text-slate-200 transition hover:bg-white/10 hover:text-white md:hidden"
           aria-label="Toggle navigation menu"
         >
-          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
       </nav>
 
       {/* Mobile Navigation */}
       {mobileMenuOpen && (
-        <div className="border-t bg-white px-4 py-4 shadow-md md:hidden">
-          <div className="flex flex-col gap-2">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={closeMenus}
-                className={`rounded-lg px-3 py-2.5 text-sm font-semibold transition ${
-                  isActive(link.href)
-                    ? "bg-blue-50 text-blue-600"
-                    : "text-gray-700 hover:bg-gray-50"
-                }`}
-              >
-                {link.name}
-              </Link>
-            ))}
+        <div className="border-t border-white/10 bg-slate-950/98 px-4 py-5 shadow-2xl backdrop-blur-xl md:hidden">
+          <div className="flex flex-col gap-1.5">
+            {navLinks.map((link) => {
+              const active = isActive(link.href);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={closeMenus}
+                  className={`rounded-xl px-4 py-3 text-sm font-semibold transition-all ${
+                    active
+                      ? "bg-blue-600/15 text-blue-400 ring-1 ring-blue-500/30"
+                      : "text-slate-300 hover:bg-white/5 hover:text-white"
+                  }`}
+                >
+                  {link.name}
+                </Link>
+              );
+            })}
 
-            <div className="mt-2 border-t pt-4">
+            <div className="mt-3 border-t border-white/10 pt-4">
               {isPending ? (
-                <p className="text-sm text-gray-500">Loading...</p>
+                <div className="h-12 w-full animate-pulse rounded-xl bg-slate-800" />
               ) : user ? (
-                <div className="flex flex-col gap-3">
-                  <div className="flex items-center gap-3 rounded-lg bg-gray-50 p-3">
-                    <ProfileAvatar />
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-900/90 p-3.5">
+                    <ProfileAvatar size="h-10 w-10" />
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-bold text-gray-900">
+                      <p className="truncate text-sm font-bold text-white">
                         {displayName || "My Account"}
                       </p>
-                      <span className="text-xs font-semibold text-blue-600">
+                      <span className="mt-0.5 inline-block text-xs font-semibold text-blue-400">
                         {roleLabel}
                       </span>
                     </div>
@@ -421,24 +437,24 @@ export default function Navbar() {
                   <Link
                     href={dashboardPath}
                     onClick={closeMenus}
-                    className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50"
+                    className="flex items-center gap-3 rounded-xl px-3.5 py-3 text-sm font-medium text-slate-200 transition hover:bg-white/5 hover:text-white"
                   >
-                    <LayoutDashboard size={18} />
+                    <LayoutDashboard size={18} className="text-blue-400" />
                     Dashboard
                   </Link>
 
                   <Link
                     href="/dashboard/profile"
                     onClick={closeMenus}
-                    className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50"
+                    className="flex items-center gap-3 rounded-xl px-3.5 py-3 text-sm font-medium text-slate-200 transition hover:bg-white/5 hover:text-white"
                   >
-                    <Settings size={18} />
+                    <Settings size={18} className="text-blue-400" />
                     Update Profile
                   </Link>
 
                   <button
                     onClick={handleLogout}
-                    className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-semibold text-red-600 hover:bg-red-50"
+                    className="mt-1 flex items-center gap-3 rounded-xl px-3.5 py-3 text-left text-sm font-semibold text-rose-400 transition hover:bg-rose-500/10"
                   >
                     <LogOut size={18} />
                     Sign Out
@@ -449,7 +465,7 @@ export default function Navbar() {
                   <Link
                     href="/sign-in"
                     onClick={closeMenus}
-                    className="rounded-lg border border-gray-200 px-4 py-2.5 text-center text-sm font-semibold text-gray-700"
+                    className="rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-center text-sm font-semibold text-slate-200 transition hover:border-slate-500 hover:text-white"
                   >
                     Sign In
                   </Link>
@@ -457,7 +473,7 @@ export default function Navbar() {
                   <Link
                     href="/sign-up"
                     onClick={closeMenus}
-                    className="rounded-lg bg-blue-600 px-4 py-2.5 text-center text-sm font-semibold text-white"
+                    className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3 text-center text-sm font-semibold text-white shadow-lg shadow-blue-600/25"
                   >
                     Sign Up
                   </Link>

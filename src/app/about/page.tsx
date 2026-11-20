@@ -1,4 +1,3 @@
-
 import Link from "next/link";
 import {
   Target,
@@ -8,220 +7,328 @@ import {
   Users,
   Wrench,
   ArrowRight,
+  Sparkles,
+  CheckCircle2,
 } from "lucide-react";
 
 export default function AboutPage() {
   return (
-    <main>
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-50 via-white to-blue-100 px-4 py-20">
-        <div className="mx-auto max-w-4xl text-center">
-          <span className="inline-block rounded-full bg-blue-100 px-4 py-2 text-sm font-semibold text-blue-700">
-            About FixMate
-          </span>
+    <main className="min-h-screen bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white">
+      {/* ================= HERO SECTION ================= */}
+      <section className="relative overflow-hidden bg-slate-950 px-4 pt-20 pb-24 text-white sm:px-6 lg:px-8 lg:pt-24 lg:pb-28">
+        {/* Ambient Glows & Subtle Grid */}
+        <div className="pointer-events-none absolute -top-24 left-1/3 h-96 w-96 rounded-full bg-blue-600/20 blur-[120px]" />
+        <div className="pointer-events-none absolute right-1/4 bottom-0 h-80 w-80 rounded-full bg-indigo-500/15 blur-[120px]" />
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:36px_36px]" />
 
-          <h1 className="mt-6 text-4xl font-extrabold text-gray-900 sm:text-5xl">
-            Making Home Services
-            <span className="block text-blue-600">
-              Easier & Better
+        <div className="relative mx-auto max-w-4xl text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-blue-400/20 bg-blue-500/10 px-4 py-1.5 text-sm font-medium text-blue-300 backdrop-blur-md">
+            <Sparkles size={15} className="text-blue-400" />
+            <span>About FixMate</span>
+          </div>
+
+          <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl lg:leading-[1.12]">
+            Making Home Services{" "}
+            <span className="block bg-gradient-to-r from-blue-400 via-sky-300 to-indigo-400 bg-clip-text text-transparent">
+              Easier &amp; Better
             </span>
           </h1>
 
-          <p className="mx-auto mt-6 max-w-2xl leading-8 text-gray-600">
-            FixMate is a home service platform that connects
-            customers with skilled technicians for reliable
-            repair and maintenance solutions.
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-slate-300 sm:text-lg">
+            FixMate is a modern home service platform that connects customers
+            with skilled, vetted technicians for reliable repair and
+            maintenance solutions.
           </p>
 
-          <Link
-            href="/services"
-            className="mt-8 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-7 py-3.5 font-semibold text-white transition hover:bg-blue-700"
-          >
-            Explore Our Services
-            <ArrowRight size={19} />
-          </Link>
+          <div className="mt-9 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <Link
+              href="/services"
+              className="group inline-flex items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-7 py-4 text-base font-semibold text-white shadow-lg shadow-blue-600/25 transition-all duration-300 hover:scale-[1.02] hover:from-blue-500 hover:to-indigo-500"
+            >
+              Explore Our Services
+              <ArrowRight
+                size={19}
+                className="transition-transform duration-300 group-hover:translate-x-1"
+              />
+            </Link>
+
+            <Link
+              href="/sign-up"
+              className="inline-flex items-center justify-center rounded-xl border border-slate-700 bg-slate-900/70 px-7 py-4 text-base font-semibold text-slate-200 backdrop-blur-md transition-all duration-300 hover:border-slate-500 hover:bg-slate-800 hover:text-white"
+            >
+              Join as Technician
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* Our Story */}
-      <section className="bg-white px-4 py-16 sm:py-20">
-        <div className="mx-auto grid max-w-7xl items-center gap-12 md:grid-cols-2">
-          <div>
-            <span className="text-sm font-bold uppercase tracking-wider text-blue-600">
+      {/* ================= OUR STORY SECTION ================= */}
+      <section className="bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+        <div className="mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-12">
+          {/* Left Narrative */}
+          <div className="lg:col-span-6">
+            <span className="inline-flex items-center rounded-full bg-blue-50 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-blue-600 ring-1 ring-blue-600/15">
               Who We Are
             </span>
 
-            <h2 className="mt-3 text-3xl font-bold text-gray-900 sm:text-4xl">
+            <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
               About Our Platform
             </h2>
 
-            <p className="mt-6 leading-8 text-gray-600">
-              Finding a reliable technician for home repairs
-              can be challenging. FixMate aims to make that
-              process simple by bringing customers and skilled
-              service providers together in one platform.
+            <p className="mt-6 text-base leading-relaxed text-slate-600">
+              Finding a reliable technician for home repairs can be
+              challenging. FixMate aims to make that process simple by bringing
+              customers and skilled service providers together in one trusted
+              platform.
             </p>
 
-            <p className="mt-4 leading-8 text-gray-600">
-              From smartphone and laptop repairs to home
-              appliance maintenance, customers can explore
-              services, submit booking requests and track
-              their service progress conveniently.
+            <p className="mt-4 text-base leading-relaxed text-slate-600">
+              From smartphone and laptop repairs to essential home appliance
+              maintenance, customers can explore services, submit booking
+              requests, and track their service progress conveniently from
+              start to finish.
             </p>
+
+            <div className="mt-8 grid grid-cols-2 gap-4 border-t border-slate-100 pt-7">
+              <div className="flex items-center gap-2.5 text-sm font-semibold text-slate-800">
+                <CheckCircle2 size={18} className="shrink-0 text-blue-600" />
+                <span>Verified Specialists</span>
+              </div>
+              <div className="flex items-center gap-2.5 text-sm font-semibold text-slate-800">
+                <CheckCircle2 size={18} className="shrink-0 text-blue-600" />
+                <span>Transparent Pricing</span>
+              </div>
+              <div className="flex items-center gap-2.5 text-sm font-semibold text-slate-800">
+                <CheckCircle2 size={18} className="shrink-0 text-blue-600" />
+                <span>Real-time Tracking</span>
+              </div>
+              <div className="flex items-center gap-2.5 text-sm font-semibold text-slate-800">
+                <CheckCircle2 size={18} className="shrink-0 text-blue-600" />
+                <span>Secure Payments</span>
+              </div>
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-5">
-            <div className="rounded-2xl bg-blue-50 p-7 text-center">
-              <Wrench className="mx-auto text-blue-600" size={38} />
-              <h3 className="mt-4 font-bold text-gray-900">
-                Repair Services
-              </h3>
-              <p className="mt-2 text-sm text-gray-600">
-                Multiple service categories
-              </p>
-            </div>
+          {/* Right Bento Grid */}
+          <div className="relative lg:col-span-6">
+            <div className="pointer-events-none absolute -inset-4 rounded-3xl bg-gradient-to-tr from-blue-600/10 via-indigo-500/10 to-sky-400/10 blur-2xl" />
 
-            <div className="rounded-2xl bg-blue-50 p-7 text-center">
-              <Users className="mx-auto text-blue-600" size={38} />
-              <h3 className="mt-4 font-bold text-gray-900">
-                Skilled Technicians
-              </h3>
-              <p className="mt-2 text-sm text-gray-600">
-                Connecting customers and professionals
-              </p>
-            </div>
+            <div className="relative rounded-3xl border border-slate-200/80 bg-white p-7 shadow-xl shadow-slate-900/5 sm:p-9">
+              <div className="grid grid-cols-2 gap-5">
+                <div className="rounded-2xl border border-slate-100 bg-slate-50/80 p-6 transition hover:border-blue-200 hover:bg-blue-50/40">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600/10 text-blue-600">
+                    <Wrench size={24} />
+                  </div>
+                  <h3 className="mt-4 text-base font-bold text-slate-900">
+                    Repair Services
+                  </h3>
+                  <p className="mt-1.5 text-xs leading-relaxed text-slate-500">
+                    7+ specialized home &amp; tech service categories
+                  </p>
+                </div>
 
-            <div className="col-span-2 rounded-2xl bg-blue-600 p-7 text-center text-white">
-              <HeartHandshake className="mx-auto" size={38} />
-              <h3 className="mt-4 text-xl font-bold">
-                Customer First
-              </h3>
-              <p className="mt-2 text-sm text-blue-100">
-                Focused on convenient and reliable service experiences.
-              </p>
+                <div className="rounded-2xl border border-slate-100 bg-slate-50/80 p-6 transition hover:border-blue-200 hover:bg-blue-50/40">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-600/10 text-indigo-600">
+                    <Users size={24} />
+                  </div>
+                  <h3 className="mt-4 text-base font-bold text-slate-900">
+                    Skilled Technicians
+                  </h3>
+                  <p className="mt-1.5 text-xs leading-relaxed text-slate-500">
+                    Connecting homeowners with vetted professionals
+                  </p>
+                </div>
+
+                <div className="col-span-2 rounded-2xl bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 p-7 text-white shadow-lg">
+                  <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+                    <div className="flex items-center gap-4">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-500/20 text-blue-300 ring-1 ring-blue-400/30">
+                        <HeartHandshake size={24} />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-white">
+                          Customer First Approach
+                        </h3>
+                        <p className="mt-1 text-sm text-slate-300">
+                          Focused on convenient, transparent, and reliable
+                          service experiences.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Mission & Vision */}
-      <section className="bg-gray-50 px-4 py-16 sm:py-20">
+      {/* ================= MISSION & VISION SECTION ================= */}
+      <section className="border-y border-slate-200/70 bg-slate-50/80 px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
         <div className="mx-auto max-w-7xl">
-          <div className="mb-12 text-center">
-            <span className="text-sm font-bold uppercase tracking-wider text-blue-600">
+          <div className="mx-auto max-w-2xl text-center">
+            <span className="inline-flex items-center rounded-full bg-blue-100/70 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-blue-700">
               Our Purpose
             </span>
 
-            <h2 className="mt-3 text-3xl font-bold text-gray-900 sm:text-4xl">
-              Our Mission & Vision
+            <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+              Our Mission &amp; Vision
             </h2>
+
+            <p className="mt-3 text-base text-slate-600">
+              Driven by trust, technology, and a commitment to seamless home
+              maintenance.
+            </p>
           </div>
 
-          <div className="grid gap-7 md:grid-cols-2">
-            <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
-              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-blue-100">
-                <Target className="text-blue-600" size={30} />
+          <div className="mt-14 grid gap-8 md:grid-cols-2">
+            {/* Mission Card */}
+            <div className="group rounded-3xl border border-slate-200/80 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl hover:shadow-blue-900/5 sm:p-10">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/20 transition-transform duration-300 group-hover:scale-110">
+                <Target size={26} />
               </div>
 
-              <h3 className="mt-6 text-2xl font-bold text-gray-900">
+              <h3 className="mt-7 text-2xl font-bold text-slate-900">
                 Our Mission
               </h3>
 
-              <p className="mt-4 leading-7 text-gray-600">
-                To simplify home repair services by making it
-                easier for customers to discover, request and
-                manage professional repair solutions.
+              <p className="mt-4 text-base leading-relaxed text-slate-600">
+                To simplify home repair services by making it effortless for
+                customers to discover, request, and manage professional repair
+                solutions with complete confidence.
               </p>
             </div>
 
-            <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
-              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-blue-100">
-                <Eye className="text-blue-600" size={30} />
+            {/* Vision Card */}
+            <div className="group rounded-3xl border border-slate-200/80 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl hover:shadow-blue-900/5 sm:p-10">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 text-white shadow-lg shadow-sky-500/20 transition-transform duration-300 group-hover:scale-110">
+                <Eye size={26} />
               </div>
 
-              <h3 className="mt-6 text-2xl font-bold text-gray-900">
+              <h3 className="mt-7 text-2xl font-bold text-slate-900">
                 Our Vision
               </h3>
 
-              <p className="mt-4 leading-7 text-gray-600">
-                To become a trusted platform where customers
-                can find dependable technicians and professionals
-                can grow their service opportunities.
+              <p className="mt-4 text-base leading-relaxed text-slate-600">
+                To become the most trusted home care ecosystem where customers
+                reliably find dependable technicians and skilled professionals
+                grow sustainable service careers.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Our Values */}
-      <section className="bg-white px-4 py-16 sm:py-20">
+      {/* ================= CORE VALUES SECTION ================= */}
+      <section className="bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
         <div className="mx-auto max-w-7xl">
-          <div className="mb-12 text-center">
-            <span className="text-sm font-bold uppercase tracking-wider text-blue-600">
+          <div className="mx-auto max-w-2xl text-center">
+            <span className="inline-flex items-center rounded-full bg-blue-50 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-blue-600 ring-1 ring-blue-600/15">
               What Matters to Us
             </span>
 
-            <h2 className="mt-3 text-3xl font-bold text-gray-900 sm:text-4xl">
+            <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
               Our Core Values
             </h2>
+
+            <p className="mt-3 text-base text-slate-600">
+              The principles that guide every repair, booking, and interaction
+              on FixMate.
+            </p>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="rounded-2xl bg-gray-50 p-7 text-center">
-              <ShieldCheck className="mx-auto text-blue-600" size={38} />
-              <h3 className="mt-4 text-xl font-bold text-gray-900">
-                Trust & Safety
+          <div className="mt-14 grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+            {/* Value 1 */}
+            <div className="group rounded-3xl border border-slate-200/80 bg-slate-50/60 p-8 transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-200 hover:bg-white hover:shadow-xl hover:shadow-blue-900/5">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600/10 text-blue-600 transition-transform duration-300 group-hover:scale-110">
+                <ShieldCheck size={28} />
+              </div>
+              <h3 className="mt-6 text-xl font-bold text-slate-900">
+                Trust &amp; Safety
               </h3>
-              <p className="mt-3 text-sm leading-7 text-gray-600">
-                We emphasize service approval and responsible
-                platform management.
+              <p className="mt-3 text-sm leading-relaxed text-slate-600">
+                We emphasize strict service approval, verified technician
+                profiles, and responsible platform management.
               </p>
             </div>
 
-            <div className="rounded-2xl bg-gray-50 p-7 text-center">
-              <HeartHandshake className="mx-auto text-blue-600" size={38} />
-              <h3 className="mt-4 text-xl font-bold text-gray-900">
+            {/* Value 2 */}
+            <div className="group rounded-3xl border border-slate-200/80 bg-slate-50/60 p-8 transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-200 hover:bg-white hover:shadow-xl hover:shadow-blue-900/5">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-600/10 text-indigo-600 transition-transform duration-300 group-hover:scale-110">
+                <HeartHandshake size={28} />
+              </div>
+              <h3 className="mt-6 text-xl font-bold text-slate-900">
                 Customer Satisfaction
               </h3>
-              <p className="mt-3 text-sm leading-7 text-gray-600">
-                We aim to make every service experience
-                convenient and user-friendly.
+              <p className="mt-3 text-sm leading-relaxed text-slate-600">
+                We aim to make every service experience transparent,
+                convenient, and genuinely user-friendly.
               </p>
             </div>
 
-            <div className="rounded-2xl bg-gray-50 p-7 text-center">
-              <Users className="mx-auto text-blue-600" size={38} />
-              <h3 className="mt-4 text-xl font-bold text-gray-900">
+            {/* Value 3 */}
+            <div className="group rounded-3xl border border-slate-200/80 bg-slate-50/60 p-8 transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-200 hover:bg-white hover:shadow-xl hover:shadow-blue-900/5 sm:col-span-2 lg:col-span-1">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-sky-600/10 text-sky-600 transition-transform duration-300 group-hover:scale-110">
+                <Users size={28} />
+              </div>
+              <h3 className="mt-6 text-xl font-bold text-slate-900">
                 Professional Growth
               </h3>
-              <p className="mt-3 text-sm leading-7 text-gray-600">
-                We provide technicians with opportunities
-                to connect with potential customers.
+              <p className="mt-3 text-sm leading-relaxed text-slate-600">
+                We empower skilled technicians with meaningful opportunities to
+                connect with customers and grow their business.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Bottom CTA */}
-      <section className="bg-blue-600 px-4 py-16 text-center">
-        <div className="mx-auto max-w-3xl">
-          <h2 className="text-3xl font-bold text-white sm:text-4xl">
-            Ready to Experience FixMate?
-          </h2>
+      {/* ================= BOTTOM CTA SECTION ================= */}
+      <section className="bg-white px-4 pb-20 sm:px-6 lg:px-8 lg:pb-24">
+        <div className="mx-auto max-w-7xl">
+          <div className="relative overflow-hidden rounded-[2rem] bg-slate-950 px-6 py-16 text-center shadow-2xl sm:px-12 lg:py-20">
+            {/* Ambient Glows */}
+            <div className="pointer-events-none absolute -top-24 -right-24 h-80 w-80 rounded-full bg-blue-600/30 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-24 -left-24 h-80 w-80 rounded-full bg-indigo-600/25 blur-3xl" />
 
-          <p className="mt-4 leading-7 text-blue-100">
-            Explore our services and find the right professional
-            for your repair needs.
-          </p>
+            <div className="relative z-10 mx-auto max-w-3xl">
+              <span className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-blue-300 backdrop-blur-md">
+                Get Started Today
+              </span>
 
-          <Link
-            href="/services"
-            className="mt-8 inline-flex items-center gap-2 rounded-lg bg-white px-7 py-3.5 font-bold text-blue-700 transition hover:bg-blue-50"
-          >
-            Explore Services
-            <ArrowRight size={19} />
-          </Link>
+              <h2 className="mt-6 text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">
+                Ready to Experience{" "}
+                <span className="bg-gradient-to-r from-blue-400 to-sky-300 bg-clip-text text-transparent">
+                  FixMate?
+                </span>
+              </h2>
+
+              <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-slate-300">
+                Explore our curated services and find the right verified
+                professional for your home repair needs.
+              </p>
+
+              <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
+                <Link
+                  href="/services"
+                  className="group inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-8 py-4 text-base font-bold text-white shadow-lg shadow-blue-600/30 transition-all hover:bg-blue-500"
+                >
+                  Explore Services
+                  <ArrowRight
+                    size={19}
+                    className="transition-transform group-hover:translate-x-1"
+                  />
+                </Link>
+
+                <Link
+                  href="/sign-up"
+                  className="inline-flex items-center justify-center rounded-xl border border-slate-700 bg-slate-900/80 px-8 py-4 text-base font-bold text-white backdrop-blur-md transition-all hover:border-slate-500 hover:bg-slate-800"
+                >
+                  Become a Technician
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </main>
