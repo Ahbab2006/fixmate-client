@@ -19,6 +19,7 @@ import {
   Calendar,
   X,
   Sparkles,
+  CheckCircle2,
 } from "lucide-react";
 
 interface UserProfile {
@@ -329,21 +330,21 @@ export default function ProfilePage() {
     switch (role) {
       case "admin":
         return (
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-3.5 py-1 text-xs font-bold text-rose-700 ring-1 ring-rose-600/20">
             <Shield size={13} />
             Administrator
           </span>
         );
       case "technician":
         return (
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-3.5 py-1 text-xs font-bold text-indigo-700 ring-1 ring-indigo-600/20">
             <Sparkles size={13} />
             Technician
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3.5 py-1 text-xs font-bold text-blue-700 ring-1 ring-blue-600/20">
             <User size={13} />
             Customer
           </span>
@@ -354,9 +355,9 @@ export default function ProfilePage() {
   if (loading || sessionLoading) {
     return (
       <div className="flex min-h-[65vh] items-center justify-center p-6">
-        <div className="text-center">
-          <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
-          <p className="mt-4 text-sm font-medium text-gray-600">
+        <div className="rounded-3xl border border-slate-200/80 bg-white px-10 py-12 text-center shadow-sm">
+          <Loader2 className="mx-auto animate-spin text-blue-600" size={38} />
+          <p className="mt-4 text-sm font-semibold text-slate-600">
             Loading your profile...
           </p>
         </div>
@@ -367,16 +368,16 @@ export default function ProfilePage() {
   if (!profile) {
     return (
       <div className="p-6 md:p-10">
-        <div className="mx-auto max-w-xl rounded-xl border border-red-200 bg-red-50 p-6 text-center">
-          <p className="font-semibold text-red-800">
+        <div className="mx-auto max-w-xl rounded-3xl border border-rose-200 bg-rose-50/80 p-8 text-center shadow-sm">
+          <p className="text-lg font-extrabold text-rose-900">
             Unable to load profile data.
           </p>
-          <p className="mt-2 text-sm text-red-600">
+          <p className="mt-2 text-sm text-rose-700">
             Please make sure you are signed in and try again.
           </p>
           <button
             onClick={fetchProfile}
-            className="mt-4 inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
+            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-rose-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-rose-700"
           >
             <RefreshCw size={16} />
             Retry
@@ -387,123 +388,169 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-5 md:p-8">
-      <div className="mx-auto max-w-5xl">
-        {/* Page Header */}
-        <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 md:text-3xl">
-              Profile Settings
-            </h1>
-            <p className="mt-1 text-sm text-gray-600">
-              Manage your personal information, contact details, and public profile.
-            </p>
-          </div>
+    <div className="min-h-screen bg-slate-50 pb-12 text-slate-900">
+      <div className="mx-auto max-w-6xl space-y-8">
+        {/* ================= TOP DARK PREMIUM BANNER ================= */}
+        <div className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8">
+          <div className="pointer-events-none absolute -top-20 right-10 h-64 w-64 rounded-full bg-blue-600/25 blur-[90px]" />
+          <div className="pointer-events-none absolute -bottom-20 left-10 h-64 w-64 rounded-full bg-indigo-500/20 blur-[90px]" />
 
-          <button
-            type="button"
-            onClick={fetchProfile}
-            disabled={loading || saving}
-            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3.5 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 disabled:opacity-50"
-          >
-            <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
-            Refresh
-          </button>
+          <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <div className="inline-flex items-center gap-1.5 rounded-full border border-blue-400/20 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-300">
+                <Sparkles size={13} className="text-blue-400" />
+                <span>Account Preferences</span>
+              </div>
+              <h1 className="mt-3 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+                Profile{" "}
+                <span className="bg-gradient-to-r from-blue-400 to-sky-300 bg-clip-text text-transparent">
+                  Settings
+                </span>
+              </h1>
+              <p className="mt-1.5 text-sm text-slate-300">
+                Manage your personal information, contact details, and public
+                FixMate identity.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={fetchProfile}
+              disabled={loading || saving}
+              className="inline-flex items-center justify-center gap-2 self-start rounded-xl border border-white/15 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:border-blue-400/40 hover:bg-blue-600 disabled:opacity-50 sm:self-auto"
+            >
+              <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
+              Refresh
+            </button>
+          </div>
         </div>
 
+        {/* ================= MAIN CONTENT GRID ================= */}
         <div className="grid gap-8 lg:grid-cols-12">
           {/* Left Column: Avatar & Account Summary */}
           <div className="lg:col-span-4">
-            <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-              <div className="flex flex-col items-center text-center">
-                {/* Avatar with Camera Overlay */}
-                <div className="relative group">
-                  <div className="h-28 w-28 overflow-hidden rounded-full border-4 border-white shadow-md bg-gradient-to-tr from-blue-100 to-indigo-100 flex items-center justify-center">
-                    {previewUrl ? (
-                      <img
-                        src={previewUrl}
-                        alt={formData.name || "User Avatar"}
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center text-3xl font-bold text-blue-600">
-                        {formData.name
-                          ? formData.name.charAt(0).toUpperCase()
-                          : <User size={44} className="text-gray-400" />}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Camera overlay button */}
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={saving}
-                    aria-label="Upload profile photo"
-                    className="absolute bottom-0 right-0 flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-white shadow-lg transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
-                  >
-                    <Camera size={18} />
-                  </button>
-
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="hidden"
-                  />
-                </div>
-
-                {/* Selected File Notice */}
-                {selectedFile && (
-                  <div className="mt-3 flex items-center gap-2 rounded-md bg-blue-50 px-2.5 py-1 text-xs text-blue-700">
-                    <span className="truncate max-w-[160px] font-medium">
-                      {selectedFile.name}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={handleCancelSelectedPhoto}
-                      className="text-blue-500 hover:text-blue-700"
-                      title="Discard selected image"
-                    >
-                      <X size={14} />
-                    </button>
-                  </div>
-                )}
-
-                {/* User Name & Role */}
-                <h2 className="mt-4 text-xl font-bold text-gray-900">
-                  {profile.name || "FixMate User"}
-                </h2>
-
-                <div className="mt-2">{getRoleBadge(profile.role)}</div>
-
-                <p className="mt-2 text-sm text-gray-500 break-all">
-                  {profile.email}
-                </p>
-
-                {profile.createdAt && (
-                  <div className="mt-4 flex items-center gap-1.5 text-xs text-gray-400">
-                    <Calendar size={13} />
-                    <span>
-                      Member since{" "}
-                      {new Date(profile.createdAt).toLocaleDateString(undefined, {
-                        year: "numeric",
-                        month: "short",
-                      })}
-                    </span>
-                  </div>
-                )}
+            <div className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm">
+              {/* Decorative Top Cover Strip */}
+              <div className="relative h-24 bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950">
+                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:20px_20px]" />
               </div>
 
-              {/* Upload Guidelines */}
-              <div className="mt-6 border-t border-gray-100 pt-5 text-xs text-gray-500">
-                <p className="font-semibold text-gray-700">Photo Requirements:</p>
-                <ul className="mt-2 space-y-1 list-disc pl-4 text-gray-500">
-                  <li>Supported formats: JPG, PNG, WEBP</li>
-                  <li>Maximum file size: 5 MB</li>
-                  <li>Click Save Changes after selecting a new photo</li>
-                </ul>
+              <div className="px-6 pb-6">
+                <div className="-mt-14 flex flex-col items-center text-center">
+                  {/* Avatar with Camera Overlay */}
+                  <div className="group relative">
+                    <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-gradient-to-tr from-blue-100 to-indigo-100 shadow-lg ring-1 ring-slate-200/80">
+                      {previewUrl ? (
+                        <img
+                          src={previewUrl}
+                          alt={formData.name || "User Avatar"}
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center text-3xl font-extrabold text-blue-600">
+                          {formData.name ? (
+                            formData.name.charAt(0).toUpperCase()
+                          ) : (
+                            <User size={44} className="text-slate-400" />
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Camera overlay button */}
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={saving}
+                      aria-label="Upload profile photo"
+                      className="absolute right-0 bottom-0 flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg transition hover:scale-105 hover:from-blue-500 hover:to-indigo-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+                    >
+                      <Camera size={17} />
+                    </button>
+
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="hidden"
+                    />
+                  </div>
+
+                  {/* Selected File Notice */}
+                  {selectedFile && (
+                    <div className="mt-3.5 inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 ring-1 ring-blue-600/20">
+                      <span className="max-w-[160px] truncate">
+                        {selectedFile.name}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={handleCancelSelectedPhoto}
+                        className="text-blue-500 transition hover:text-rose-600"
+                        title="Discard selected image"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  )}
+
+                  {/* User Name & Role */}
+                  <h2 className="mt-4 text-xl font-extrabold text-slate-900">
+                    {profile.name || "FixMate User"}
+                  </h2>
+
+                  <div className="mt-2">{getRoleBadge(profile.role)}</div>
+
+                  <p className="mt-2.5 break-all text-xs font-medium text-slate-500">
+                    {profile.email}
+                  </p>
+
+                  {profile.createdAt && (
+                    <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
+                      <Calendar size={13} className="text-blue-600" />
+                      <span>
+                        Member since{" "}
+                        {new Date(profile.createdAt).toLocaleDateString(
+                          undefined,
+                          {
+                            year: "numeric",
+                            month: "short",
+                          }
+                        )}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Upload Guidelines Box */}
+                <div className="mt-6 rounded-2xl border border-slate-100 bg-slate-50/80 p-4 text-xs">
+                  <p className="font-bold text-slate-800">
+                    Photo Requirements
+                  </p>
+                  <ul className="mt-2.5 space-y-1.5 text-slate-500">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2
+                        size={13}
+                        className="shrink-0 text-blue-600"
+                      />
+                      <span>Supported formats: JPG, PNG, WEBP</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2
+                        size={13}
+                        className="shrink-0 text-blue-600"
+                      />
+                      <span>Maximum file size: 5 MB</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2
+                        size={13}
+                        className="shrink-0 text-blue-600"
+                      />
+                      <span>Click Save Changes to apply new photo</span>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
@@ -512,14 +559,15 @@ export default function ProfilePage() {
           <div className="lg:col-span-8">
             <form
               onSubmit={handleSubmit}
-              className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm md:p-8"
+              className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-8"
             >
-              <div className="border-b border-gray-100 pb-5">
-                <h2 className="text-lg font-bold text-gray-900">
+              <div className="border-b border-slate-100 pb-5">
+                <h2 className="text-xl font-extrabold text-slate-900">
                   Personal Information
                 </h2>
-                <p className="mt-1 text-sm text-gray-500">
-                  Update your account details. Email address and account role are managed by system administrators.
+                <p className="mt-1 text-sm text-slate-500">
+                  Update your account details. Email address and account role
+                  are managed by system administrators.
                 </p>
               </div>
 
@@ -527,14 +575,14 @@ export default function ProfilePage() {
                 {/* Row 1: Email (Read-Only) & Role (Read-Only) */}
                 <div className="grid gap-6 sm:grid-cols-2">
                   <div>
-                    <label className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-gray-500">
+                    <label className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-500">
                       <span>Email Address</span>
-                      <span className="flex items-center gap-1 text-[11px] font-medium lowercase text-gray-400">
-                        <Lock size={11} /> read-only
+                      <span className="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-semibold lowercase text-slate-500">
+                        <Lock size={10} /> read-only
                       </span>
                     </label>
                     <div className="relative mt-2">
-                      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
+                      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
                         <Mail size={17} />
                       </div>
                       <input
@@ -543,20 +591,20 @@ export default function ProfilePage() {
                         readOnly
                         disabled
                         aria-label="Email address (read-only)"
-                        className="w-full rounded-lg border border-gray-200 bg-gray-100 py-2.5 pl-10 pr-4 text-sm text-gray-600 cursor-not-allowed select-none"
+                        className="w-full cursor-not-allowed select-none rounded-xl border border-slate-200 bg-slate-100/80 py-3 pr-4 pl-10 text-sm font-medium text-slate-500"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-gray-500">
+                    <label className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-500">
                       <span>Account Role</span>
-                      <span className="flex items-center gap-1 text-[11px] font-medium lowercase text-gray-400">
-                        <Lock size={11} /> read-only
+                      <span className="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-semibold lowercase text-slate-500">
+                        <Lock size={10} /> read-only
                       </span>
                     </label>
                     <div className="relative mt-2">
-                      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
+                      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
                         <Shield size={17} />
                       </div>
                       <input
@@ -568,7 +616,7 @@ export default function ProfilePage() {
                         readOnly
                         disabled
                         aria-label="Account role (read-only)"
-                        className="w-full rounded-lg border border-gray-200 bg-gray-100 py-2.5 pl-10 pr-4 text-sm font-medium capitalize text-gray-600 cursor-not-allowed select-none"
+                        className="w-full cursor-not-allowed select-none rounded-xl border border-slate-200 bg-slate-100/80 py-3 pr-4 pl-10 text-sm font-semibold capitalize text-slate-600"
                       />
                     </div>
                   </div>
@@ -578,12 +626,12 @@ export default function ProfilePage() {
                 <div>
                   <label
                     htmlFor="name"
-                    className="block text-xs font-semibold uppercase tracking-wider text-gray-700"
+                    className="block text-xs font-bold uppercase tracking-wider text-slate-700"
                   >
-                    Full Name <span className="text-red-500">*</span>
+                    Full Name <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative mt-2">
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
                       <User size={17} />
                     </div>
                     <input
@@ -594,7 +642,7 @@ export default function ProfilePage() {
                       value={formData.name}
                       onChange={handleChange}
                       placeholder="Your full name"
-                      className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-4 text-sm text-gray-900 placeholder:text-gray-400 shadow-sm transition focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600"
+                      className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15"
                     />
                   </div>
                 </div>
@@ -604,12 +652,12 @@ export default function ProfilePage() {
                   <div>
                     <label
                       htmlFor="phone"
-                      className="block text-xs font-semibold uppercase tracking-wider text-gray-700"
+                      className="block text-xs font-bold uppercase tracking-wider text-slate-700"
                     >
                       Phone Number
                     </label>
                     <div className="relative mt-2">
-                      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
+                      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
                         <Phone size={17} />
                       </div>
                       <input
@@ -619,10 +667,10 @@ export default function ProfilePage() {
                         value={formData.phone}
                         onChange={handleChange}
                         placeholder="+880 1700 000000"
-                        className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-4 text-sm text-gray-900 placeholder:text-gray-400 shadow-sm transition focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600"
+                        className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15"
                       />
                     </div>
-                    <p className="mt-1.5 text-xs text-gray-500">
+                    <p className="mt-1.5 text-xs text-slate-500">
                       Helps technicians or customers contact you directly.
                     </p>
                   </div>
@@ -630,12 +678,12 @@ export default function ProfilePage() {
                   <div>
                     <label
                       htmlFor="area"
-                      className="block text-xs font-semibold uppercase tracking-wider text-gray-700"
+                      className="block text-xs font-bold uppercase tracking-wider text-slate-700"
                     >
                       Area / City
                     </label>
                     <div className="relative mt-2">
-                      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
+                      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
                         <MapPin size={17} />
                       </div>
                       <input
@@ -645,10 +693,10 @@ export default function ProfilePage() {
                         value={formData.area}
                         onChange={handleChange}
                         placeholder="e.g. Dhanmondi, Dhaka"
-                        className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-4 text-sm text-gray-900 placeholder:text-gray-400 shadow-sm transition focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600"
+                        className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15"
                       />
                     </div>
-                    <p className="mt-1.5 text-xs text-gray-500">
+                    <p className="mt-1.5 text-xs text-slate-500">
                       Your primary service area or living location.
                     </p>
                   </div>
@@ -658,12 +706,12 @@ export default function ProfilePage() {
                 <div>
                   <label
                     htmlFor="bio"
-                    className="block text-xs font-semibold uppercase tracking-wider text-gray-700"
+                    className="block text-xs font-bold uppercase tracking-wider text-slate-700"
                   >
                     Bio / Description
                   </label>
                   <div className="relative mt-2">
-                    <div className="pointer-events-none absolute top-3 left-0 flex items-start pl-3.5 text-gray-400">
+                    <div className="pointer-events-none absolute top-3.5 left-0 flex items-start pl-3.5 text-slate-400">
                       <FileText size={17} />
                     </div>
                     <textarea
@@ -673,22 +721,23 @@ export default function ProfilePage() {
                       value={formData.bio}
                       onChange={handleChange}
                       placeholder="Tell us a little bit about yourself, your device preferences, or your repair specialties..."
-                      className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-4 text-sm text-gray-900 placeholder:text-gray-400 shadow-sm transition focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600"
+                      className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15"
                     />
                   </div>
-                  <p className="mt-1.5 text-xs text-gray-500">
-                    Brief background or introductory notes visible across your FixMate activities.
+                  <p className="mt-1.5 text-xs text-slate-500">
+                    Brief background or introductory notes visible across your
+                    FixMate activities.
                   </p>
                 </div>
               </div>
 
               {/* Form Actions */}
-              <div className="mt-8 flex flex-wrap items-center justify-end gap-3 border-t border-gray-100 pt-6">
+              <div className="mt-8 flex flex-wrap items-center justify-end gap-3 border-t border-slate-100 pt-6">
                 <button
                   type="button"
                   onClick={handleReset}
                   disabled={saving || uploadingImage}
-                  className="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 disabled:opacity-50"
+                  className="rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 disabled:opacity-50"
                 >
                   Reset
                 </button>
@@ -696,7 +745,7 @@ export default function ProfilePage() {
                 <button
                   type="submit"
                   disabled={saving || uploadingImage}
-                  className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-600/25 transition-all hover:from-blue-500 hover:to-indigo-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {saving || uploadingImage ? (
                     <>
