@@ -4,6 +4,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { apiUrl } from "@/lib/api";
 import {
   ArrowRight,
   ShieldCheck,
@@ -68,9 +69,7 @@ export default function Home() {
   useEffect(() => {
     const fetchFeaturedServices = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:5000/api/services"
-        );
+        const response = await fetch(apiUrl("/api/services"));
 
         const data = await response.json();
 
@@ -120,7 +119,7 @@ export default function Home() {
               </Link>
 
               <Link
-                href="/register"
+                href="/sign-up"
                 className="inline-flex items-center justify-center rounded-lg border-2 border-blue-600 px-6 py-3.5 font-semibold text-blue-600 transition hover:bg-blue-50"
               >
                 Become a Technician
@@ -289,7 +288,7 @@ export default function Home() {
                           Starting from
                         </p>
                         <p className="text-lg font-bold text-blue-600">
-                          ৳{service.basePrice}
+                          ${service.basePrice}
                         </p>
                       </div>
 
@@ -328,11 +327,11 @@ export default function Home() {
 
       <p className="mx-auto mt-4 max-w-2xl text-gray-600">
         Getting your home repaired has never been easier.
-        Follow these three simple steps.
+        Follow these four simple steps.
       </p>
     </div>
 
-    <div className="grid gap-8 md:grid-cols-3">
+    <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
       {/* Step 1 */}
       <div className="relative rounded-2xl border border-gray-100 bg-gray-50 p-8 text-center transition hover:-translate-y-1 hover:shadow-lg">
         <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-blue-100 text-4xl">
@@ -344,7 +343,7 @@ export default function Home() {
         </span>
 
         <h3 className="mt-4 text-xl font-bold text-gray-900">
-          Choose a Service
+          Find a Service
         </h3>
 
         <p className="mt-3 leading-7 text-gray-600">
@@ -364,12 +363,12 @@ export default function Home() {
         </span>
 
         <h3 className="mt-4 text-xl font-bold text-gray-900">
-          Book Your Service
+          Send a Request
         </h3>
 
         <p className="mt-3 leading-7 text-gray-600">
-          Submit your repair request with your preferred date
-          and provide the necessary details.
+          Submit your repair request with your preferred date,
+          address, and problem details.
         </p>
       </div>
 
@@ -384,12 +383,32 @@ export default function Home() {
         </span>
 
         <h3 className="mt-4 text-xl font-bold text-gray-900">
-          Get It Fixed
+          Technician Fixes It
         </h3>
 
         <p className="mt-3 leading-7 text-gray-600">
-          Connect with your technician, get your repair done
-          and enjoy a hassle-free experience.
+          A skilled technician visits or repairs your item
+          and completes the service efficiently.
+        </p>
+      </div>
+
+      {/* Step 4 */}
+      <div className="relative rounded-2xl border border-gray-100 bg-gray-50 p-8 text-center transition hover:-translate-y-1 hover:shadow-lg">
+        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-blue-100 text-4xl">
+          💳
+        </div>
+
+        <span className="mt-5 inline-block rounded-full bg-blue-100 px-4 py-1 text-sm font-bold text-blue-700">
+          Step 04
+        </span>
+
+        <h3 className="mt-4 text-xl font-bold text-gray-900">
+          Pay After Completion
+        </h3>
+
+        <p className="mt-3 leading-7 text-gray-600">
+          Review the final amount and pay securely online
+          only after the service is successfully completed.
         </p>
       </div>
     </div>
@@ -602,7 +621,7 @@ export default function Home() {
           </Link>
 
           <Link
-            href="/register"
+            href="/sign-up"
             className="inline-flex items-center justify-center rounded-lg border-2 border-white/80 px-7 py-3.5 font-bold text-white transition hover:bg-white/10"
           >
             Join as Technician

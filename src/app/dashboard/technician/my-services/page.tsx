@@ -16,6 +16,8 @@ import {
     Pencil,
   Trash2,
 } from "lucide-react";
+import { apiUrl } from "@/lib/api";
+import ConfirmationModal from "@/components/shared/ConfirmationModal";
 
 interface Service {
   _id: string;
@@ -38,6 +40,9 @@ export default function MyServicesPage() {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [serviceToDelete, setServiceToDelete] = useState<Service | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
 const router = useRouter();
 
@@ -53,7 +58,7 @@ const router = useRouter();
       }
 
       const response = await fetch(
-        "http://localhost:5000/api/services/my-services",
+        apiUrl("/api/services/my-services"),
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -98,7 +103,7 @@ const router = useRouter();
       }
 
       const response = await fetch(
-        `http://localhost:5000/api/services/${service._id}/availability`,
+        apiUrl(`/api/services/${service._id}/availability`),
         {
           method: "PATCH",
           headers: {
@@ -142,56 +147,57 @@ const router = useRouter();
   };
 
 
-const handleDelete = async (id: string) => {
-  const confirmed = window.confirm(
-    "Are you sure you want to delete this service?"
-  );
+  const confirmDeleteService = async () => {
+    if (!serviceToDelete || isDeleting) return;
 
-  if (!confirmed) return;
+    try {
+      setIsDeleting(true);
+      setUpdatingId(serviceToDelete._id);
+      setDeleteError(null);
 
-  try {
-    setUpdatingId(id);
+      const tokenResult = await authClient.token();
+      const token = tokenResult.data?.token;
 
-    const tokenResult = await authClient.token();
-    const token = tokenResult.data?.token;
-
-    if (tokenResult.error || !token) {
-      throw new Error("Authentication token not found.");
-    }
-
-    const response = await fetch(
-      `http://localhost:5000/api/services/${id}`,
-      {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      if (tokenResult.error || !token) {
+        throw new Error("Authentication token not found.");
       }
-    );
 
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(
-        result.message || "Failed to delete service."
+      const response = await fetch(
+        apiUrl(`/api/services/${serviceToDelete._id}`),
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result.message || "Failed to delete service."
+        );
+      }
+
+      setServices((prev) =>
+        prev.filter((service) => service._id !== serviceToDelete._id)
+      );
+
+      toast.success("Service deleted successfully!");
+      setServiceToDelete(null);
+    } catch (error) {
+      const errorMsg =
+        error instanceof Error
+          ? error.message
+          : "Something went wrong.";
+      setDeleteError(errorMsg);
+      toast.error(errorMsg);
+    } finally {
+      setIsDeleting(false);
+      setUpdatingId(null);
     }
-
-    setServices((prev) =>
-      prev.filter((service) => service._id !== id)
-    );
-
-    toast.success("Service deleted successfully!");
-  } catch (error) {
-    toast.error(
-      error instanceof Error
-        ? error.message
-        : "Something went wrong."
-    );
-  } finally {
-    setUpdatingId(null);
-  }
-};
+  };
 
 
 
@@ -336,7 +342,7 @@ const handleDelete = async (id: string) => {
 
                   <div className="mt-4 space-y-2 border-t pt-4 text-sm text-gray-600">
                     <p>
-                      <strong>Base Price:</strong> ৳
+                      <strong>Base Price:</strong> $
                       {service.basePrice}
                     </p>
 
@@ -370,7 +376,10 @@ const handleDelete = async (id: string) => {
   </button>
 
   <button
-    onClick={() => handleDelete(service._id)}
+    onClick={() => {
+      setServiceToDelete(service);
+      setDeleteError(null);
+    }}
     disabled={updatingId === service._id}
     className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-red-50 py-2.5 font-medium text-red-600 hover:bg-red-100 disabled:opacity-50"
   >
@@ -418,6 +427,30 @@ const handleDelete = async (id: string) => {
           </div>
         )}
       </div>
+
+      {/* Confirmation Modal for Service Deletion */}
+      <ConfirmationModal
+        isOpen={!!serviceToDelete}
+        onClose={() => {
+          if (!isDeleting) {
+            setServiceToDelete(null);
+            setDeleteError(null);
+          }
+        }}
+        onConfirm={confirmDeleteService}
+        title="Delete Repair Service"
+        description={
+          serviceToDelete
+            ? `Are you sure you want to delete "${serviceToDelete.title}"? This service will be permanently removed and customers will no longer be able to book it.`
+            : ""
+        }
+        confirmText="Yes, Delete Service"
+        cancelText="Cancel"
+        loadingText="Deleting..."
+        isLoading={isDeleting}
+        error={deleteError}
+        variant="danger"
+      />
     </div>
   );
 }

@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
+import { apiUrl } from "@/lib/api";
 
 export default function TestServicePage() {
   const [loading, setLoading] = useState(false);
@@ -24,7 +25,7 @@ export default function TestServicePage() {
       }
 
       const response = await fetch(
-        "http://localhost:5000/api/services",
+        apiUrl("/api/services"),
         {
           method: "POST",
           headers: {
@@ -74,7 +75,7 @@ export default function TestServicePage() {
       }
 
       const response = await fetch(
-        "http://localhost:5000/api/services/my-services",
+        apiUrl("/api/services/my-services"),
         {
           method: "GET",
           headers: {
@@ -114,7 +115,7 @@ export default function TestServicePage() {
       }
 
       const response = await fetch(
-        "http://localhost:5000/api/services/6afca88c834e362fc6d286fc",
+        apiUrl("/api/services/6afca88c834e362fc6d286fc"),
         {
           method: "PUT",
           headers: {
@@ -165,7 +166,7 @@ export default function TestServicePage() {
       }
 
       const response = await fetch(
-        "http://localhost:5000/api/services/6afca88c834e362fc6d286fc",
+        apiUrl("/api/services/6afca88c834e362fc6d286fc"),
         {
           method: "DELETE",
           headers: {
@@ -205,7 +206,7 @@ export default function TestServicePage() {
       }
 
       const response = await fetch(
-        "http://localhost:5000/api/services/admin/pending",
+        apiUrl("/api/services/admin/pending"),
         {
           method: "GET",
           headers: {
@@ -248,7 +249,7 @@ export default function TestServicePage() {
       }
 
       const response = await fetch(
-        "http://localhost:5000/api/services/admin/6afd1001f83d0707717cf087/approval",
+        apiUrl("/api/services/admin/6afd1001f83d0707717cf087/approval"),
         {
           method: "PATCH",
           headers: {
@@ -294,7 +295,7 @@ export default function TestServicePage() {
       }
 
       const response = await fetch(
-        "http://localhost:5000/api/services/admin/6afd1309f83d0707717cf088/approval",
+        apiUrl("/api/services/admin/6afd1309f83d0707717cf088/approval"),
         {
           method: "PATCH",
           headers: {
@@ -341,7 +342,7 @@ const handleToggleAvailability = async () => {
     }
 
     const response = await fetch(
-      "http://localhost:5000/api/services/6afd1309f83d0707717cf088/availability",
+      apiUrl("/api/services/6afd1309f83d0707717cf088/availability"),
       {
         method: "PATCH",
         headers: {

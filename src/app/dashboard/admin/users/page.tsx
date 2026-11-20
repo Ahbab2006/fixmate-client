@@ -11,6 +11,7 @@ import {
   UserRound,
   Wrench,
 } from "lucide-react";
+import { apiUrl } from "@/lib/api";
 
 type User = {
   _id: string;
@@ -39,7 +40,7 @@ export default function ManageUsersPage() {
         return;
       }
 
-      const response = await fetch("http://localhost:5000/api/users", {
+      const response = await fetch(apiUrl("/api/users"), {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -87,7 +88,7 @@ export default function ManageUsersPage() {
       }
 
       const response = await fetch(
-        `http://localhost:5000/api/users/${userId}/role`,
+        apiUrl(`/api/users/${userId}/role`),
         {
           method: "PATCH",
           headers: {

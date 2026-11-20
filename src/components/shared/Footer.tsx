@@ -1,14 +1,16 @@
+"use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
     Wrench,
-
     Mail,
     Phone,
     MapPin,
     ArrowRight,
 } from "lucide-react";
 import { FaFacebookF, FaInstagram } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 
 const footerCategories = [
     "Smartphone",
@@ -21,6 +23,13 @@ const footerCategories = [
 ];
 
 export default function Footer() {
+    const pathname = usePathname();
+
+    // Hide public footer on all dashboard routes
+    if (pathname?.startsWith("/dashboard")) {
+        return null;
+    }
+
     return (
         <footer className="bg-gray-950 text-gray-300">
             <div className="mx-auto max-w-7xl px-4 py-14 sm:py-16">
@@ -63,6 +72,16 @@ export default function Footer() {
                             >
                                 <FaInstagram size={19} />
                             </a>
+
+                            <a
+                                href="https://x.com/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label="X (formerly Twitter)"
+                                className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-800 transition hover:bg-black hover:text-white"
+                            >
+                                <FaXTwitter size={18} />
+                            </a>
                         </div>
                     </div>
 
@@ -89,12 +108,15 @@ export default function Footer() {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/contact" className="transition hover:text-blue-400">
+                                <a
+                                    href="mailto:support@fixmate.com"
+                                    className="transition hover:text-blue-400"
+                                >
                                     Contact Us
-                                </Link>
+                                </a>
                             </li>
                             <li>
-                                <Link href="/register" className="transition hover:text-blue-400">
+                                <Link href="/sign-up" className="transition hover:text-blue-400">
                                     Become a Technician
                                 </Link>
                             </li>
@@ -130,12 +152,22 @@ export default function Footer() {
                         <ul className="mt-6 space-y-5 text-sm">
                             <li className="flex items-start gap-3">
                                 <Mail size={19} className="mt-0.5 shrink-0 text-blue-500" />
-                                <span>support@fixmate.com</span>
+                                <a
+                                    href="mailto:support@fixmate.com"
+                                    className="transition hover:text-blue-400"
+                                >
+                                    support@fixmate.com
+                                </a>
                             </li>
 
                             <li className="flex items-start gap-3">
                                 <Phone size={19} className="mt-0.5 shrink-0 text-blue-500" />
-                                <span>+880 1XXXXXXXXX</span>
+                                <a
+                                    href="tel:+8801XXXXXXXXX"
+                                    className="transition hover:text-blue-400"
+                                >
+                                    +880 1XXXXXXXXX
+                                </a>
                             </li>
 
                             <li className="flex items-start gap-3">
@@ -144,13 +176,13 @@ export default function Footer() {
                             </li>
                         </ul>
 
-                        <Link
-                            href="/contact"
+                        <a
+                            href="mailto:support@fixmate.com"
                             className="mt-7 inline-flex items-center gap-2 font-semibold text-blue-400 transition hover:text-blue-300"
                         >
                             Get in Touch
                             <ArrowRight size={17} />
-                        </Link>
+                        </a>
                     </div>
 
                 </div>

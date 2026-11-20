@@ -14,6 +14,7 @@ import {
   ArrowRight,
   Package,
 } from "lucide-react";
+import { apiUrl } from "@/lib/api";
 
 interface Booking {
   _id: string;
@@ -47,7 +48,7 @@ export default function CustomerDashboard() {
       }
 
       const response = await fetch(
-        "http://localhost:5000/api/bookings/my-bookings",
+        apiUrl("/api/bookings/my-bookings"),
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -265,9 +266,9 @@ export default function CustomerDashboard() {
                   </p>
 
                   <p className="mt-1 text-sm text-gray-600">
-                    Base Price: ৳{booking.basePrice}
+                    Base Price: ${booking.basePrice}
                     {booking.finalAmount !== undefined &&
-                      ` | Final Amount: ৳${booking.finalAmount}`}
+                      ` | Final Amount: $${booking.finalAmount}`}
                   </p>
                 </div>
 

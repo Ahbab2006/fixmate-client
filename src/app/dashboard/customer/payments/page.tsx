@@ -11,17 +11,24 @@ import {
   CalendarDays,
   Package,
 } from "lucide-react";
+import { apiUrl } from "@/lib/api";
 
 interface Payment {
   _id: string;
   bookingId: string;
-  stripeSessionId: string;
+  stripeSessionId?: string;
+  transactionId?: string;
+  paymentIntentId?: string;
+  customerName?: string;
   customerEmail: string;
+  technicianName?: string;
+  technicianEmail?: string;
   serviceTitle: string;
   amount: number;
-  currency: string;
+  currency?: string;
   paymentStatus: string;
-  createdAt: string;
+  paidAt?: string;
+  createdAt?: string;
 }
 
 export default function CustomerPaymentsPage() {
@@ -43,7 +50,7 @@ export default function CustomerPaymentsPage() {
       }
 
       const response = await fetch(
-        "http://localhost:5000/api/payments/my-payments",
+        apiUrl("/api/payments/my-payments"),
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -79,8 +86,11 @@ export default function CustomerPaymentsPage() {
     }
   }, [session, fetchPayments]);
 
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString("en-GB", {
+  const formatDate = (date?: string) => {
+    if (!date) return "N/A";
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return "N/A";
+    return d.toLocaleDateString("en-GB", {
       day: "2-digit",
       month: "short",
       year: "numeric",
@@ -145,7 +155,10 @@ export default function CustomerPaymentsPage() {
             </div>
 
             <h2 className="mt-3 text-3xl font-bold text-gray-900">
-              ৳{totalAmount.toLocaleString("en-BD")}
+              ${totalAmount.toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
             </h2>
           </div>
         </div>
@@ -168,78 +181,98 @@ export default function CustomerPaymentsPage() {
           </div>
         ) : (
           <div className="space-y-5">
-            {payments.map((payment) => (
-              <div
-                key={payment._id}
-                className="rounded-xl border bg-white p-5 shadow-sm md:p-6"
-              >
-                <div className="flex flex-wrap items-start justify-between gap-4">
+            {payments.map((payment) => {
+              const txnId =
+                payment.transactionId ||
+                payment.paymentIntentId ||
+                payment.stripeSessionId ||
+                "N/A";
 
-                  <div>
-                    <h2 className="text-xl font-bold text-gray-900">
-                      {payment.serviceTitle}
-                    </h2>
+              const paymentDate = payment.paidAt || payment.createdAt;
 
-                    <p className="mt-2 break-all text-sm text-gray-500">
-                      Transaction ID: {payment.stripeSessionId}
-                    </p>
+              return (
+                <div
+                  key={payment._id}
+                  className="rounded-xl border bg-white p-5 shadow-sm md:p-6"
+                >
+                  <div className="flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                      <h2 className="text-xl font-bold text-gray-900">
+                        {payment.serviceTitle || "Service Repair"}
+                      </h2>
 
-                    <p className="mt-2 break-all text-sm text-gray-500">
-                      Booking ID: {payment.bookingId}
-                    </p>
+                      <p className="mt-2 break-all text-sm text-gray-500">
+                        Transaction ID:{" "}
+                        <span className="font-mono text-gray-700">
+                          {txnId}
+                        </span>
+                      </p>
+
+                      <p className="mt-1 break-all text-sm text-gray-500">
+                        Booking ID: {payment.bookingId || "N/A"}
+                      </p>
+                    </div>
+
+                    <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-semibold capitalize text-green-700">
+                      {payment.paymentStatus || "paid"}
+                    </span>
                   </div>
 
-                  <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-semibold capitalize text-green-700">
-                    {payment.paymentStatus}
-                  </span>
+                  <div className="mt-5 grid gap-4 border-t pt-5 sm:grid-cols-2 lg:grid-cols-3">
+                    <div>
+                      <p className="text-sm text-gray-500">
+                        Payment Amount
+                      </p>
+                      <p className="mt-1 text-2xl font-bold text-gray-900">
+                        ${payment.amount !== undefined && payment.amount !== null
+                          ? payment.amount.toLocaleString("en-US", {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })
+                          : "0.00"}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-sm text-gray-500">
+                        Payment Date
+                      </p>
+                      <p className="mt-2 flex items-center gap-2 font-medium text-gray-800">
+                        <CalendarDays size={18} />
+                        {formatDate(paymentDate)}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-sm text-gray-500">
+                        Technician
+                      </p>
+                      <p className="mt-1 font-medium text-gray-800">
+                        {payment.technicianName || "N/A"}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-sm text-gray-500">
+                        Customer Email
+                      </p>
+                      <p className="mt-1 break-all font-medium text-gray-800">
+                        {payment.customerEmail || "N/A"}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-sm text-gray-500">
+                        Payment Method
+                      </p>
+                      <p className="mt-1 font-medium text-gray-800">
+                        Stripe
+                      </p>
+                    </div>
+                  </div>
                 </div>
-
-                <div className="mt-5 grid gap-4 border-t pt-5 sm:grid-cols-2">
-
-                  <div>
-                    <p className="text-sm text-gray-500">
-                      Payment Amount
-                    </p>
-
-                    <p className="mt-1 text-2xl font-bold text-gray-900">
-                      ৳{payment.amount.toLocaleString("en-BD")}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-sm text-gray-500">
-                      Payment Date
-                    </p>
-
-                    <p className="mt-2 flex items-center gap-2 font-medium text-gray-800">
-                      <CalendarDays size={18} />
-                      {formatDate(payment.createdAt)}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-sm text-gray-500">
-                      Customer Email
-                    </p>
-
-                    <p className="mt-1 break-all font-medium text-gray-800">
-                      {payment.customerEmail}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-sm text-gray-500">
-                      Payment Method
-                    </p>
-
-                    <p className="mt-1 font-medium text-gray-800">
-                      Stripe
-                    </p>
-                  </div>
-
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 

@@ -1,9 +1,10 @@
 
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Search, RefreshCw, ArrowRight } from "lucide-react";
+import { apiUrl } from "@/lib/api";
 
 interface Service {
   _id: string;
@@ -29,71 +30,151 @@ const categories = [
   "Electrical",
 ];
 
+const serviceModes = [
+  "All",
+  "Home Visit",
+  "Shop Drop-off",
+];
+
 export default function ServicesPage() {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedMode, setSelectedMode] = useState("All");
+  const [sort, setSort] = useState("newest");
 
-  const fetchServices = async () => {
-    try {
-      setLoading(true);
-      setError("");
+  const [initialized, setInitialized] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
-      const response = await fetch(
-        "http://localhost:5000/api/services"
-      );
-
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || "Failed to load services.");
-      }
-
-      setServices(data.services || []);
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Something went wrong."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Read filters from URL on page load
   useEffect(() => {
-    fetchServices();
+    const params = new URLSearchParams(window.location.search);
+
+    const category = params.get("category");
+    const mode = params.get("serviceMode");
+    const sortValue = params.get("sort");
+
+    setSearch(params.get("search") || "");
+
+    if (category && categories.includes(category)) {
+      setSelectedCategory(category);
+    }
+
+    if (mode && serviceModes.includes(mode)) {
+      setSelectedMode(mode);
+    }
+
+    if (
+      sortValue &&
+      ["newest", "price-low", "price-high"].includes(sortValue)
+    ) {
+      setSort(sortValue);
+    }
+
+    setInitialized(true);
   }, []);
 
+  // Update URL and fetch filtered services
+  useEffect(() => {
+    if (!initialized) return;
 
-useEffect(() => {
-  const params = new URLSearchParams(window.location.search);
-  const categoryFromURL = params.get("category");
+    const params = new URLSearchParams();
 
-  if (categoryFromURL && categories.includes(categoryFromURL)) {
-    setSelectedCategory(categoryFromURL);
-  }
-}, []);
+    if (search.trim()) {
+      params.set("search", search.trim());
+    }
 
+    if (selectedCategory !== "All") {
+      params.set("category", selectedCategory);
+    }
 
-  const filteredServices = useMemo(() => {
-    return services.filter((service) => {
-      const matchesCategory =
-        selectedCategory === "All" ||
-        service.category === selectedCategory;
+    if (selectedMode !== "All") {
+      params.set("serviceMode", selectedMode);
+    }
 
-      const searchText = search.toLowerCase();
+    if (sort !== "newest") {
+      params.set("sort", sort);
+    }
 
-      const matchesSearch =
-        service.title.toLowerCase().includes(searchText) ||
-        service.category.toLowerCase().includes(searchText) ||
-        service.description.toLowerCase().includes(searchText);
+    const queryString = params.toString();
 
-      return matchesCategory && matchesSearch;
-    });
-  }, [services, search, selectedCategory]);
+    const newURL = queryString
+      ? `${window.location.pathname}?${queryString}`
+      : window.location.pathname;
+
+    window.history.replaceState(null, "", newURL);
+
+    // Fetch services from backend
+    const controller = new AbortController();
+
+    const fetchServices = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const apiParams = new URLSearchParams();
+
+        if (search.trim()) {
+          apiParams.set("search", search.trim());
+        }
+
+        if (selectedCategory !== "All") {
+          apiParams.set("category", selectedCategory);
+        }
+
+        if (selectedMode !== "All") {
+          apiParams.set("serviceMode", selectedMode);
+        }
+
+        apiParams.set("sort", sort);
+
+        const response = await fetch(
+          apiUrl(`/api/services?${apiParams.toString()}`),
+          { signal: controller.signal }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.message || "Failed to load services.");
+        }
+
+        setServices(data.services || []);
+      } catch (err) {
+        if (err instanceof Error && err.name === "AbortError") {
+          return;
+        }
+
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Something went wrong."
+        );
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    // Small delay prevents unnecessary requests while typing
+    const timer = setTimeout(fetchServices, 350);
+
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [
+    initialized,
+    search,
+    selectedCategory,
+    selectedMode,
+    sort,
+    refreshKey,
+  ]);
 
   return (
     <main className="min-h-screen bg-gray-50 px-4 py-12">
@@ -111,7 +192,7 @@ useEffect(() => {
         </div>
 
         {/* Search */}
-        <div className="mx-auto mb-8 flex max-w-xl items-center gap-3 rounded-xl border bg-white px-4 py-3 shadow-sm">
+        <div className="mx-auto mb-6 flex max-w-xl items-center gap-3 rounded-xl border bg-white px-4 py-3 shadow-sm">
           <Search className="text-gray-400" size={20} />
 
           <input
@@ -124,7 +205,7 @@ useEffect(() => {
         </div>
 
         {/* Categories */}
-        <div className="mb-8 flex flex-wrap justify-center gap-3">
+        <div className="mb-6 flex flex-wrap justify-center gap-3">
           {categories.map((category) => (
             <button
               key={category}
@@ -140,14 +221,40 @@ useEffect(() => {
           ))}
         </div>
 
+        {/* Service Mode and Sorting */}
+        <div className="mb-8 flex flex-col justify-center gap-4 sm:flex-row">
+
+          <select
+            value={selectedMode}
+            onChange={(e) => setSelectedMode(e.target.value)}
+            className="rounded-lg border bg-white px-4 py-3 text-sm text-gray-700 outline-none focus:border-blue-500"
+          >
+            {serviceModes.map((mode) => (
+              <option key={mode} value={mode}>
+                {mode === "All" ? "All Service Modes" : mode}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
+            className="rounded-lg border bg-white px-4 py-3 text-sm text-gray-700 outline-none focus:border-blue-500"
+          >
+            <option value="newest">Newest First</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+          </select>
+        </div>
+
         {/* Results */}
         <div className="mb-5 flex items-center justify-between">
           <p className="font-semibold text-gray-800">
-            {filteredServices.length} Services Found
+            {loading ? "Loading services..." : `${services.length} Services Found`}
           </p>
 
           <button
-            onClick={fetchServices}
+            onClick={() => setRefreshKey((prev) => prev + 1)}
             className="flex items-center gap-2 rounded-lg border bg-white px-4 py-2 text-sm hover:bg-gray-100"
           >
             <RefreshCw size={16} />
@@ -166,8 +273,9 @@ useEffect(() => {
         {!loading && error && (
           <div className="rounded-xl bg-red-50 p-6 text-center text-red-600">
             <p>{error}</p>
+
             <button
-              onClick={fetchServices}
+              onClick={() => setRefreshKey((prev) => prev + 1)}
               className="mt-3 font-semibold underline"
             >
               Try Again
@@ -176,21 +284,22 @@ useEffect(() => {
         )}
 
         {/* Empty State */}
-        {!loading && !error && filteredServices.length === 0 && (
+        {!loading && !error && services.length === 0 && (
           <div className="rounded-xl bg-white py-16 text-center shadow-sm">
             <h2 className="text-xl font-semibold text-gray-800">
               No Services Found
             </h2>
+
             <p className="mt-2 text-gray-500">
-              Try another search or category.
+              Try another search or filter.
             </p>
           </div>
         )}
 
         {/* Service Cards */}
-        {!loading && !error && filteredServices.length > 0 && (
+        {!loading && !error && services.length > 0 && (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredServices.map((service) => (
+            {services.map((service) => (
               <div
                 key={service._id}
                 className="overflow-hidden rounded-xl border bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
@@ -236,8 +345,9 @@ useEffect(() => {
                       <p className="text-xs text-gray-500">
                         Starting Price
                       </p>
+
                       <p className="text-xl font-bold text-blue-600">
-                        ৳{service.basePrice}
+                        ${service.basePrice}
                       </p>
                     </div>
 

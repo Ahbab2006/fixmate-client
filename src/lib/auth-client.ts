@@ -14,6 +14,18 @@ export const authClient = createAuthClient({
         role: {
           type: "string",
         },
+        phone: {
+          type: "string",
+          required: false,
+        },
+        area: {
+          type: "string",
+          required: false,
+        },
+        bio: {
+          type: "string",
+          required: false,
+        },
       },
     }),
     jwtClient(),

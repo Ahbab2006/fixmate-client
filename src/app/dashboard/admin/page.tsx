@@ -17,6 +17,7 @@ import {
   RefreshCw,
   Loader2,
 } from "lucide-react";
+import { apiUrl } from "@/lib/api";
 
 type User = {
   _id: string;
@@ -89,11 +90,11 @@ const [serviceStats, setServiceStats] = useState<ServiceStats>({
       };
 
       const endpoints = [
-        "http://localhost:5000/api/users",
-        "http://localhost:5000/api/services/admin/pending",
-        "http://localhost:5000/api/bookings/admin/all",
-        "http://localhost:5000/api/payments/admin/all",
-          "http://localhost:5000/api/services/admin/stats",
+        apiUrl("/api/users"),
+        apiUrl("/api/services/admin/pending"),
+        apiUrl("/api/bookings/admin/all"),
+        apiUrl("/api/payments/admin/all"),
+          apiUrl("/api/services/admin/stats"),
       ];
 
       const responses = await Promise.all(
@@ -175,7 +176,7 @@ setServiceStats(serviceStatsData.stats);
     .slice(0, 5);
 
   const formatDate = (date: string) =>
-    new Date(date).toLocaleDateString("en-BD", {
+    new Date(date).toLocaleDateString("en-US", {
       day: "numeric",
       month: "short",
       year: "numeric",
@@ -303,7 +304,10 @@ setServiceStats(serviceStatsData.stats);
             <div>
               <p className="text-sm text-gray-500">Total Revenue</p>
               <h2 className="mt-2 text-3xl font-bold text-gray-900">
-                ৳{totalRevenue.toLocaleString("en-BD")}
+                ${totalRevenue.toLocaleString("en-US", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
               </h2>
             </div>
             <div className="rounded-xl bg-green-100 p-4 text-green-600">
@@ -457,7 +461,10 @@ setServiceStats(serviceStatsData.stats);
                       {payment.customerEmail}
                     </td>
                     <td className="px-4 py-4 font-semibold text-gray-900">
-                      ৳{payment.amount.toLocaleString("en-BD")}
+                      ${payment.amount.toLocaleString("en-US", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
                     </td>
                     <td className="px-4 py-4 text-gray-600">
                       {formatDate(payment.createdAt)}

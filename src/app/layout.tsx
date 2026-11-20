@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import {Toaster} from "sonner"
@@ -28,9 +29,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <Navbar/>
+        <Suspense fallback={<div className="h-16" />}>
+          <Navbar />
+        </Suspense>
         {children}
-        <Footer/>
+        <Suspense fallback={null}>
+          <Footer />
+        </Suspense>
        <Toaster position="top-right" richColors />
       </body>
     </html>

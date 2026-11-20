@@ -10,15 +10,22 @@ import {
   Wallet,
   TrendingUp,
 } from "lucide-react";
+import { apiUrl } from "@/lib/api";
 
 type Payment = {
   _id: string;
   bookingId: string;
+  customerName?: string;
   customerEmail: string;
+  technicianName?: string;
+  technicianEmail?: string;
+  serviceTitle?: string;
   amount: number;
   transactionId?: string;
+  paymentIntentId?: string;
   stripeSessionId?: string;
-  createdAt: string;
+  paidAt?: string;
+  createdAt?: string;
 };
 
 export default function AdminTransactionsPage() {
@@ -39,7 +46,7 @@ export default function AdminTransactionsPage() {
       }
 
       const response = await fetch(
-        "http://localhost:5000/api/payments/admin/all",
+        apiUrl("/api/admin/payments"),
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -67,6 +74,17 @@ export default function AdminTransactionsPage() {
   useEffect(() => {
     fetchPayments();
   }, []);
+
+  const formatDate = (date?: string) => {
+    if (!date) return "N/A";
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return "N/A";
+    return d.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -105,7 +123,10 @@ export default function AdminTransactionsPage() {
             <Wallet size={22} className="text-green-600" />
           </div>
           <h2 className="mt-3 text-2xl font-bold">
-            ৳{totalRevenue.toLocaleString("en-BD")}
+            ${totalRevenue.toLocaleString("en-US", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
           </h2>
         </div>
 
@@ -115,12 +136,13 @@ export default function AdminTransactionsPage() {
             <TrendingUp size={22} className="text-purple-600" />
           </div>
           <h2 className="mt-3 text-2xl font-bold">
-            ৳
+            $
             {payments.length
-              ? (totalRevenue / payments.length).toLocaleString("en-BD", {
+              ? (totalRevenue / payments.length).toLocaleString("en-US", {
+                  minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 })
-              : "0"}
+              : "0.00"}
           </h2>
         </div>
       </div>
@@ -144,41 +166,73 @@ export default function AdminTransactionsPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[750px] text-left text-sm">
+            <table className="w-full min-w-[900px] text-left text-sm">
               <thead>
                 <tr className="border-b bg-gray-50 text-gray-500">
                   <th className="px-4 py-3 font-medium">Transaction ID</th>
                   <th className="px-4 py-3 font-medium">Customer</th>
-                  <th className="px-4 py-3 font-medium">Booking ID</th>
+                  <th className="px-4 py-3 font-medium">Technician</th>
+                  <th className="px-4 py-3 font-medium">Service</th>
                   <th className="px-4 py-3 font-medium">Amount</th>
                   <th className="px-4 py-3 font-medium">Payment Date</th>
                 </tr>
               </thead>
 
               <tbody>
-                {payments.map((payment) => (
-                  <tr key={payment._id} className="border-b last:border-0">
-                    <td className="px-4 py-4 font-medium">
-                      {payment.transactionId || payment.stripeSessionId || "N/A"}
-                    </td>
+                {payments.map((payment) => {
+                  const txnId =
+                    payment.transactionId ||
+                    payment.paymentIntentId ||
+                    payment.stripeSessionId ||
+                    "N/A";
 
-                    <td className="px-4 py-4 text-gray-600">
-                      {payment.customerEmail}
-                    </td>
+                  const paymentDate = payment.paidAt || payment.createdAt;
 
-                    <td className="px-4 py-4 text-gray-600">
-                      {payment.bookingId}
-                    </td>
+                  return (
+                    <tr key={payment._id} className="border-b last:border-0 hover:bg-gray-50/50">
+                      <td className="px-4 py-4 font-mono text-xs font-medium text-gray-900 max-w-[180px] truncate" title={txnId}>
+                        {txnId}
+                      </td>
 
-                    <td className="px-4 py-4 font-semibold">
-                      ৳{payment.amount.toLocaleString("en-BD")}
-                    </td>
+                      <td className="px-4 py-4 text-gray-700">
+                        <p className="font-medium text-gray-900">
+                          {payment.customerName || "Customer"}
+                        </p>
+                        <p className="text-xs text-gray-500 truncate max-w-[170px]">
+                          {payment.customerEmail || "N/A"}
+                        </p>
+                      </td>
 
-                    <td className="px-4 py-4 text-gray-600">
-                      {new Date(payment.createdAt).toLocaleDateString()}
-                    </td>
-                  </tr>
-                ))}
+                      <td className="px-4 py-4 text-gray-700">
+                        <p className="font-medium text-gray-900">
+                          {payment.technicianName || "N/A"}
+                        </p>
+                        {payment.technicianEmail && (
+                          <p className="text-xs text-gray-500 truncate max-w-[170px]">
+                            {payment.technicianEmail}
+                          </p>
+                        )}
+                      </td>
+
+                      <td className="px-4 py-4 text-gray-700 max-w-[180px] truncate" title={payment.serviceTitle || "N/A"}>
+                        {payment.serviceTitle || "N/A"}
+                      </td>
+
+                      <td className="px-4 py-4 font-semibold text-gray-900 whitespace-nowrap">
+                        ${payment.amount !== undefined && payment.amount !== null
+                          ? payment.amount.toLocaleString("en-US", {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })
+                          : "0.00"}
+                      </td>
+
+                      <td className="px-4 py-4 text-gray-600 whitespace-nowrap">
+                        {formatDate(paymentDate)}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

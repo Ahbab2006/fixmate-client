@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { apiUrl } from "@/lib/api";
 import { toast } from "sonner";
 
 const categories = [
@@ -50,7 +51,7 @@ export default function EditServicePage() {
         }
 
         const response = await fetch(
-          "http://localhost:5000/api/services/my-services",
+          apiUrl("/api/services/my-services"),
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -149,7 +150,7 @@ export default function EditServicePage() {
       }
 
       const response = await fetch(
-        `http://localhost:5000/api/services/${id}`,
+        apiUrl(`/api/services/${id}`),
         {
           method: "PUT",
           headers: {
@@ -246,7 +247,7 @@ export default function EditServicePage() {
 
           <div className="grid gap-5 md:grid-cols-2">
             <div>
-              <label className="mb-2 block font-medium">Base Price (৳)</label>
+              <label className="mb-2 block font-medium">Base Price ($)</label>
               <input
                 type="number"
                 name="basePrice"

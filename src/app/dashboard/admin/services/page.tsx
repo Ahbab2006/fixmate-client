@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -10,7 +9,9 @@ import {
   RefreshCw,
   Loader2,
   Clock,
+  Layers,
 } from "lucide-react";
+import { apiUrl } from "@/lib/api";
 
 interface Service {
   _id: string;
@@ -24,16 +25,20 @@ interface Service {
   serviceArea: string;
   technicianName: string;
   technicianEmail: string;
+  approvalStatus: "pending" | "approved" | "rejected";
   createdAt: string;
 }
+
+type FilterStatus = "pending" | "approved" | "rejected" | "all";
 
 export default function AdminServicesPage() {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState<FilterStatus>("pending");
   const [processingId, setProcessingId] = useState("");
   const [selectedService, setSelectedService] = useState<Service | null>(null);
 
-  const fetchPendingServices = async () => {
+  const fetchServices = async (targetFilter: FilterStatus = filter) => {
     try {
       setLoading(true);
 
@@ -45,11 +50,12 @@ export default function AdminServicesPage() {
       }
 
       const response = await fetch(
-        "http://localhost:5000/api/services/admin/pending",
+        apiUrl(`/api/services/admin/services?approvalStatus=${targetFilter}`),
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+          cache: "no-store",
         }
       );
 
@@ -70,8 +76,13 @@ export default function AdminServicesPage() {
   };
 
   useEffect(() => {
-    fetchPendingServices();
+    fetchServices("pending");
   }, []);
+
+  const handleFilterChange = (newFilter: FilterStatus) => {
+    setFilter(newFilter);
+    fetchServices(newFilter);
+  };
 
   const handleApproval = async (
     serviceId: string,
@@ -94,7 +105,7 @@ export default function AdminServicesPage() {
       }
 
       const response = await fetch(
-        `http://localhost:5000/api/services/admin/${serviceId}/approval`,
+        apiUrl(`/api/services/admin/${serviceId}/approval`),
         {
           method: "PATCH",
           headers: {
@@ -111,15 +122,14 @@ export default function AdminServicesPage() {
         throw new Error(data.message || "Approval update failed.");
       }
 
-      setServices((prev) =>
-        prev.filter((service) => service._id !== serviceId)
-      );
+      toast.success(data.message);
 
       if (selectedService?._id === serviceId) {
         setSelectedService(null);
       }
 
-      toast.success(data.message);
+      // Refresh current filter view without losing filter selection
+      await fetchServices(filter);
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "Something went wrong."
@@ -128,6 +138,69 @@ export default function AdminServicesPage() {
       setProcessingId("");
     }
   };
+
+  const getSummaryInfo = () => {
+    switch (filter) {
+      case "approved":
+        return {
+          label: "Approved Services",
+          color: "bg-green-100 text-green-700",
+          icon: <CheckCircle size={25} />,
+        };
+      case "rejected":
+        return {
+          label: "Rejected Services",
+          color: "bg-red-100 text-red-700",
+          icon: <XCircle size={25} />,
+        };
+      case "all":
+        return {
+          label: "Total Services",
+          color: "bg-blue-100 text-blue-700",
+          icon: <Layers size={25} />,
+        };
+      case "pending":
+      default:
+        return {
+          label: "Pending Services",
+          color: "bg-yellow-100 text-yellow-700",
+          icon: <Clock size={25} />,
+        };
+    }
+  };
+
+  const getApprovalBadge = (status: Service["approvalStatus"]) => {
+    switch (status) {
+      case "approved":
+        return (
+          <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+            Approved
+          </span>
+        );
+      case "rejected":
+        return (
+          <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
+            Rejected
+          </span>
+        );
+      case "pending":
+      default:
+        return (
+          <span className="rounded-full bg-yellow-100 px-3 py-1 text-xs font-semibold text-yellow-700">
+            Pending
+          </span>
+        );
+    }
+  };
+
+  const filterTabs: { label: string; value: FilterStatus }[] = [
+    { label: "Pending", value: "pending" },
+    { label: "Approved", value: "approved" },
+    { label: "Rejected", value: "rejected" },
+    { label: "All Services", value: "all" },
+  ];
+
+  const summary = getSummaryInfo();
 
   return (
     <main className="min-h-screen bg-gray-50 p-4 sm:p-8">
@@ -145,7 +218,7 @@ export default function AdminServicesPage() {
           </div>
 
           <button
-            onClick={fetchPendingServices}
+            onClick={() => fetchServices(filter)}
             disabled={loading}
             className="flex items-center gap-2 rounded-lg border bg-white px-4 py-2 font-medium hover:bg-gray-100 disabled:opacity-50"
           >
@@ -154,15 +227,32 @@ export default function AdminServicesPage() {
           </button>
         </div>
 
-        {/* Pending Count */}
+        {/* Status Filter Tabs */}
+        <div className="mb-6 flex flex-wrap gap-2">
+          {filterTabs.map((tab) => (
+            <button
+              key={tab.value}
+              onClick={() => handleFilterChange(tab.value)}
+              className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
+                filter === tab.value
+                  ? "bg-blue-600 text-white shadow-sm"
+                  : "border bg-white text-gray-700 hover:bg-gray-100"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Summary Count */}
         <div className="mb-7 rounded-xl border bg-white p-5 shadow-sm">
           <div className="flex items-center gap-4">
-            <div className="rounded-lg bg-yellow-100 p-3 text-yellow-700">
-              <Clock size={25} />
+            <div className={`rounded-lg p-3 ${summary.color}`}>
+              {summary.icon}
             </div>
 
             <div>
-              <p className="text-sm text-gray-500">Pending Services</p>
+              <p className="text-sm text-gray-500">{summary.label}</p>
               <h2 className="text-2xl font-bold text-gray-900">
                 {services.length}
               </h2>
@@ -182,10 +272,18 @@ export default function AdminServicesPage() {
           <div className="rounded-xl border bg-white py-16 text-center">
             <CheckCircle className="mx-auto text-green-500" size={45} />
             <h2 className="mt-4 text-xl font-bold text-gray-800">
-              No Pending Services
+              {filter === "pending"
+                ? "No Pending Services"
+                : filter === "all"
+                ? "No Services Found"
+                : `No ${
+                    filter.charAt(0).toUpperCase() + filter.slice(1)
+                  } Services`}
             </h2>
             <p className="mt-2 text-gray-500">
-              All service requests have been reviewed.
+              {filter === "pending"
+                ? "All service requests have been reviewed."
+                : `No services found under the "${filter}" filter.`}
             </p>
           </div>
         )}
@@ -210,9 +308,7 @@ export default function AdminServicesPage() {
                       {service.category}
                     </span>
 
-                    <span className="rounded-full bg-yellow-100 px-3 py-1 text-xs font-semibold text-yellow-700">
-                      Pending
-                    </span>
+                    {getApprovalBadge(service.approvalStatus)}
                   </div>
 
                   <h2 className="mt-4 text-xl font-bold text-gray-900">
@@ -231,7 +327,7 @@ export default function AdminServicesPage() {
                       <strong>Email:</strong> {service.technicianEmail}
                     </p>
                     <p>
-                      <strong>Price:</strong> ৳{service.basePrice}
+                      <strong>Price:</strong> ${service.basePrice}
                     </p>
                     <p>
                       <strong>Duration:</strong> {service.estimatedDuration}
@@ -245,29 +341,62 @@ export default function AdminServicesPage() {
                     View Details
                   </button>
 
-                  <div className="mt-3 grid grid-cols-2 gap-3">
-                    <button
-                      onClick={() =>
-                        handleApproval(service._id, "approved")
-                      }
-                      disabled={processingId === service._id}
-                      className="flex items-center justify-center gap-2 rounded-lg bg-green-600 py-2 font-semibold text-white hover:bg-green-700 disabled:opacity-50"
-                    >
-                      <CheckCircle size={17} />
-                      Approve
-                    </button>
+                  {/* Actions depending on status */}
+                  {service.approvalStatus === "pending" && (
+                    <div className="mt-3 grid grid-cols-2 gap-3">
+                      <button
+                        onClick={() =>
+                          handleApproval(service._id, "approved")
+                        }
+                        disabled={processingId === service._id}
+                        className="flex items-center justify-center gap-2 rounded-lg bg-green-600 py-2 font-semibold text-white hover:bg-green-700 disabled:opacity-50"
+                      >
+                        <CheckCircle size={17} />
+                        Approve
+                      </button>
 
-                    <button
-                      onClick={() =>
-                        handleApproval(service._id, "rejected")
-                      }
-                      disabled={processingId === service._id}
-                      className="flex items-center justify-center gap-2 rounded-lg bg-red-600 py-2 font-semibold text-white hover:bg-red-700 disabled:opacity-50"
-                    >
-                      <XCircle size={17} />
-                      Reject
-                    </button>
-                  </div>
+                      <button
+                        onClick={() =>
+                          handleApproval(service._id, "rejected")
+                        }
+                        disabled={processingId === service._id}
+                        className="flex items-center justify-center gap-2 rounded-lg bg-red-600 py-2 font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+                      >
+                        <XCircle size={17} />
+                        Reject
+                      </button>
+                    </div>
+                  )}
+
+                  {service.approvalStatus === "approved" && (
+                    <div className="mt-3">
+                      <button
+                        onClick={() =>
+                          handleApproval(service._id, "rejected")
+                        }
+                        disabled={processingId === service._id}
+                        className="flex w-full items-center justify-center gap-2 rounded-lg border border-red-600 py-2 font-semibold text-red-600 hover:bg-red-50 disabled:opacity-50"
+                      >
+                        <XCircle size={17} />
+                        Reject Service
+                      </button>
+                    </div>
+                  )}
+
+                  {service.approvalStatus === "rejected" && (
+                    <div className="mt-3">
+                      <button
+                        onClick={() =>
+                          handleApproval(service._id, "approved")
+                        }
+                        disabled={processingId === service._id}
+                        className="flex w-full items-center justify-center gap-2 rounded-lg border border-green-600 py-2 font-semibold text-green-600 hover:bg-green-50 disabled:opacity-50"
+                      >
+                        <CheckCircle size={17} />
+                        Approve Service
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -302,9 +431,12 @@ export default function AdminServicesPage() {
               className="mt-5 h-52 w-full rounded-xl object-cover"
             />
 
-            <h3 className="mt-4 text-2xl font-bold">
-              {selectedService.title}
-            </h3>
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
+              <h3 className="text-2xl font-bold">
+                {selectedService.title}
+              </h3>
+              {getApprovalBadge(selectedService.approvalStatus)}
+            </div>
 
             <p className="mt-2 text-gray-600">
               {selectedService.description}
@@ -314,33 +446,63 @@ export default function AdminServicesPage() {
               <p><strong>Category:</strong> {selectedService.category}</p>
               <p><strong>Technician:</strong> {selectedService.technicianName}</p>
               <p><strong>Email:</strong> {selectedService.technicianEmail}</p>
-              <p><strong>Price:</strong> ৳{selectedService.basePrice}</p>
+              <p><strong>Price:</strong> ${selectedService.basePrice}</p>
               <p><strong>Duration:</strong> {selectedService.estimatedDuration}</p>
               <p><strong>Service Mode:</strong> {selectedService.serviceMode}</p>
               <p><strong>Service Area:</strong> {selectedService.serviceArea}</p>
             </div>
 
-            <div className="mt-6 grid grid-cols-2 gap-3">
-              <button
-                onClick={() =>
-                  handleApproval(selectedService._id, "approved")
-                }
-                disabled={processingId === selectedService._id}
-                className="rounded-lg bg-green-600 py-3 font-semibold text-white hover:bg-green-700 disabled:opacity-50"
-              >
-                Approve
-              </button>
+            {selectedService.approvalStatus === "pending" && (
+              <div className="mt-6 grid grid-cols-2 gap-3">
+                <button
+                  onClick={() =>
+                    handleApproval(selectedService._id, "approved")
+                  }
+                  disabled={processingId === selectedService._id}
+                  className="rounded-lg bg-green-600 py-3 font-semibold text-white hover:bg-green-700 disabled:opacity-50"
+                >
+                  Approve
+                </button>
 
-              <button
-                onClick={() =>
-                  handleApproval(selectedService._id, "rejected")
-                }
-                disabled={processingId === selectedService._id}
-                className="rounded-lg bg-red-600 py-3 font-semibold text-white hover:bg-red-700 disabled:opacity-50"
-              >
-                Reject
-              </button>
-            </div>
+                <button
+                  onClick={() =>
+                    handleApproval(selectedService._id, "rejected")
+                  }
+                  disabled={processingId === selectedService._id}
+                  className="rounded-lg bg-red-600 py-3 font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+                >
+                  Reject
+                </button>
+              </div>
+            )}
+
+            {selectedService.approvalStatus === "approved" && (
+              <div className="mt-6">
+                <button
+                  onClick={() =>
+                    handleApproval(selectedService._id, "rejected")
+                  }
+                  disabled={processingId === selectedService._id}
+                  className="w-full rounded-lg border border-red-600 py-3 font-semibold text-red-600 hover:bg-red-50 disabled:opacity-50"
+                >
+                  Reject Service
+                </button>
+              </div>
+            )}
+
+            {selectedService.approvalStatus === "rejected" && (
+              <div className="mt-6">
+                <button
+                  onClick={() =>
+                    handleApproval(selectedService._id, "approved")
+                  }
+                  disabled={processingId === selectedService._id}
+                  className="w-full rounded-lg border border-green-600 py-3 font-semibold text-green-600 hover:bg-green-50 disabled:opacity-50"
+                >
+                  Approve Service
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

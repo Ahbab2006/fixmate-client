@@ -7,6 +7,7 @@ import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { ArrowLeft, Loader2 } from "lucide-react";
+import { apiUrl } from "@/lib/api";
 
 interface Service {
   _id: string;
@@ -37,7 +38,9 @@ export default function BookingPage() {
     if (isPending) return;
 
     if (!session) {
-      router.replace("/login");
+      router.replace(
+        `/sign-in?redirect=${encodeURIComponent(`/services/${serviceId}/book`)}`
+      );
       return;
     }
 
@@ -53,7 +56,7 @@ export default function BookingPage() {
     const fetchService = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/services/${serviceId}`
+          apiUrl(`/api/services/${serviceId}`)
         );
 
         const data = await response.json();
@@ -113,7 +116,7 @@ export default function BookingPage() {
         return;
       }
 
-      const response = await fetch("http://localhost:5000/api/bookings", {
+      const response = await fetch(apiUrl("/api/bookings"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -208,7 +211,7 @@ export default function BookingPage() {
                 Technician: {service.technicianName}
               </p>
               <p className="mt-1 font-bold text-blue-600">
-                ৳{service.basePrice}
+                ${service.basePrice}
               </p>
             </div>
           </div>

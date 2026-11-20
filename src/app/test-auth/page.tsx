@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
+import { apiUrl } from "@/lib/api";
 
 export default function TestAuthPage() {
   const [loading, setLoading] = useState(false);
@@ -23,7 +24,7 @@ export default function TestAuthPage() {
 
       // Send JWT Token to Backend
       const response = await fetch(
-        "http://localhost:5000/api/test/protected",
+        apiUrl("/api/test/protected"),
         {
           method: "GET",
           headers: {

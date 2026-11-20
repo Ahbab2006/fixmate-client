@@ -4,6 +4,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { apiUrl } from "@/lib/api";
 import { toast } from "sonner";
 
 const categories = [
@@ -80,7 +81,9 @@ export default function AddServicePage() {
 
     if (!session?.user) {
       toast.error("Please login first.");
-      router.push("/login");
+      router.push(
+        `/sign-in?redirect=${encodeURIComponent("/dashboard/technician/add-service")}`
+      );
       return;
     }
 
@@ -136,7 +139,7 @@ export default function AddServicePage() {
 
       // Step 3: Create service in Backend
       const response = await fetch(
-        "http://localhost:5000/api/services",
+        apiUrl("/api/services"),
         {
           method: "POST",
           headers: {
@@ -256,7 +259,7 @@ export default function AddServicePage() {
           <div className="grid gap-5 md:grid-cols-2">
             <div>
               <label className="mb-2 block font-medium text-gray-700">
-                Base Price (৳)
+                Base Price ($)
               </label>
               <input
                 type="number"
@@ -264,7 +267,7 @@ export default function AddServicePage() {
                 value={formData.basePrice}
                 onChange={handleChange}
                 min="1"
-                placeholder="2000"
+                placeholder="50"
                 className="w-full rounded-lg border px-4 py-3 outline-none focus:border-blue-500"
                 required
               />

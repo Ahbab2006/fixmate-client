@@ -15,8 +15,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
-
-const API_URL = "http://localhost:5000";
+import { apiUrl } from "@/lib/api";
 
 interface Service {
   _id: string;
@@ -55,8 +54,8 @@ export default function TechnicianDashboard() {
       };
 
       const [serviceResponse, bookingResponse] = await Promise.all([
-        fetch(`${API_URL}/api/services/my-services`, { headers }),
-        fetch(`${API_URL}/api/bookings/technician`, { headers }),
+        fetch(apiUrl("/api/services/my-services"), { headers }),
+        fetch(apiUrl("/api/bookings/technician"), { headers }),
       ]);
 
       if (!serviceResponse.ok || !bookingResponse.ok) {

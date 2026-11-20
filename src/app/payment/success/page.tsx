@@ -1,15 +1,20 @@
-
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { apiUrl } from "@/lib/api";
 
 function PaymentSuccessContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session_id");
+
+  const { data: session, isPending: sessionLoading } = authClient.useSession();
+  const userRole = session?.user?.role;
 
   const [status, setStatus] = useState<
     "loading" | "success" | "error"
@@ -20,6 +25,26 @@ function PaymentSuccessContent() {
   );
 
   useEffect(() => {
+    if (sessionLoading) return;
+
+    if (!session?.user) {
+      const redirectUrl = sessionId
+        ? `/payment/success?session_id=${encodeURIComponent(sessionId)}`
+        : "/payment/success";
+      router.replace(`/sign-in?redirect=${encodeURIComponent(redirectUrl)}`);
+      return;
+    }
+
+    if (userRole !== "customer") {
+      toast.error("Payment pages are accessible to customers only.");
+      router.replace(
+        userRole === "admin"
+          ? "/dashboard/admin"
+          : "/dashboard/technician"
+      );
+      return;
+    }
+
     let active = true;
 
     const verifyPayment = async () => {
@@ -36,7 +61,7 @@ function PaymentSuccessContent() {
         }
 
         const response = await fetch(
-          "http://localhost:5000/api/payments/verify-checkout-session",
+          apiUrl("/api/payments/verify-checkout-session"),
           {
             method: "POST",
             headers: {
@@ -76,7 +101,21 @@ function PaymentSuccessContent() {
     return () => {
       active = false;
     };
-  }, [sessionId]);
+  }, [session, sessionLoading, userRole, sessionId, router]);
+
+  if (sessionLoading || !session?.user || userRole !== "customer") {
+    return (
+      <div className="flex min-h-[80vh] items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <Loader2
+            size={60}
+            className="mx-auto animate-spin text-blue-600"
+          />
+          <p className="mt-4 text-gray-600">Verifying customer access...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-[80vh] items-center justify-center bg-gray-50 p-5">

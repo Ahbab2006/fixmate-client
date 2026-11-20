@@ -11,6 +11,7 @@ import {
   Wrench,
   Loader2,
 } from "lucide-react";
+import { apiUrl } from "@/lib/api";
 
 interface Service {
   _id: string;
@@ -45,7 +46,7 @@ export default function ServiceDetailsPage() {
         setError("");
 
         const response = await fetch(
-          `http://localhost:5000/api/services/${serviceId}`
+          apiUrl(`/api/services/${serviceId}`)
         );
 
         const data = await response.json();
@@ -190,7 +191,7 @@ export default function ServiceDetailsPage() {
               </p>
 
               <p className="text-3xl font-bold text-blue-600">
-                ৳{service.basePrice}
+                ${service.basePrice}
               </p>
 
               <Link

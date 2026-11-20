@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { RefreshCw, CalendarDays, ClipboardList } from "lucide-react";
+import { apiUrl } from "@/lib/api";
 
 type Booking = {
   _id: string;
@@ -45,7 +46,7 @@ export default function AdminBookingsPage() {
       }
 
       const response = await fetch(
-        "http://localhost:5000/api/bookings/admin/all",
+        apiUrl("/api/bookings/admin/all"),
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -232,7 +233,7 @@ export default function AdminBookingsPage() {
                     </td>
 
                     <td className="px-4 py-4 font-medium">
-                      ৳{booking.finalAmount ?? booking.basePrice}
+                      ${booking.finalAmount ?? booking.basePrice}
                     </td>
 
                     <td className="px-4 py-4">
@@ -308,13 +309,13 @@ export default function AdminBookingsPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-gray-500">Base Price</p>
-                  <p className="font-semibold">৳{selectedBooking.basePrice}</p>
+                  <p className="font-semibold">${selectedBooking.basePrice}</p>
                 </div>
                 <div>
                   <p className="text-gray-500">Final Amount</p>
                   <p className="font-semibold">
                     {selectedBooking.finalAmount
-                      ? `৳${selectedBooking.finalAmount}`
+                      ? `$${selectedBooking.finalAmount}`
                       : "Not set"}
                   </p>
                 </div>

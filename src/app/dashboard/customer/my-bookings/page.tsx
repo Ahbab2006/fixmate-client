@@ -9,6 +9,8 @@ import {
   Package,
     CreditCard,
 } from "lucide-react";
+import { apiUrl } from "@/lib/api";
+import ConfirmationModal from "@/components/shared/ConfirmationModal";
 
 interface Booking {
   _id: string;
@@ -31,6 +33,8 @@ export default function MyBookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [bookingToCancel, setBookingToCancel] = useState<Booking | null>(null);
+  const [cancelError, setCancelError] = useState<string | null>(null);
 
   const [payingId, setPayingId] = useState<string | null>(null);
 
@@ -46,7 +50,7 @@ export default function MyBookingsPage() {
       }
 
       const response = await fetch(
-        "http://localhost:5000/api/bookings/my-bookings",
+        apiUrl("/api/bookings/my-bookings"),
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -92,7 +96,7 @@ export default function MyBookingsPage() {
     }
 
     const response = await fetch(
-      "http://localhost:5000/api/payments/create-checkout-session",
+      apiUrl("/api/payments/create-checkout-session"),
       {
         method: "POST",
         headers: {
@@ -127,15 +131,12 @@ export default function MyBookingsPage() {
 };
 
 
-  const handleCancel = async (bookingId: string) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to cancel this booking?"
-    );
-
-    if (!confirmed) return;
+  const confirmCancelBooking = async () => {
+    if (!bookingToCancel || cancellingId) return;
 
     try {
-      setCancellingId(bookingId);
+      setCancellingId(bookingToCancel._id);
+      setCancelError(null);
 
       const tokenResult = await authClient.token();
       const token = tokenResult.data?.token;
@@ -145,7 +146,7 @@ export default function MyBookingsPage() {
       }
 
       const response = await fetch(
-        `http://localhost:5000/api/bookings/${bookingId}/cancel`,
+        apiUrl(`/api/bookings/${bookingToCancel._id}/cancel`),
         {
           method: "PATCH",
           headers: {
@@ -164,19 +165,21 @@ export default function MyBookingsPage() {
 
       setBookings((prev) =>
         prev.map((booking) =>
-          booking._id === bookingId
+          booking._id === bookingToCancel._id
             ? { ...booking, status: "cancelled" }
             : booking
         )
       );
 
       toast.success("Booking cancelled successfully!");
+      setBookingToCancel(null);
     } catch (error) {
-      toast.error(
+      const errorMsg =
         error instanceof Error
           ? error.message
-          : "Something went wrong."
-      );
+          : "Something went wrong.";
+      setCancelError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setCancellingId(null);
     }
@@ -309,7 +312,7 @@ export default function MyBookingsPage() {
                       </p>
 
                       <p>
-                        <strong>Base Price:</strong> ৳
+                        <strong>Base Price:</strong> $
                         {booking.basePrice}
                       </p>
 
@@ -322,7 +325,7 @@ export default function MyBookingsPage() {
 
                       {booking.finalAmount !== undefined && (
                         <p>
-                          <strong>Final Amount:</strong> ৳
+                          <strong>Final Amount:</strong> $
                           {booking.finalAmount}
                         </p>
                       )}
@@ -373,14 +376,15 @@ export default function MyBookingsPage() {
                     {booking.status === "requested" && (
                       <div className="mt-5 border-t pt-4">
                         <button
-                          onClick={() => handleCancel(booking._id)}
+                          onClick={() => {
+                            setBookingToCancel(booking);
+                            setCancelError(null);
+                          }}
                           disabled={cancellingId === booking._id}
                           className="flex items-center gap-2 rounded-lg bg-red-600 px-5 py-2.5 font-semibold text-white hover:bg-red-700 disabled:opacity-50"
                         >
                           <XCircle size={17} />
-                          {cancellingId === booking._id
-                            ? "Cancelling..."
-                            : "Cancel Booking"}
+                          Cancel Booking
                         </button>
 
                         <p className="mt-2 text-xs text-gray-500">
@@ -402,6 +406,30 @@ export default function MyBookingsPage() {
           </div>
         )}
       </div>
+
+      {/* Confirmation Modal for Booking Cancellation */}
+      <ConfirmationModal
+        isOpen={!!bookingToCancel}
+        onClose={() => {
+          if (!cancellingId) {
+            setBookingToCancel(null);
+            setCancelError(null);
+          }
+        }}
+        onConfirm={confirmCancelBooking}
+        title="Cancel Repair Booking"
+        description={
+          bookingToCancel
+            ? `Are you sure you want to cancel your repair booking for "${bookingToCancel.serviceTitle}"? This action cannot be undone.`
+            : ""
+        }
+        confirmText="Yes, Cancel Booking"
+        cancelText="Keep Booking"
+        loadingText="Cancelling..."
+        isLoading={!!cancellingId}
+        error={cancelError}
+        variant="danger"
+      />
     </div>
   );
 }

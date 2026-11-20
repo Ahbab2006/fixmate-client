@@ -14,6 +14,8 @@ import {
   XCircle,
   Clock,
 } from "lucide-react";
+import { apiUrl } from "@/lib/api";
+import ConfirmationModal from "@/components/shared/ConfirmationModal";
 
 interface Booking {
   _id: string;
@@ -46,6 +48,10 @@ export default function TechnicianRequestsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [bookingToReject, setBookingToReject] = useState<Booking | null>(null);
+  const [rejectError, setRejectError] = useState<string | null>(null);
+  const [isRejecting, setIsRejecting] = useState(false);
   const [finalAmounts, setFinalAmounts] = useState<
     Record<string, string>
   >({});
@@ -62,7 +68,7 @@ export default function TechnicianRequestsPage() {
       }
 
       const response = await fetch(
-        "http://localhost:5000/api/bookings/technician",
+        apiUrl("/api/bookings/technician"),
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -97,6 +103,57 @@ export default function TechnicianRequestsPage() {
     }
   }, [session, fetchBookings]);
 
+  const confirmRejectRequest = async () => {
+    if (!bookingToReject || isRejecting) return;
+
+    try {
+      setIsRejecting(true);
+      setUpdatingId(bookingToReject._id);
+      setRejectError(null);
+
+      const tokenResult = await authClient.token();
+      const token = tokenResult.data?.token;
+
+      if (tokenResult.error || !token) {
+        throw new Error("Authentication token not found.");
+      }
+
+      const response = await fetch(
+        apiUrl(`/api/bookings/${bookingToReject._id}/status`),
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ status: "rejected" }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result.message || "Failed to update booking status."
+        );
+      }
+
+      toast.success("Booking rejected successfully!");
+      setBookingToReject(null);
+      await fetchBookings();
+    } catch (error) {
+      const errorMsg =
+        error instanceof Error
+          ? error.message
+          : "Something went wrong.";
+      setRejectError(errorMsg);
+      toast.error(errorMsg);
+    } finally {
+      setIsRejecting(false);
+      setUpdatingId(null);
+    }
+  };
+
   const updateStatus = async (
     bookingId: string,
     status: "accepted" | "rejected" | "in-progress" | "completed"
@@ -130,7 +187,7 @@ export default function TechnicianRequestsPage() {
       }
 
       const response = await fetch(
-        `http://localhost:5000/api/bookings/${bookingId}/status`,
+        apiUrl(`/api/bookings/${bookingId}/status`),
         {
           method: "PATCH",
           headers: {
@@ -192,6 +249,27 @@ export default function TechnicianRequestsPage() {
   const completedCount = bookings.filter(
     (booking) => booking.status === "completed"
   ).length;
+
+  const filteredBookings =
+    statusFilter === "all"
+      ? bookings
+      : bookings.filter((booking) => booking.status === statusFilter);
+
+  const filterTabs = [
+    { label: "All", value: "all", count: bookings.length },
+    { label: "Requested", value: "requested", count: requestedCount },
+    {
+      label: "Accepted",
+      value: "accepted",
+      count: bookings.filter((b) => b.status === "accepted").length,
+    },
+    {
+      label: "In Progress",
+      value: "in-progress",
+      count: bookings.filter((b) => b.status === "in-progress").length,
+    },
+    { label: "Completed", value: "completed", count: completedCount },
+  ];
 
   if (loading) {
     return (
@@ -255,6 +333,32 @@ export default function TechnicianRequestsPage() {
           />
         </div>
 
+        {/* Status Filter Tabs */}
+        <div className="mb-6 flex flex-wrap gap-2">
+          {filterTabs.map((tab) => (
+            <button
+              key={tab.value}
+              onClick={() => setStatusFilter(tab.value)}
+              className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition ${
+                statusFilter === tab.value
+                  ? "bg-blue-600 text-white shadow-sm"
+                  : "border bg-white text-gray-700 hover:bg-gray-100"
+              }`}
+            >
+              <span>{tab.label}</span>
+              <span
+                className={`rounded-full px-2 py-0.5 text-xs ${
+                  statusFilter === tab.value
+                    ? "bg-blue-700 text-white"
+                    : "bg-gray-100 text-gray-600"
+                }`}
+              >
+                {tab.count}
+              </span>
+            </button>
+          ))}
+        </div>
+
         {/* Booking List */}
         {bookings.length === 0 ? (
           <div className="rounded-xl border bg-white p-12 text-center">
@@ -271,9 +375,24 @@ export default function TechnicianRequestsPage() {
               New customer requests will appear here.
             </p>
           </div>
+        ) : filteredBookings.length === 0 ? (
+          <div className="rounded-xl border bg-white p-12 text-center">
+            <CalendarDays
+              size={45}
+              className="mx-auto mb-4 text-gray-400"
+            />
+
+            <h2 className="text-xl font-semibold text-gray-800">
+              No Requests Found
+            </h2>
+
+            <p className="mt-2 text-gray-500">
+              No bookings found with status &quot;{filterTabs.find((t) => t.value === statusFilter)?.label}&quot;.
+            </p>
+          </div>
         ) : (
           <div className="space-y-6">
-            {bookings.map((booking) => (
+            {filteredBookings.map((booking) => (
               <div
                 key={booking._id}
                 className="overflow-hidden rounded-xl border bg-white shadow-sm"
@@ -354,13 +473,13 @@ export default function TechnicianRequestsPage() {
                     {/* Price */}
                     <div className="mt-4 flex flex-wrap gap-5 text-sm">
                       <p>
-                        <strong>Base Price:</strong> ৳
+                        <strong>Base Price:</strong> $
                         {booking.basePrice}
                       </p>
 
                       {booking.finalAmount !== undefined && (
                         <p>
-                          <strong>Final Amount:</strong> ৳
+                          <strong>Final Amount:</strong> $
                           {booking.finalAmount}
                         </p>
                       )}
@@ -393,12 +512,10 @@ export default function TechnicianRequestsPage() {
                           </button>
 
                           <button
-                            onClick={() =>
-                              updateStatus(
-                                booking._id,
-                                "rejected"
-                              )
-                            }
+                            onClick={() => {
+                              setBookingToReject(booking);
+                              setRejectError(null);
+                            }}
                             disabled={updatingId === booking._id}
                             className="flex items-center gap-2 rounded-lg bg-red-600 px-5 py-2.5 font-semibold text-white hover:bg-red-700 disabled:opacity-50"
                           >
@@ -427,7 +544,7 @@ export default function TechnicianRequestsPage() {
                         <div className="flex flex-wrap items-end gap-3">
                           <div>
                             <label className="mb-2 block text-sm font-medium text-gray-700">
-                              Final Amount (৳)
+                              Final Amount ($)
                             </label>
 
                             <input
@@ -489,6 +606,30 @@ export default function TechnicianRequestsPage() {
           </div>
         )}
       </div>
+
+      {/* Confirmation Modal for Request Rejection */}
+      <ConfirmationModal
+        isOpen={!!bookingToReject}
+        onClose={() => {
+          if (!isRejecting) {
+            setBookingToReject(null);
+            setRejectError(null);
+          }
+        }}
+        onConfirm={confirmRejectRequest}
+        title="Reject Repair Request"
+        description={
+          bookingToReject
+            ? `Are you sure you want to reject the repair request for "${bookingToReject.serviceTitle}" from ${bookingToReject.customerName}? The customer will be notified of this rejection.`
+            : ""
+        }
+        confirmText="Yes, Reject Request"
+        cancelText="Cancel"
+        loadingText="Rejecting..."
+        isLoading={isRejecting}
+        error={rejectError}
+        variant="danger"
+      />
     </div>
   );
 }
