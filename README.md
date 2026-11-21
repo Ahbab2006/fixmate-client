@@ -315,8 +315,8 @@ When running in Stripe Test Mode (`sk_test_...` / `pk_test_...`), use official S
 
 - **Frontend Client Repository:** [https://github.com/Ahbab2006/fixmate-client](https://github.com/Ahbab2006/fixmate-client)
 - **Backend Server Repository:** [https://github.com/Ahbab2006/fixmate-server](https://github.com/Ahbab2006/fixmate-server)
-- **Live Client Application:** [FixMate on Vercel](https://github.com/Ahbab2006/fixmate-client) *(Deploy target)*
-- **Live Backend API:** [FixMate Server on Render](https://github.com/Ahbab2006/fixmate-server) *(Deploy target)*
+- **Live Client Application:** [https://fixmate-client-three.vercel.app/](https://fixmate-client-three.vercel.app/) *(Deploy target)*
+- **Live Backend API:** [https://fixmate-server-mt4l.onrender.com](https://fixmate-server-mt4l.onrender.com) *(Deploy target)*
 
 ---
 
