@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { apiUrl } from "@/lib/api";
 import { toast } from "sonner";
@@ -54,62 +54,89 @@ export default function ProfilePage() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Track user email to detect account changes
+  const lastLoadedEmailRef = useRef<string | null>(null);
+
+  // Ref to track unsaved edits across lifecycle renders
+  const isDirtyRef = useRef(false);
+
   // Fetch authenticated user profile from backend
-  const fetchProfile = useCallback(async () => {
-    try {
-      const tokenResult = await authClient.token();
-      const token = tokenResult.data?.token;
+  const fetchProfile = useCallback(
+    async (options?: { forceReset?: boolean }) => {
+      try {
+        const tokenResult = await authClient.token();
+        const token = tokenResult.data?.token;
 
-      if (tokenResult.error || !token) {
-        throw new Error("Authentication token not found. Please log in.");
+        if (tokenResult.error || !token) {
+          throw new Error("Authentication token not found. Please log in.");
+        }
+
+        const response = await fetch(apiUrl("/api/users/profile"), {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          cache: "no-store",
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+          throw new Error(result.message || "Failed to load profile data.");
+        }
+
+        const p: UserProfile = result.profile;
+        setProfile(p);
+        lastLoadedEmailRef.current = p.email;
+
+        // Only overwrite form inputs if forced (initial load, explicit refresh, retry)
+        // or if the user has not started modifying any fields.
+        const shouldUpdateForm = options?.forceReset || !isDirtyRef.current;
+
+        if (shouldUpdateForm) {
+          setFormData({
+            name: p.name || "",
+            phone: p.phone || "",
+            area: p.area || "",
+            bio: p.bio || "",
+          });
+          setPreviewUrl(p.image || null);
+          setSelectedFile(null);
+          if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+          }
+        }
+      } catch (error: unknown) {
+        const err = error as Error;
+        toast.error(err.message || "Failed to fetch profile.");
+      } finally {
+        setLoading(false);
       }
-
-      const response = await fetch(apiUrl("/api/users/profile"), {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        cache: "no-store",
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || !result.success) {
-        throw new Error(result.message || "Failed to load profile data.");
-      }
-
-      const p: UserProfile = result.profile;
-      setProfile(p);
-      setFormData({
-        name: p.name || "",
-        phone: p.phone || "",
-        area: p.area || "",
-        bio: p.bio || "",
-      });
-      setPreviewUrl(p.image || null);
-      setSelectedFile(null);
-    } catch (error: unknown) {
-      const err = error as Error;
-      toast.error(err.message || "Failed to fetch profile.");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   useEffect(() => {
     let isMounted = true;
 
     if (!sessionLoading) {
-      (async () => {
-        if (isMounted) {
-          await fetchProfile();
-        }
-      })();
+      const currentUserEmail = session?.user?.email;
+      const needsFetch =
+        !profile ||
+        (currentUserEmail && lastLoadedEmailRef.current !== currentUserEmail);
+
+      if (needsFetch) {
+        (async () => {
+          if (isMounted) {
+            await fetchProfile({ forceReset: !isDirtyRef.current });
+          }
+        })();
+      }
     }
 
     return () => {
       isMounted = false;
     };
-  }, [sessionLoading, fetchProfile]);
+  }, [sessionLoading, session?.user?.email, profile, fetchProfile]);
 
   // Clean up object URL when component unmounts or preview changes
   useEffect(() => {
@@ -179,8 +206,28 @@ export default function ProfilePage() {
       bio: profile.bio || "",
     });
     handleCancelSelectedPhoto();
+    setPreviewUrl(profile.image || null);
     toast.info("Changes reset to current profile values.");
   };
+
+  // Reliable change detection across all profile attributes
+  const isNameChanged = formData.name.trim() !== (profile?.name || "").trim();
+  const isPhoneChanged = formData.phone.trim() !== (profile?.phone || "").trim();
+  const isAreaChanged = formData.area.trim() !== (profile?.area || "").trim();
+  const isBioChanged = formData.bio.trim() !== (profile?.bio || "").trim();
+  const isImageRemoved = Boolean(profile?.image) && previewUrl === null;
+  const isImageChanged = Boolean(selectedFile) || isImageRemoved;
+
+  const isDirty =
+    Boolean(profile) &&
+    (isNameChanged ||
+      isPhoneChanged ||
+      isAreaChanged ||
+      isBioChanged ||
+      isImageChanged);
+
+  // Synchronize ref on every render so lifecycle effects have immediate dirty visibility
+  isDirtyRef.current = isDirty;
 
   // Submit profile update
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -204,13 +251,21 @@ export default function ProfilePage() {
     const trimmedArea = formData.area.trim();
     const trimmedBio = formData.bio.trim();
 
-    const isNameSame = trimmedName === (profile?.name || "");
-    const isPhoneSame = trimmedPhone === (profile?.phone || "");
-    const isAreaSame = trimmedArea === (profile?.area || "");
-    const isBioSame = trimmedBio === (profile?.bio || "");
-    const isImageSame = !selectedFile;
+    const currentNameChanged = trimmedName !== (profile?.name || "").trim();
+    const currentPhoneChanged = trimmedPhone !== (profile?.phone || "").trim();
+    const currentAreaChanged = trimmedArea !== (profile?.area || "").trim();
+    const currentBioChanged = trimmedBio !== (profile?.bio || "").trim();
+    const currentImageRemoved = Boolean(profile?.image) && previewUrl === null;
+    const currentImageChanged = Boolean(selectedFile) || currentImageRemoved;
 
-    if (isNameSame && isPhoneSame && isAreaSame && isBioSame && isImageSame) {
+    const hasChanges =
+      currentNameChanged ||
+      currentPhoneChanged ||
+      currentAreaChanged ||
+      currentBioChanged ||
+      currentImageChanged;
+
+    if (!hasChanges) {
       toast.info("No changes to save.");
       return;
     }
@@ -277,6 +332,8 @@ export default function ProfilePage() {
 
       if (uploadedImageUrl !== undefined) {
         payload.image = uploadedImageUrl;
+      } else if (currentImageRemoved) {
+        payload.image = "";
       }
 
       const response = await fetch(apiUrl("/api/users/profile"), {
@@ -297,6 +354,7 @@ export default function ProfilePage() {
       // Step 4: Update state with updated profile
       const updatedProfile: UserProfile = result.profile;
       setProfile(updatedProfile);
+      lastLoadedEmailRef.current = updatedProfile.email;
       setFormData({
         name: updatedProfile.name || "",
         phone: updatedProfile.phone || "",
@@ -309,7 +367,7 @@ export default function ProfilePage() {
         fileInputRef.current.value = "";
       }
 
-      // Synchronize updated Name and Image across the app (Navbar, etc.)
+      // Synchronize updated Name and Image across the app (Navbar, layout, etc.)
       if (typeof window !== "undefined") {
         const updateDetail = {
           name: updatedProfile.name,
@@ -321,6 +379,17 @@ export default function ProfilePage() {
         window.dispatchEvent(
           new CustomEvent("profile-updated", { detail: updateDetail })
         );
+
+        if (updatedProfile.email) {
+          try {
+            localStorage.setItem(
+              `fixmate_profile_${updatedProfile.email}`,
+              JSON.stringify(updateDetail)
+            );
+          } catch {
+            // Silently ignore storage issues
+          }
+        }
       }
 
       toast.success(result.message || "Profile updated successfully!");
@@ -386,7 +455,7 @@ export default function ProfilePage() {
           <button
             onClick={() => {
               setLoading(true);
-              fetchProfile();
+              fetchProfile({ forceReset: true });
             }}
             className="mt-5 inline-flex items-center gap-2 rounded-xl bg-rose-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-rose-700"
           >
@@ -428,7 +497,7 @@ export default function ProfilePage() {
               type="button"
               onClick={() => {
                 setLoading(true);
-                fetchProfile();
+                fetchProfile({ forceReset: true });
               }}
               disabled={loading || saving}
               className="inline-flex items-center justify-center gap-2 self-start rounded-xl border border-white/15 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:border-blue-400/40 hover:bg-blue-600 disabled:opacity-50 sm:self-auto"
@@ -506,6 +575,38 @@ export default function ProfilePage() {
                         <X size={14} />
                       </button>
                     </div>
+                  )}
+
+                  {/* Photo Removal Notice */}
+                  {!selectedFile && !previewUrl && profile?.image && (
+                    <div className="mt-3.5 inline-flex items-center gap-2 rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 ring-1 ring-amber-600/20 dark:bg-amber-950/60 dark:text-amber-400 dark:ring-amber-500/20">
+                      <span>Photo will be removed</span>
+                      <button
+                        type="button"
+                        onClick={() => setPreviewUrl(profile.image)}
+                        className="text-amber-500 transition hover:text-slate-700 dark:text-amber-400 dark:hover:text-slate-200"
+                        title="Undo photo removal"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Remove Photo Action */}
+                  {!selectedFile && previewUrl && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPreviewUrl(null);
+                        toast.info(
+                          "Photo marked for removal. Click 'Save Changes' to apply."
+                        );
+                      }}
+                      disabled={saving}
+                      className="mt-2 text-xs font-medium text-slate-500 transition hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400"
+                    >
+                      Remove photo
+                    </button>
                   )}
 
                   {/* User Name & Role */}

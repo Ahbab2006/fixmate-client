@@ -17,8 +17,8 @@ import {
   FileText,
   DollarSign,
   Play,
-  Loader2,
   Wrench,
+  AlertCircle,
 } from "lucide-react";
 import { apiUrl } from "@/lib/api";
 import ConfirmationModal from "@/components/shared/ConfirmationModal";
@@ -234,35 +234,34 @@ export default function TechnicianRequestsPage() {
     }
   };
 
-  const getStatusStyle = (status: Booking["status"]) => {
+  const getStatusBadge = (status: Booking["status"]) => {
     switch (status) {
       case "accepted":
-        return "bg-blue-50 text-blue-700 ring-1 ring-blue-600/20 dark:bg-blue-950/60 dark:text-blue-400 dark:ring-blue-500/20";
+        return {
+          pill: "bg-blue-50 text-blue-700 border-blue-200/80 dark:bg-blue-950/50 dark:text-blue-300 dark:border-blue-900/60",
+          dot: "bg-blue-500",
+        };
       case "rejected":
       case "cancelled":
-        return "bg-rose-50 text-rose-700 ring-1 ring-rose-600/20 dark:bg-rose-950/60 dark:text-rose-400 dark:ring-rose-500/20";
+        return {
+          pill: "bg-rose-50 text-rose-700 border-rose-200/80 dark:bg-rose-950/50 dark:text-rose-300 dark:border-rose-900/60",
+          dot: "bg-rose-500",
+        };
       case "in-progress":
-        return "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-600/20 dark:bg-indigo-950/60 dark:text-indigo-400 dark:ring-indigo-500/20";
+        return {
+          pill: "bg-indigo-50 text-indigo-700 border-indigo-200/80 dark:bg-indigo-950/50 dark:text-indigo-300 dark:border-indigo-900/60",
+          dot: "bg-indigo-500",
+        };
       case "completed":
-        return "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20 dark:bg-emerald-950/60 dark:text-emerald-400 dark:ring-emerald-500/20";
+        return {
+          pill: "bg-emerald-50 text-emerald-700 border-emerald-200/80 dark:bg-emerald-950/50 dark:text-emerald-300 dark:border-emerald-900/60",
+          dot: "bg-emerald-500",
+        };
       default:
-        return "bg-amber-50 text-amber-700 ring-1 ring-amber-600/20 dark:bg-amber-950/60 dark:text-amber-400 dark:ring-amber-500/20";
-    }
-  };
-
-  const getStatusDot = (status: Booking["status"]) => {
-    switch (status) {
-      case "accepted":
-        return "bg-blue-500";
-      case "rejected":
-      case "cancelled":
-        return "bg-rose-500";
-      case "in-progress":
-        return "bg-indigo-500";
-      case "completed":
-        return "bg-emerald-500";
-      default:
-        return "bg-amber-500";
+        return {
+          pill: "bg-amber-50 text-amber-700 border-amber-200/80 dark:bg-amber-950/50 dark:text-amber-300 dark:border-amber-900/60",
+          dot: "bg-amber-500",
+        };
     }
   };
 
@@ -302,41 +301,28 @@ export default function TechnicianRequestsPage() {
   ];
 
   if (loading) {
-    return (
-      <div className="flex min-h-[65vh] items-center justify-center">
-        <div className="rounded-3xl border border-slate-200/80 bg-white px-10 py-12 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
-          <Loader2 className="mx-auto animate-spin text-blue-600 dark:text-blue-400" size={38} />
-          <p className="mt-4 text-sm font-semibold text-slate-600 dark:text-slate-400">
-            Loading booking requests...
-          </p>
-        </div>
-      </div>
-    );
+    return <RequestsSkeleton />;
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-12 text-slate-900 transition-colors duration-200 dark:bg-slate-950 dark:text-slate-100">
+    <div className="min-h-screen bg-slate-50/50 pb-16 text-slate-900 transition-colors duration-200 dark:bg-slate-950 dark:text-slate-100">
       <div className="mx-auto max-w-7xl space-y-8">
-        {/* ================= TOP DARK PREMIUM BANNER ================= */}
-        <div className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8 dark:border dark:border-slate-800">
-          <div className="pointer-events-none absolute -top-20 right-10 h-64 w-64 rounded-full bg-blue-600/25 blur-[90px]" />
-          <div className="pointer-events-none absolute -bottom-20 left-10 h-64 w-64 rounded-full bg-indigo-500/20 blur-[90px]" />
+        {/* ================= EDITORIAL TOP BANNER ================= */}
+        <div className="relative overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-8 dark:border-slate-800 dark:bg-slate-900/90">
+          <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-blue-500/10 blur-[80px] dark:bg-blue-600/15" />
+          <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-indigo-500/10 blur-[80px] dark:bg-indigo-600/10" />
 
-          <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="relative flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <div className="inline-flex items-center gap-1.5 rounded-full border border-blue-400/20 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-300">
-                <Sparkles size={13} className="text-blue-400" />
-                <span>Job Dispatch</span>
+              <div className="inline-flex items-center gap-2 rounded-full border border-blue-200/70 bg-blue-50/70 px-3 py-1 text-xs font-semibold text-blue-700 dark:border-blue-900/60 dark:bg-blue-950/50 dark:text-blue-300">
+                <Sparkles size={12} className="text-blue-600 dark:text-blue-400" />
+                <span className="font-mono text-[11px] uppercase tracking-wider">Field Operations</span>
               </div>
-              <h1 className="mt-3 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
-                Booking{" "}
-                <span className="bg-gradient-to-r from-blue-400 to-sky-300 bg-clip-text text-transparent">
-                  Requests
-                </span>
+              <h1 className="mt-3 font-serif text-2xl font-normal tracking-tight text-slate-900 sm:text-3xl dark:text-white">
+                Job Requests & <span className="italic">Dispatch</span>
               </h1>
-              <p className="mt-1.5 text-sm text-slate-300">
-                Review incoming customer repair requests, update job progress,
-                and finalize service billing.
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                Review incoming client bookings, manage on-site repairs, and finalize service billing.
               </p>
             </div>
 
@@ -345,10 +331,10 @@ export default function TechnicianRequestsPage() {
                 setLoading(true);
                 fetchBookings();
               }}
-              className="inline-flex items-center justify-center gap-2 self-start rounded-xl border border-white/15 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:border-blue-400/40 hover:bg-blue-600 sm:self-auto"
+              className="inline-flex items-center justify-center gap-2 self-start rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:border-slate-300 sm:self-auto dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
             >
-              <RefreshCw size={16} />
-              Refresh
+              <RefreshCw size={14} />
+              <span>Refresh Queue</span>
             </button>
           </div>
         </div>
@@ -359,54 +345,54 @@ export default function TechnicianRequestsPage() {
             title="Total Bookings"
             value={bookings.length}
             subtitle="All assigned requests"
-            icon={<CalendarDays size={21} />}
+            icon={<CalendarDays size={18} />}
             accent="bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400"
           />
 
           <StatCard
             title="New Requests"
             value={requestedCount}
-            subtitle="Awaiting confirmation"
-            icon={<Clock size={21} />}
+            subtitle="Awaiting response"
+            icon={<Clock size={18} />}
             accent="bg-amber-50 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400"
           />
 
           <StatCard
             title="Active Jobs"
             value={activeCount}
-            subtitle="Accepted or in progress"
-            icon={<Wrench size={21} />}
+            subtitle="Accepted / In progress"
+            icon={<Wrench size={18} />}
             accent="bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400"
           />
 
           <StatCard
             title="Completed"
             value={completedCount}
-            subtitle="Successfully finished"
-            icon={<CheckCircle size={21} />}
+            subtitle="Successfully finalized"
+            icon={<CheckCircle size={18} />}
             accent="bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400"
           />
         </div>
 
         {/* ================= STATUS FILTER TABS ================= */}
-        <div className="inline-flex flex-wrap gap-2 rounded-2xl border border-slate-200/80 bg-white p-1.5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <div className="inline-flex flex-wrap gap-1.5 rounded-2xl border border-slate-200/80 bg-white p-1.5 shadow-sm dark:border-slate-800 dark:bg-slate-900/90">
           {filterTabs.map((tab) => {
             const active = statusFilter === tab.value;
             return (
               <button
                 key={tab.value}
                 onClick={() => setStatusFilter(tab.value)}
-                className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-all ${
+                className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold transition-all ${
                   active
                     ? "bg-slate-900 text-white shadow-sm dark:bg-blue-600"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
+                    : "text-slate-600 hover:bg-slate-100/70 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white"
                 }`}
               >
                 <span>{tab.label}</span>
                 <span
-                  className={`rounded-full px-2 py-0.5 text-xs font-extrabold ${
+                  className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold ${
                     active
-                      ? "bg-blue-600 text-white dark:bg-slate-900/40"
+                      ? "bg-white/20 text-white"
                       : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
                   }`}
                 >
@@ -419,319 +405,321 @@ export default function TechnicianRequestsPage() {
 
         {/* ================= BOOKING LIST ================= */}
         {bookings.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-slate-300 bg-white py-20 text-center dark:border-slate-800 dark:bg-slate-900">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500">
-              <CalendarDays size={32} />
+          <div className="rounded-3xl border border-dashed border-slate-300 bg-white py-20 text-center dark:border-slate-800 dark:bg-slate-900/60">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500">
+              <CalendarDays size={26} />
             </div>
 
-            <h2 className="mt-4 text-xl font-extrabold text-slate-900 dark:text-white">
-              No Booking Requests
+            <h2 className="mt-4 font-serif text-xl font-normal text-slate-900 dark:text-white">
+              No Booking Requests Yet
             </h2>
 
-            <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-500 dark:text-slate-400">
-              New customer service requests will appear here as soon as clients
-              book your services.
+            <p className="mx-auto mt-1 max-w-sm text-xs text-slate-500 dark:text-slate-400">
+              When customers schedule services from your published catalog, incoming requests will appear here.
             </p>
           </div>
         ) : filteredBookings.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-slate-300 bg-white py-20 text-center dark:border-slate-800 dark:bg-slate-900">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500">
-              <CalendarDays size={32} />
+          <div className="rounded-3xl border border-dashed border-slate-300 bg-white py-20 text-center dark:border-slate-800 dark:bg-slate-900/60">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500">
+              <CalendarDays size={26} />
             </div>
 
-            <h2 className="mt-4 text-xl font-extrabold text-slate-900 dark:text-white">
-              No Requests Found
+            <h2 className="mt-4 font-serif text-xl font-normal text-slate-900 dark:text-white">
+              No Matching Bookings
             </h2>
 
-            <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-500 dark:text-slate-400">
-              No bookings found with status &quot;
-              {filterTabs.find((t) => t.value === statusFilter)?.label}&quot;.
+            <p className="mx-auto mt-1 max-w-sm text-xs text-slate-500 dark:text-slate-400">
+              There are currently no requests with status &ldquo;{filterTabs.find((t) => t.value === statusFilter)?.label}&rdquo;.
             </p>
           </div>
         ) : (
           <div className="space-y-6">
-            {filteredBookings.map((booking) => (
-              <div
-                key={booking._id}
-                className="group overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm transition-all duration-300 hover:border-blue-200 hover:shadow-xl hover:shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700"
-              >
-                <div className="grid md:grid-cols-[250px_1fr] lg:grid-cols-[280px_1fr]">
-                  {/* Service Image */}
-                  <div className="relative h-56 overflow-hidden bg-slate-100 md:h-full dark:bg-slate-800">
-                    <img
-                      src={booking.serviceImage}
-                      alt={booking.serviceTitle}
-                      className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent md:hidden" />
-                    <span className="absolute top-4 left-4 rounded-full border border-white/40 bg-white/95 px-3.5 py-1 text-xs font-bold text-slate-800 shadow-sm backdrop-blur-md dark:border-slate-700 dark:bg-slate-900/90 dark:text-slate-200">
-                      {booking.category}
-                    </span>
-                  </div>
+            {filteredBookings.map((booking) => {
+              const statusStyle = getStatusBadge(booking.status);
 
-                  {/* Job Details */}
-                  <div className="flex flex-col justify-between p-6 sm:p-7">
-                    <div>
-                      {/* Title & Status */}
-                      <div className="flex flex-wrap items-start justify-between gap-3">
-                        <div>
-                          <span className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
-                            {booking.category}
-                          </span>
-
-                          <h2 className="mt-1 text-xl font-extrabold text-slate-900 sm:text-2xl dark:text-white">
-                            {booking.serviceTitle}
-                          </h2>
-                        </div>
-
-                        <span
-                          className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold capitalize ${getStatusStyle(
-                            booking.status
-                          )}`}
-                        >
-                          <span
-                            className={`h-1.5 w-1.5 rounded-full ${getStatusDot(
-                              booking.status
-                            )}`}
-                          />
-                          {booking.status.replace("-", " ")}
-                        </span>
-                      </div>
-
-                      {/* Customer Information Grid */}
-                      <div className="mt-5 grid gap-3.5 rounded-2xl border border-slate-100 bg-slate-50/80 p-4 text-sm sm:grid-cols-2 dark:border-slate-800 dark:bg-slate-950/50">
-                        <div className="flex items-start gap-2.5">
-                          <User
-                            size={16}
-                            className="mt-0.5 shrink-0 text-blue-600 dark:text-blue-400"
-                          />
-                          <div>
-                            <p className="text-xs font-medium text-slate-400 dark:text-slate-500">
-                              Customer
-                            </p>
-                            <p className="font-bold text-slate-900 dark:text-slate-100">
-                              {booking.customerName}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-start gap-2.5">
-                          <Phone
-                            size={16}
-                            className="mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"
-                          />
-                          <div>
-                            <p className="text-xs font-medium text-slate-400 dark:text-slate-500">
-                              Phone Number
-                            </p>
-                            <p className="font-bold text-slate-800 dark:text-slate-200">
-                              {booking.customerPhone}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-start gap-2.5">
-                          <Mail
-                            size={16}
-                            className="mt-0.5 shrink-0 text-indigo-600 dark:text-indigo-400"
-                          />
-                          <div className="min-w-0">
-                            <p className="text-xs font-medium text-slate-400 dark:text-slate-500">
-                              Email Address
-                            </p>
-                            <p className="truncate font-semibold text-slate-700 dark:text-slate-300">
-                              {booking.customerEmail}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-start gap-2.5">
-                          <CalendarDays
-                            size={16}
-                            className="mt-0.5 shrink-0 text-sky-600 dark:text-sky-400"
-                          />
-                          <div>
-                            <p className="text-xs font-medium text-slate-400 dark:text-slate-500">
-                              Preferred Date
-                            </p>
-                            <p className="font-bold text-slate-800 dark:text-slate-200">
-                              {new Date(
-                                booking.preferredDate
-                              ).toLocaleDateString()}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-start gap-2.5 sm:col-span-2">
-                          <MapPin
-                            size={16}
-                            className="mt-0.5 shrink-0 text-rose-500 dark:text-rose-400"
-                          />
-                          <div>
-                            <p className="text-xs font-medium text-slate-400 dark:text-slate-500">
-                              Service Address
-                            </p>
-                            <p className="font-semibold text-slate-800 dark:text-slate-200">
-                              {booking.address}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Problem Description */}
-                      <div className="mt-4 rounded-2xl border border-slate-200/70 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
-                        <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                          <FileText size={14} className="text-blue-600 dark:text-blue-400" />
-                          <span>Customer Problem</span>
-                        </div>
-
-                        <p className="mt-1.5 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
-                          {booking.problemDescription}
-                        </p>
-                      </div>
-
-                      {/* Pricing & Payment Strip */}
-                      <div className="mt-4 flex flex-wrap items-center gap-4 text-sm">
-                        <div className="inline-flex items-center gap-1.5 rounded-xl bg-slate-100/80 px-3.5 py-1.5 dark:bg-slate-800/80">
-                          <DollarSign size={15} className="text-slate-500 dark:text-slate-400" />
-                          <span className="text-slate-600 dark:text-slate-400">Base Price:</span>
-                          <strong className="font-extrabold text-slate-900 dark:text-white">
-                            ${booking.basePrice}
-                          </strong>
-                        </div>
-
-                        {booking.finalAmount !== undefined && (
-                          <div className="inline-flex items-center gap-1.5 rounded-xl bg-blue-50 px-3.5 py-1.5 dark:bg-blue-950/60">
-                            <DollarSign size={15} className="text-blue-600 dark:text-blue-400" />
-                            <span className="text-blue-700 dark:text-blue-300">Final Amount:</span>
-                            <strong className="font-extrabold text-blue-700 dark:text-blue-400">
-                              ${booking.finalAmount}
-                            </strong>
-                          </div>
-                        )}
-
-                        <div className="inline-flex items-center gap-1.5 rounded-xl bg-slate-100/80 px-3.5 py-1.5 dark:bg-slate-800/80">
-                          <span className="text-slate-600 dark:text-slate-400">Payment:</span>
-                          <span
-                            className={`font-bold capitalize ${
-                              booking.paymentStatus === "paid"
-                                ? "text-emerald-600 dark:text-emerald-400"
-                                : "text-amber-600 dark:text-amber-400"
-                            }`}
-                          >
-                            {booking.paymentStatus}
-                          </span>
-                        </div>
-                      </div>
+              return (
+                <div
+                  key={booking._id}
+                  className="group overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm transition-all duration-300 hover:border-slate-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-900/90 dark:hover:border-slate-700"
+                >
+                  <div className="grid md:grid-cols-[260px_1fr] lg:grid-cols-[290px_1fr]">
+                    {/* Service Image Column */}
+                    <div className="relative min-h-[220px] overflow-hidden bg-slate-100 md:min-h-full dark:bg-slate-800">
+                      <img
+                        src={booking.serviceImage}
+                        alt={booking.serviceTitle}
+                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent md:hidden" />
+                      <span className="absolute top-4 left-4 rounded-full border border-white/40 bg-white/95 px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-slate-800 shadow-sm backdrop-blur-md dark:border-slate-700 dark:bg-slate-900/90 dark:text-slate-200">
+                        {booking.category}
+                      </span>
                     </div>
 
-                    {/* Workflow Actions */}
-                    <div className="mt-5 border-t border-slate-100 pt-5 dark:border-slate-800">
-                      {booking.status === "requested" && (
-                        <div className="flex flex-wrap gap-3">
-                          <button
-                            onClick={() =>
-                              updateStatus(booking._id, "accepted")
-                            }
-                            disabled={updatingId === booking._id}
-                            className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-emerald-700 disabled:opacity-50"
-                          >
-                            <CheckCircle size={17} />
-                            Accept Request
-                          </button>
+                    {/* Job Details Column */}
+                    <div className="flex flex-col justify-between p-6 sm:p-7">
+                      <div>
+                        {/* Title & Status Bar */}
+                        <div className="flex flex-wrap items-start justify-between gap-3">
+                          <div>
+                            <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                              {booking.category}
+                            </span>
 
-                          <button
-                            onClick={() => {
-                              setBookingToReject(booking);
-                              setRejectError(null);
-                            }}
-                            disabled={updatingId === booking._id}
-                            className="inline-flex items-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-6 py-2.5 text-sm font-bold text-rose-600 transition hover:bg-rose-600 hover:text-white disabled:opacity-50 dark:border-rose-900/60 dark:bg-rose-950/40 dark:text-rose-400 dark:hover:bg-rose-600 dark:hover:text-white"
+                            <h2 className="mt-1 font-serif text-xl font-normal tracking-tight text-slate-900 sm:text-2xl dark:text-white">
+                              {booking.serviceTitle}
+                            </h2>
+                          </div>
+
+                          <span
+                            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 font-mono text-[11px] font-semibold uppercase tracking-wider ${statusStyle.pill}`}
                           >
-                            <XCircle size={17} />
-                            Reject
-                          </button>
+                            <span
+                              className={`h-1.5 w-1.5 rounded-full ${statusStyle.dot}`}
+                            />
+                            {booking.status.replace("-", " ")}
+                          </span>
                         </div>
-                      )}
 
-                      {booking.status === "accepted" && (
-                        <button
-                          onClick={() =>
-                            updateStatus(booking._id, "in-progress")
-                          }
-                          disabled={updatingId === booking._id}
-                          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-600/20 transition hover:from-blue-500 hover:to-indigo-500 disabled:opacity-50"
-                        >
-                          <Play size={16} />
-                          Start Repair
-                        </button>
-                      )}
-
-                      {booking.status === "in-progress" && (
-                        <div className="flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-slate-50/70 p-4 sm:flex-row sm:items-end dark:border-slate-800 dark:bg-slate-950/50">
-                          <div className="flex-1 sm:max-w-xs">
-                            <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                              Final Amount ($)
-                            </label>
-
-                            <div className="relative">
-                              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
-                                <DollarSign size={16} />
-                              </div>
-                              <input
-                                type="number"
-                                min="1"
-                                placeholder="Enter final amount"
-                                value={finalAmounts[booking._id] || ""}
-                                onChange={(e) =>
-                                   setFinalAmounts((prev) => ({
-                                    ...prev,
-                                    [booking._id]: e.target.value,
-                                  }))
-                                }
-                                className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pr-4 pl-9 text-sm font-semibold text-slate-900 shadow-sm outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
-                              />
+                        {/* Customer Information Grid */}
+                        <div className="mt-5 grid gap-3 rounded-2xl border border-slate-100 bg-slate-50/70 p-4 text-xs sm:grid-cols-2 dark:border-slate-800 dark:bg-slate-950/50">
+                          <div className="flex items-start gap-2.5">
+                            <User
+                              size={15}
+                              className="mt-0.5 shrink-0 text-blue-600 dark:text-blue-400"
+                            />
+                            <div>
+                              <p className="font-mono text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                                Customer Name
+                              </p>
+                              <p className="mt-0.5 font-semibold text-slate-900 dark:text-slate-100">
+                                {booking.customerName}
+                              </p>
                             </div>
                           </div>
 
+                          <div className="flex items-start gap-2.5">
+                            <Phone
+                              size={15}
+                              className="mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"
+                            />
+                            <div>
+                              <p className="font-mono text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                                Contact Number
+                              </p>
+                              <p className="mt-0.5 font-semibold text-slate-800 dark:text-slate-200">
+                                {booking.customerPhone}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-start gap-2.5">
+                            <Mail
+                              size={15}
+                              className="mt-0.5 shrink-0 text-indigo-600 dark:text-indigo-400"
+                            />
+                            <div className="min-w-0">
+                              <p className="font-mono text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                                Email Address
+                              </p>
+                              <p className="mt-0.5 truncate font-medium text-slate-700 dark:text-slate-300">
+                                {booking.customerEmail}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-start gap-2.5">
+                            <CalendarDays
+                              size={15}
+                              className="mt-0.5 shrink-0 text-sky-600 dark:text-sky-400"
+                            />
+                            <div>
+                              <p className="font-mono text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                                Scheduled Date
+                              </p>
+                              <p className="mt-0.5 font-mono font-semibold text-slate-800 dark:text-slate-200">
+                                {new Date(
+                                  booking.preferredDate
+                                ).toLocaleDateString(undefined, {
+                                  month: "short",
+                                  day: "numeric",
+                                  year: "numeric",
+                                })}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-start gap-2.5 sm:col-span-2 border-t border-slate-200/50 pt-2.5 dark:border-slate-800/80">
+                            <MapPin
+                              size={15}
+                              className="mt-0.5 shrink-0 text-rose-500 dark:text-rose-400"
+                            />
+                            <div>
+                              <p className="font-mono text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                                Dispatch Location
+                              </p>
+                              <p className="mt-0.5 font-medium text-slate-800 dark:text-slate-200">
+                                {booking.address}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Problem Description */}
+                        <div className="mt-4 rounded-2xl border border-slate-200/70 bg-white p-4 dark:border-slate-800 dark:bg-slate-900/60">
+                          <div className="flex items-center gap-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                            <FileText size={13} className="text-blue-600 dark:text-blue-400" />
+                            <span>Reported Issue</span>
+                          </div>
+
+                          <p className="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+                            {booking.problemDescription}
+                          </p>
+                        </div>
+
+                        {/* Pricing & Billing Strip */}
+                        <div className="mt-4 flex flex-wrap items-center gap-3 text-xs">
+                          <div className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200/80 bg-slate-50/80 px-3 py-1.5 dark:border-slate-800 dark:bg-slate-800/60">
+                            <DollarSign size={13} className="text-slate-400" />
+                            <span className="text-slate-500 dark:text-slate-400">Base Price:</span>
+                            <strong className="font-mono font-bold text-slate-900 dark:text-white">
+                              ${booking.basePrice}
+                            </strong>
+                          </div>
+
+                          {booking.finalAmount !== undefined && (
+                            <div className="inline-flex items-center gap-1.5 rounded-xl border border-blue-200/80 bg-blue-50/70 px-3 py-1.5 dark:border-blue-900/60 dark:bg-blue-950/50">
+                              <DollarSign size={13} className="text-blue-600 dark:text-blue-400" />
+                              <span className="text-blue-700 dark:text-blue-300">Final Settled:</span>
+                              <strong className="font-mono font-bold text-blue-700 dark:text-blue-400">
+                                ${booking.finalAmount}
+                              </strong>
+                            </div>
+                          )}
+
+                          <div className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200/80 bg-slate-50/80 px-3 py-1.5 dark:border-slate-800 dark:bg-slate-800/60">
+                            <span className="text-slate-500 dark:text-slate-400">Payment:</span>
+                            <span
+                              className={`font-mono text-[11px] font-semibold uppercase tracking-wider ${
+                                booking.paymentStatus === "paid"
+                                  ? "text-emerald-600 dark:text-emerald-400"
+                                  : "text-amber-600 dark:text-amber-400"
+                              }`}
+                            >
+                              {booking.paymentStatus}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Workflow Actions */}
+                      <div className="mt-5 border-t border-dashed border-slate-200 pt-5 dark:border-slate-800">
+                        {booking.status === "requested" && (
+                          <div className="flex flex-wrap gap-2.5">
+                            <button
+                              onClick={() =>
+                                updateStatus(booking._id, "accepted")
+                              }
+                              disabled={updatingId === booking._id}
+                              className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-semibold text-white shadow-sm transition hover:bg-slate-800 disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-500"
+                            >
+                              <CheckCircle size={15} />
+                              <span>Accept Request</span>
+                            </button>
+
+                            <button
+                              onClick={() => {
+                                setBookingToReject(booking);
+                                setRejectError(null);
+                              }}
+                              disabled={updatingId === booking._id}
+                              className="inline-flex items-center gap-2 rounded-xl border border-rose-200 bg-rose-50/80 px-5 py-2.5 text-xs font-semibold text-rose-600 transition hover:bg-rose-100 hover:text-rose-700 disabled:opacity-50 dark:border-rose-900/60 dark:bg-rose-950/40 dark:text-rose-400 dark:hover:bg-rose-900/60"
+                            >
+                              <XCircle size={15} />
+                              <span>Decline</span>
+                            </button>
+                          </div>
+                        )}
+
+                        {booking.status === "accepted" && (
                           <button
                             onClick={() =>
-                              updateStatus(booking._id, "completed")
+                              updateStatus(booking._id, "in-progress")
                             }
                             disabled={updatingId === booking._id}
-                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-700 disabled:opacity-50"
+                            className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-semibold text-white shadow-sm transition hover:bg-slate-800 disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-500"
                           >
-                            <CheckCircle size={17} />
-                            Complete Job
+                            <Play size={14} />
+                            <span>Initiate Repair Work</span>
                           </button>
-                        </div>
-                      )}
+                        )}
 
-                      {booking.status === "completed" && (
-                        <div className="inline-flex items-center gap-2 text-sm font-bold text-emerald-600 dark:text-emerald-400">
-                          <CheckCircle size={18} />
-                          <span>Repair completed successfully.</span>
-                        </div>
-                      )}
+                        {booking.status === "in-progress" && (
+                          <div className="flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-slate-50/70 p-4 sm:flex-row sm:items-end dark:border-slate-800 dark:bg-slate-950/50">
+                            <div className="flex-1 sm:max-w-xs">
+                              <label className="mb-1 block font-mono text-[10px] uppercase tracking-wider text-slate-600 dark:text-slate-400">
+                                Final Settled Amount ($)
+                              </label>
 
-                      {booking.status === "rejected" && (
-                        <div className="inline-flex items-center gap-2 text-sm font-semibold text-rose-600 dark:text-rose-400">
-                          <XCircle size={17} />
-                          <span>This booking request was rejected.</span>
-                        </div>
-                      )}
+                              <div className="relative">
+                                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                                  <DollarSign size={14} />
+                                </div>
+                                <input
+                                  type="number"
+                                  min="1"
+                                  placeholder="e.g. 95"
+                                  value={finalAmounts[booking._id] || ""}
+                                  onChange={(e) =>
+                                    setFinalAmounts((prev) => ({
+                                      ...prev,
+                                      [booking._id]: e.target.value,
+                                    }))
+                                  }
+                                  className="w-full rounded-xl border border-slate-200 bg-white py-2 pr-4 pl-9 font-mono text-xs font-semibold text-slate-900 shadow-sm outline-none transition focus:border-slate-900 focus:ring-1 focus:ring-slate-900/10 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-blue-500"
+                                />
+                              </div>
+                            </div>
 
-                      {booking.status === "cancelled" && (
-                        <div className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 dark:text-slate-400">
-                          <XCircle size={17} />
-                          <span>Customer cancelled this booking.</span>
-                        </div>
-                      )}
+                            <button
+                              onClick={() =>
+                                updateStatus(booking._id, "completed")
+                              }
+                              disabled={updatingId === booking._id}
+                              className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-emerald-700 disabled:opacity-50"
+                            >
+                              <CheckCircle size={15} />
+                              <span>Complete & Settle</span>
+                            </button>
+                          </div>
+                        )}
+
+                        {booking.status === "completed" && (
+                          <div className="inline-flex items-center gap-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                            <CheckCircle size={16} />
+                            <span>Repair finalized and service record archived.</span>
+                          </div>
+                        )}
+
+                        {booking.status === "rejected" && (
+                          <div className="inline-flex items-center gap-2 text-xs font-medium text-rose-600 dark:text-rose-400">
+                            <XCircle size={15} />
+                            <span>Booking request was declined by technician.</span>
+                          </div>
+                        )}
+
+                        {booking.status === "cancelled" && (
+                          <div className="inline-flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
+                            <AlertCircle size={15} />
+                            <span>Customer cancelled this booking before dispatch.</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
@@ -746,15 +734,15 @@ export default function TechnicianRequestsPage() {
           }
         }}
         onConfirm={confirmRejectRequest}
-        title="Reject Repair Request"
+        title="Decline Repair Request"
         description={
           bookingToReject
-            ? `Are you sure you want to reject the repair request for "${bookingToReject.serviceTitle}" from ${bookingToReject.customerName}? The customer will be notified of this rejection.`
+            ? `Are you sure you wish to decline the request for "${bookingToReject.serviceTitle}" from ${bookingToReject.customerName}? The customer will be informed promptly.`
             : ""
         }
-        confirmText="Yes, Reject Request"
+        confirmText="Yes, Decline Request"
         cancelText="Cancel"
-        loadingText="Rejecting..."
+        loadingText="Declining..."
         isLoading={isRejecting}
         error={rejectError}
         variant="danger"
@@ -777,18 +765,47 @@ function StatCard({
   accent: string;
 }) {
   return (
-    <div className="group rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg hover:shadow-blue-900/5 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700">
+    <div className="group rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-300 hover:border-slate-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-900/90 dark:hover:border-slate-700">
       <div className="flex items-center justify-between">
-        <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">{title}</p>
-        <span
-          className={`flex h-11 w-11 items-center justify-center rounded-xl transition-transform group-hover:scale-110 ${accent}`}
-        >
+        <p className="font-mono text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          {title}
+        </p>
+        <span className={`flex h-9 w-9 items-center justify-center rounded-xl ${accent}`}>
           {icon}
         </span>
       </div>
 
-      <p className="mt-4 text-3xl font-extrabold text-slate-900 dark:text-white">{value}</p>
-      <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">{subtitle}</p>
+      <p className="mt-3 font-mono text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+        {value}
+      </p>
+      <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{subtitle}</p>
+    </div>
+  );
+}
+
+function RequestsSkeleton() {
+  return (
+    <div className="min-h-screen bg-slate-50/50 pb-16 transition-colors duration-200 dark:bg-slate-950 animate-pulse">
+      <div className="mx-auto max-w-7xl space-y-8">
+        <div className="h-36 rounded-3xl border border-slate-200/80 bg-white dark:border-slate-800 dark:bg-slate-900/90" />
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {[...Array(4)].map((_, i) => (
+            <div
+              key={i}
+              className="h-28 rounded-2xl border border-slate-200/80 bg-white dark:border-slate-800 dark:bg-slate-900/90"
+            />
+          ))}
+        </div>
+        <div className="h-12 w-96 rounded-2xl border border-slate-200/80 bg-white dark:border-slate-800 dark:bg-slate-900/90" />
+        <div className="space-y-6">
+          {[...Array(2)].map((_, i) => (
+            <div
+              key={i}
+              className="h-64 rounded-3xl border border-slate-200/80 bg-white dark:border-slate-800 dark:bg-slate-900/90"
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

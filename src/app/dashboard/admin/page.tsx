@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import {
@@ -14,10 +15,11 @@ import {
   CreditCard,
   Wallet,
   RefreshCw,
-  Loader2,
   Sparkles,
   CalendarDays,
   Hash,
+  ArrowRight,
+  ShieldAlert,
 } from "lucide-react";
 import { apiUrl } from "@/lib/api";
 
@@ -193,149 +195,52 @@ export default function AdminDashboard() {
   const getBookingStatusStyle = (status: string) => {
     switch (status) {
       case "completed":
-        return "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20 dark:bg-emerald-950/60 dark:text-emerald-400 dark:ring-emerald-500/20";
+        return {
+          pill: "bg-emerald-50 text-emerald-700 border-emerald-200/80 dark:bg-emerald-950/50 dark:text-emerald-300 dark:border-emerald-900/60",
+          dot: "bg-emerald-500",
+        };
       case "accepted":
       case "in-progress":
-        return "bg-blue-50 text-blue-700 ring-1 ring-blue-600/20 dark:bg-blue-950/60 dark:text-blue-400 dark:ring-blue-500/20";
+        return {
+          pill: "bg-blue-50 text-blue-700 border-blue-200/80 dark:bg-blue-950/50 dark:text-blue-300 dark:border-blue-900/60",
+          dot: "bg-blue-500",
+        };
       case "rejected":
       case "cancelled":
-        return "bg-rose-50 text-rose-700 ring-1 ring-rose-600/20 dark:bg-rose-950/60 dark:text-rose-400 dark:ring-rose-500/20";
+        return {
+          pill: "bg-rose-50 text-rose-700 border-rose-200/80 dark:bg-rose-950/50 dark:text-rose-300 dark:border-rose-900/60",
+          dot: "bg-rose-500",
+        };
       default:
-        return "bg-amber-50 text-amber-700 ring-1 ring-amber-600/20 dark:bg-amber-950/60 dark:text-amber-400 dark:ring-amber-500/20";
+        return {
+          pill: "bg-amber-50 text-amber-700 border-amber-200/80 dark:bg-amber-950/50 dark:text-amber-300 dark:border-amber-900/60",
+          dot: "bg-amber-500",
+        };
     }
   };
-
-  const getBookingStatusDot = (status: string) => {
-    switch (status) {
-      case "completed":
-        return "bg-emerald-500";
-      case "accepted":
-      case "in-progress":
-        return "bg-blue-500";
-      case "rejected":
-      case "cancelled":
-        return "bg-rose-500";
-      default:
-        return "bg-amber-500";
-    }
-  };
-
-  const statCards = [
-    {
-      title: "Total Users",
-      value: users.length,
-      icon: Users,
-      color: "bg-blue-50 text-blue-600 ring-1 ring-blue-600/15 dark:bg-blue-950/60 dark:text-blue-400 dark:ring-blue-500/20",
-    },
-    {
-      title: "Customers",
-      value: customers,
-      icon: UserRound,
-      color: "bg-emerald-50 text-emerald-600 ring-1 ring-emerald-600/15 dark:bg-emerald-950/60 dark:text-emerald-400 dark:ring-emerald-500/20",
-    },
-    {
-      title: "Technicians",
-      value: technicians,
-      icon: Wrench,
-      color: "bg-indigo-50 text-indigo-600 ring-1 ring-indigo-600/15 dark:bg-indigo-950/60 dark:text-indigo-400 dark:ring-indigo-500/20",
-    },
-    {
-      title: "Admins",
-      value: admins,
-      icon: ShieldCheck,
-      color: "bg-amber-50 text-amber-600 ring-1 ring-amber-600/15 dark:bg-amber-950/60 dark:text-amber-400 dark:ring-amber-500/20",
-    },
-    {
-      title: "Total Services",
-      value: serviceStats.totalServices,
-      icon: Wrench,
-      color: "bg-sky-50 text-sky-600 ring-1 ring-sky-600/15 dark:bg-sky-950/60 dark:text-sky-400 dark:ring-sky-500/20",
-    },
-    {
-      title: "Approved Services",
-      value: serviceStats.approvedServices,
-      icon: CheckCircle,
-      color: "bg-emerald-50 text-emerald-600 ring-1 ring-emerald-600/15 dark:bg-emerald-950/60 dark:text-emerald-400 dark:ring-emerald-500/20",
-    },
-    {
-      title: "Pending Services",
-      value: serviceStats.pendingServices,
-      icon: Clock,
-      color: "bg-amber-50 text-amber-600 ring-1 ring-amber-600/15 dark:bg-amber-950/60 dark:text-amber-400 dark:ring-amber-500/20",
-    },
-    {
-      title: "Rejected Services",
-      value: serviceStats.rejectedServices,
-      icon: ShieldCheck,
-      color: "bg-rose-50 text-rose-600 ring-1 ring-rose-600/15 dark:bg-rose-950/60 dark:text-rose-400 dark:ring-rose-500/20",
-    },
-    {
-      title: "Total Bookings",
-      value: bookings.length,
-      icon: ClipboardList,
-      color: "bg-indigo-50 text-indigo-600 ring-1 ring-indigo-600/15 dark:bg-indigo-950/60 dark:text-indigo-400 dark:ring-indigo-500/20",
-    },
-    {
-      title: "Pending Bookings",
-      value: pendingBookings,
-      icon: Clock,
-      color: "bg-amber-50 text-amber-600 ring-1 ring-amber-600/15 dark:bg-amber-950/60 dark:text-amber-400 dark:ring-amber-500/20",
-    },
-    {
-      title: "Active Jobs",
-      value: activeBookings,
-      icon: Wrench,
-      color: "bg-blue-50 text-blue-600 ring-1 ring-blue-600/15 dark:bg-blue-950/60 dark:text-blue-400 dark:ring-blue-500/20",
-    },
-    {
-      title: "Completed Jobs",
-      value: completedBookings,
-      icon: CheckCircle,
-      color: "bg-emerald-50 text-emerald-600 ring-1 ring-emerald-600/15 dark:bg-emerald-950/60 dark:text-emerald-400 dark:ring-emerald-500/20",
-    },
-    {
-      title: "Total Transactions",
-      value: payments.length,
-      icon: CreditCard,
-      color: "bg-purple-50 text-purple-600 ring-1 ring-purple-600/15 dark:bg-purple-950/60 dark:text-purple-400 dark:ring-purple-500/20",
-    },
-  ];
 
   if (loading) {
-    return (
-      <div className="flex min-h-[65vh] items-center justify-center">
-        <div className="rounded-3xl border border-slate-200/80 bg-white px-10 py-12 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
-          <Loader2 className="mx-auto animate-spin text-blue-600 dark:text-blue-400" size={38} />
-          <p className="mt-4 text-sm font-semibold text-slate-600 dark:text-slate-400">
-            Loading Admin Dashboard...
-          </p>
-        </div>
-      </div>
-    );
+    return <AdminOverviewSkeleton />;
   }
 
   return (
-    <main className="space-y-8 pb-10">
-      {/* ================= TOP DARK PREMIUM BANNER ================= */}
-      <div className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8 dark:border dark:border-slate-800">
-        <div className="pointer-events-none absolute -top-20 right-10 h-64 w-64 rounded-full bg-blue-600/25 blur-[90px]" />
-        <div className="pointer-events-none absolute -bottom-20 left-10 h-64 w-64 rounded-full bg-indigo-500/20 blur-[90px]" />
+    <main className="space-y-8 pb-16">
+      {/* ================= EDITORIAL TOP BANNER ================= */}
+      <div className="relative overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-8 dark:border-slate-800 dark:bg-slate-900/90">
+        <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-blue-500/10 blur-[80px] dark:bg-blue-600/15" />
+        <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-indigo-500/10 blur-[80px] dark:bg-indigo-600/10" />
 
-        <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <div className="inline-flex items-center gap-1.5 rounded-full border border-blue-400/20 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-300">
-              <Sparkles size={13} className="text-blue-400" />
-              <span>Control Center</span>
+            <div className="inline-flex items-center gap-2 rounded-full border border-blue-200/70 bg-blue-50/70 px-3 py-1 text-xs font-semibold text-blue-700 dark:border-blue-900/60 dark:bg-blue-950/50 dark:text-blue-300">
+              <Sparkles size={12} className="text-blue-600 dark:text-blue-400" />
+              <span className="font-mono text-[11px] uppercase tracking-wider">Control & Governance</span>
             </div>
-            <h1 className="mt-3 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
-              Admin{" "}
-              <span className="bg-gradient-to-r from-blue-400 to-sky-300 bg-clip-text text-transparent">
-                Dashboard
-              </span>
+            <h1 className="mt-3 font-serif text-2xl font-normal tracking-tight text-slate-900 sm:text-3xl dark:text-white">
+              Platform <span className="italic">Administration</span>
             </h1>
-            <p className="mt-1.5 text-sm text-slate-300">
-              Complete real-time overview of your FixMate ecosystem, users,
-              services, and revenue.
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+              Real-time platform overview of verified members, service moderation, dispatch queues, and cumulative revenue.
             </p>
           </div>
 
@@ -345,170 +250,289 @@ export default function AdminDashboard() {
               fetchDashboardData();
             }}
             disabled={loading}
-            className="inline-flex items-center justify-center gap-2 self-start rounded-xl border border-white/15 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:border-blue-400/40 hover:bg-blue-600 disabled:opacity-50 sm:self-auto"
+            className="inline-flex items-center justify-center gap-2 self-start rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:border-slate-300 sm:self-auto dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
           >
-            <RefreshCw size={16} />
-            Refresh
+            <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
+            <span>Refresh Metrics</span>
           </button>
         </div>
       </div>
 
-      {/* ================= REVENUE & TRANSACTIONS HIGHLIGHT ================= */}
+      {/* ================= FINANCIAL & TRANSACTION HIGHLIGHT ================= */}
       <div className="grid gap-6 sm:grid-cols-2">
         {/* Total Revenue Highlight Card */}
-        <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 p-7 text-white shadow-lg transition-all duration-300 hover:-translate-y-1 dark:border dark:border-slate-800">
-          <div className="pointer-events-none absolute -right-10 -bottom-10 h-40 w-40 rounded-full bg-emerald-500/20 blur-2xl" />
-          <div className="relative flex items-center justify-between">
-            <div>
-              <p className="text-sm font-semibold text-slate-300">
-                Total Revenue
-              </p>
-              <h2 className="mt-2.5 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-                $
-                {totalRevenue.toLocaleString("en-US", {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </h2>
-            </div>
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-400/30 transition-transform group-hover:scale-110">
-              <Wallet size={28} />
+        <div className="group relative overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-7 shadow-sm transition-all duration-300 hover:border-slate-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-900/90 dark:hover:border-slate-700">
+          <div className="flex items-center justify-between">
+            <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+              Settled Platform Volume
+            </span>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
+              <Wallet size={20} />
             </div>
           </div>
-          <p className="relative mt-4 text-xs font-medium text-emerald-300/90">
-            Revenue collected from verified Stripe payments
-          </p>
+          <div className="mt-4">
+            <p className="font-mono text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-white">
+              ${totalRevenue.toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </p>
+            <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">
+              Verified gross revenue processed via automated Stripe checkout sessions
+            </p>
+          </div>
+          <div className="mt-5 border-t border-dashed border-slate-100 pt-4 dark:border-slate-800/80">
+            <Link
+              href="/dashboard/admin/transactions"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+            >
+              <span>View Settlement History</span>
+              <ArrowRight size={13} />
+            </Link>
+          </div>
         </div>
 
         {/* Total Transactions Card */}
-        <div className="group rounded-3xl border border-slate-200/80 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg hover:shadow-blue-900/5 dark:border-slate-800 dark:bg-slate-900">
+        <div className="group rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-7 shadow-sm transition-all duration-300 hover:border-slate-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-900/90 dark:hover:border-slate-700">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
-                Total Transactions
-              </p>
-              <h2 className="mt-2.5 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl dark:text-white">
-                {payments.length}
-              </h2>
-            </div>
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 ring-1 ring-blue-600/15 transition-transform group-hover:scale-110 dark:bg-blue-950/60 dark:text-blue-400 dark:ring-blue-500/20">
-              <CreditCard size={28} />
+            <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+              Transaction Volume
+            </span>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400">
+              <CreditCard size={20} />
             </div>
           </div>
-          <p className="mt-4 text-xs font-medium text-slate-400 dark:text-slate-500">
-            Successfully recorded customer checkout sessions
-          </p>
+          <div className="mt-4">
+            <p className="font-mono text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-white">
+              {payments.length}
+            </p>
+            <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">
+              Individual customer payments successfully recorded and archived
+            </p>
+          </div>
+          <div className="mt-5 border-t border-dashed border-slate-100 pt-4 dark:border-slate-800/80">
+            <Link
+              href="/dashboard/admin/bookings"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+            >
+              <span>Inspect All Bookings</span>
+              <ArrowRight size={13} />
+            </Link>
+          </div>
         </div>
       </div>
 
-      {/* ================= PLATFORM STATISTICS GRID ================= */}
-      <section>
-        <div className="mb-5 flex items-center justify-between">
+      {/* ================= PLATFORM METRICS LEDGER ================= */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-              Platform Statistics
+            <h2 className="font-serif text-lg font-normal tracking-tight text-slate-900 dark:text-white">
+              Operational <span className="italic">Inventory</span>
             </h2>
-            <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-              Key operational metrics across users, services, and bookings
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Live breakdown of platform accounts, listings, and service requests
             </p>
           </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-          {statCards.map((card) => {
-            const Icon = card.icon;
+        {/* User Breakdown */}
+        <div>
+          <span className="font-mono text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+            Member Directory
+          </span>
+          <div className="mt-2 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <AdminMetricCard
+              title="Total Accounts"
+              value={users.length}
+              subtitle="Registered users"
+              icon={<Users size={16} />}
+              accent="bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400"
+              href="/dashboard/admin/users"
+            />
+            <AdminMetricCard
+              title="Customers"
+              value={customers}
+              subtitle="Service clients"
+              icon={<UserRound size={16} />}
+              accent="bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400"
+              href="/dashboard/admin/users"
+            />
+            <AdminMetricCard
+              title="Technicians"
+              value={technicians}
+              subtitle="Verified specialists"
+              icon={<Wrench size={16} />}
+              accent="bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400"
+              href="/dashboard/admin/users"
+            />
+            <AdminMetricCard
+              title="Administrators"
+              value={admins}
+              subtitle="Governance team"
+              icon={<ShieldCheck size={16} />}
+              accent="bg-amber-50 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400"
+              href="/dashboard/admin/users"
+            />
+          </div>
+        </div>
 
-            return (
-              <div
-                key={card.title}
-                className="group rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg hover:shadow-blue-900/5 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700"
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                    {card.title}
-                  </p>
-                  <div
-                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-transform group-hover:scale-110 ${card.color}`}
-                  >
-                    <Icon size={18} />
-                  </div>
-                </div>
+        {/* Services Moderation */}
+        <div className="pt-2">
+          <span className="font-mono text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+            Service Catalog Moderation
+          </span>
+          <div className="mt-2 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <AdminMetricCard
+              title="Total Catalog"
+              value={serviceStats.totalServices}
+              subtitle="All listings"
+              icon={<Wrench size={16} />}
+              accent="bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
+              href="/dashboard/admin/services"
+            />
+            <AdminMetricCard
+              title="Approved & Live"
+              value={serviceStats.approvedServices}
+              subtitle="Customer visible"
+              icon={<CheckCircle size={16} />}
+              accent="bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400"
+              href="/dashboard/admin/services"
+            />
+            <AdminMetricCard
+              title="Pending Review"
+              value={serviceStats.pendingServices}
+              subtitle="Awaiting sign-off"
+              icon={<Clock size={16} />}
+              accent="bg-amber-50 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400"
+              href="/dashboard/admin/services"
+            />
+            <AdminMetricCard
+              title="Rejected Listings"
+              value={serviceStats.rejectedServices}
+              subtitle="Declined submissions"
+              icon={<ShieldAlert size={16} />}
+              accent="bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400"
+              href="/dashboard/admin/services"
+            />
+          </div>
+        </div>
 
-                <h3 className="mt-4 text-2xl font-extrabold text-slate-900 dark:text-white">
-                  {card.value}
-                </h3>
-              </div>
-            );
-          })}
+        {/* Dispatch Pipeline */}
+        <div className="pt-2">
+          <span className="font-mono text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+            Service Request Pipeline
+          </span>
+          <div className="mt-2 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <AdminMetricCard
+              title="Total Bookings"
+              value={bookings.length}
+              subtitle="All-time requests"
+              icon={<ClipboardList size={16} />}
+              accent="bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400"
+              href="/dashboard/admin/bookings"
+            />
+            <AdminMetricCard
+              title="New Requests"
+              value={pendingBookings}
+              subtitle="Awaiting technician"
+              icon={<Clock size={16} />}
+              accent="bg-amber-50 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400"
+              href="/dashboard/admin/bookings"
+            />
+            <AdminMetricCard
+              title="Active In Field"
+              value={activeBookings}
+              subtitle="In progress"
+              icon={<Wrench size={16} />}
+              accent="bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400"
+              href="/dashboard/admin/bookings"
+            />
+            <AdminMetricCard
+              title="Completed"
+              value={completedBookings}
+              subtitle="Successfully settled"
+              icon={<CheckCircle size={16} />}
+              accent="bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400"
+              href="/dashboard/admin/bookings"
+            />
+          </div>
         </div>
       </section>
 
       {/* ================= RECENT BOOKINGS TABLE ================= */}
-      <section className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <section className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900/90">
         <div className="flex flex-col gap-1 border-b border-slate-100 bg-slate-50/60 px-6 py-5 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800 dark:bg-slate-900/60">
           <div>
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
-              Recent Bookings
+            <h2 className="font-serif text-base font-normal tracking-tight text-slate-900 dark:text-white">
+              Recent Service Requests
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Latest customer service requests across the platform
+              Latest customer appointments logged across all categories
             </p>
           </div>
-          <span className="self-start rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700 ring-1 ring-blue-600/15 sm:self-auto dark:bg-blue-950/60 dark:text-blue-400 dark:ring-blue-500/20">
-            Latest 5 records
-          </span>
+          <Link
+            href="/dashboard/admin/bookings"
+            className="inline-flex items-center gap-1.5 self-start font-mono text-xs font-semibold text-blue-600 hover:text-blue-700 sm:self-auto dark:text-blue-400"
+          >
+            <span>View All ({bookings.length})</span>
+            <ArrowRight size={13} />
+          </Link>
         </div>
 
         {recentBookings.length === 0 ? (
-          <p className="py-12 text-center text-sm font-medium text-slate-500 dark:text-slate-400">
-            No bookings available.
+          <p className="py-12 text-center text-xs font-medium text-slate-400 dark:text-slate-500">
+            No booking records available yet.
           </p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[680px] text-left text-sm">
+            <table className="w-full min-w-[700px] text-left text-xs">
               <thead>
-                <tr className="border-b border-slate-100 bg-slate-50/80 text-xs font-bold uppercase tracking-wider text-slate-500 dark:border-slate-800 dark:bg-slate-950/50 dark:text-slate-400">
-                  <th className="px-6 py-4">Service</th>
-                  <th className="px-6 py-4">Customer</th>
-                  <th className="px-6 py-4">Technician</th>
-                  <th className="px-6 py-4">Status</th>
-                  <th className="px-6 py-4 text-right">Date</th>
+                <tr className="border-b border-slate-100 bg-slate-50/70 font-mono text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:border-slate-800 dark:bg-slate-950/50 dark:text-slate-400">
+                  <th className="px-6 py-3.5">Service Title</th>
+                  <th className="px-6 py-3.5">Customer</th>
+                  <th className="px-6 py-3.5">Technician</th>
+                  <th className="px-6 py-3.5">Status</th>
+                  <th className="px-6 py-3.5 text-right">Created</th>
                 </tr>
               </thead>
 
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                {recentBookings.map((booking) => (
-                  <tr
-                    key={booking._id}
-                    className="transition-colors hover:bg-slate-50/90 dark:hover:bg-slate-800/50"
-                  >
-                    <td className="px-6 py-4 font-bold text-slate-900 dark:text-white">
-                      {booking.serviceTitle}
-                    </td>
-                    <td className="px-6 py-4 font-medium text-slate-700 dark:text-slate-300">
-                      {booking.customerName}
-                    </td>
-                    <td className="px-6 py-4 font-medium text-slate-700 dark:text-slate-300">
-                      {booking.technicianName}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold capitalize ${getBookingStatusStyle(booking.status)}`}
-                      >
+                {recentBookings.map((booking) => {
+                  const statusStyle = getBookingStatusStyle(booking.status);
+
+                  return (
+                    <tr
+                      key={booking._id}
+                      className="transition-colors hover:bg-slate-50/70 dark:hover:bg-slate-800/40"
+                    >
+                      <td className="px-6 py-4 font-semibold text-slate-900 dark:text-white">
+                        {booking.serviceTitle}
+                      </td>
+                      <td className="px-6 py-4 text-slate-600 dark:text-slate-300">
+                        {booking.customerName}
+                      </td>
+                      <td className="px-6 py-4 text-slate-600 dark:text-slate-300">
+                        {booking.technicianName}
+                      </td>
+                      <td className="px-6 py-4">
                         <span
-                          className={`h-1.5 w-1.5 rounded-full ${getBookingStatusDot(booking.status)}`}
-                        />
-                        {booking.status.replace("-", " ")}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right text-slate-600 dark:text-slate-400">
-                      <div className="inline-flex items-center gap-1.5 font-medium">
-                        <CalendarDays size={14} className="text-slate-400 dark:text-slate-500" />
-                        <span>{formatDate(booking.createdAt)}</span>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                          className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider ${statusStyle.pill}`}
+                        >
+                          <span
+                            className={`h-1.5 w-1.5 rounded-full ${statusStyle.dot}`}
+                          />
+                          {booking.status.replace("-", " ")}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right font-mono text-slate-500 dark:text-slate-400">
+                        <div className="inline-flex items-center gap-1.5">
+                          <CalendarDays size={13} className="text-slate-400 dark:text-slate-500" />
+                          <span>{formatDate(booking.createdAt)}</span>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -516,69 +540,73 @@ export default function AdminDashboard() {
       </section>
 
       {/* ================= RECENT TRANSACTIONS TABLE ================= */}
-      <section className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <section className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900/90">
         <div className="flex flex-col gap-1 border-b border-slate-100 bg-slate-50/60 px-6 py-5 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800 dark:bg-slate-900/60">
           <div>
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
-              Recent Transactions
+            <h2 className="font-serif text-base font-normal tracking-tight text-slate-900 dark:text-white">
+              Recent Stripe Transactions
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Most recent settled customer payments
+              Verified incoming payments logged from customer checkout sessions
             </p>
           </div>
-          <span className="self-start rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 ring-1 ring-emerald-600/15 sm:self-auto dark:bg-emerald-950/60 dark:text-emerald-400 dark:ring-emerald-500/20">
-            Latest 5 payments
-          </span>
+          <Link
+            href="/dashboard/admin/transactions"
+            className="inline-flex items-center gap-1.5 self-start font-mono text-xs font-semibold text-blue-600 hover:text-blue-700 sm:self-auto dark:text-blue-400"
+          >
+            <span>View All ({payments.length})</span>
+            <ArrowRight size={13} />
+          </Link>
         </div>
 
         {recentPayments.length === 0 ? (
-          <p className="py-12 text-center text-sm font-medium text-slate-500 dark:text-slate-400">
-            No transactions available.
+          <p className="py-12 text-center text-xs font-medium text-slate-400 dark:text-slate-500">
+            No transaction records available yet.
           </p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[650px] text-left text-sm">
+            <table className="w-full min-w-[650px] text-left text-xs">
               <thead>
-                <tr className="border-b border-slate-100 bg-slate-50/80 text-xs font-bold uppercase tracking-wider text-slate-500 dark:border-slate-800 dark:bg-slate-950/50 dark:text-slate-400">
-                  <th className="px-6 py-4">Transaction ID</th>
-                  <th className="px-6 py-4">Customer</th>
-                  <th className="px-6 py-4">Amount</th>
-                  <th className="px-6 py-4 text-right">Payment Date</th>
+                <tr className="border-b border-slate-100 bg-slate-50/70 font-mono text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:border-slate-800 dark:bg-slate-950/50 dark:text-slate-400">
+                  <th className="px-6 py-3.5">Session / ID</th>
+                  <th className="px-6 py-3.5">Customer Email</th>
+                  <th className="px-6 py-3.5">Settled Amount</th>
+                  <th className="px-6 py-3.5 text-right">Payment Date</th>
                 </tr>
               </thead>
 
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {recentPayments.map((payment) => {
                   const txnId = payment.stripeSessionId || payment._id;
+
                   return (
                     <tr
                       key={payment._id}
-                      className="transition-colors hover:bg-slate-50/90 dark:hover:bg-slate-800/50"
+                      className="transition-colors hover:bg-slate-50/70 dark:hover:bg-slate-800/40"
                     >
                       <td className="px-6 py-4">
                         <div
-                          className="inline-flex max-w-[220px] items-center gap-1.5 rounded-lg border border-slate-200/80 bg-slate-50 px-2.5 py-1.5 font-mono text-xs font-semibold text-slate-700 dark:border-slate-800 dark:bg-slate-800 dark:text-slate-300"
+                          className="inline-flex max-w-[200px] items-center gap-1 rounded-md border border-slate-200/80 bg-slate-50 px-2 py-1 font-mono text-[11px] text-slate-600 dark:border-slate-800 dark:bg-slate-800/80 dark:text-slate-300"
                           title={txnId}
                         >
-                          <Hash size={12} className="shrink-0 text-slate-400 dark:text-slate-500" />
+                          <Hash size={11} className="shrink-0 text-slate-400" />
                           <span className="truncate">{txnId}</span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 font-medium text-slate-700 dark:text-slate-300">
+                      <td className="px-6 py-4 text-slate-600 dark:text-slate-300">
                         {payment.customerEmail}
                       </td>
                       <td className="px-6 py-4">
-                        <span className="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-sm font-extrabold text-emerald-700 ring-1 ring-emerald-600/20 dark:bg-emerald-950/60 dark:text-emerald-400 dark:ring-emerald-500/20">
-                          $
-                          {payment.amount.toLocaleString("en-US", {
+                        <span className="font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                          ${payment.amount.toLocaleString("en-US", {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
                           })}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-right text-slate-600 dark:text-slate-400">
-                        <div className="inline-flex items-center gap-1.5 font-medium">
-                          <CalendarDays size={14} className="text-slate-400 dark:text-slate-500" />
+                      <td className="px-6 py-4 text-right font-mono text-slate-500 dark:text-slate-400">
+                        <div className="inline-flex items-center gap-1.5">
+                          <CalendarDays size={13} className="text-slate-400 dark:text-slate-500" />
                           <span>{formatDate(payment.createdAt)}</span>
                         </div>
                       </td>
@@ -591,5 +619,62 @@ export default function AdminDashboard() {
         )}
       </section>
     </main>
+  );
+}
+
+function AdminMetricCard({
+  title,
+  value,
+  subtitle,
+  icon,
+  accent,
+  href,
+}: {
+  title: string;
+  value: number;
+  subtitle: string;
+  icon: React.ReactNode;
+  accent: string;
+  href: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className="group rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm transition-all duration-300 hover:border-slate-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-900/90 dark:hover:border-slate-700"
+    >
+      <div className="flex items-center justify-between">
+        <p className="font-mono text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          {title}
+        </p>
+        <span className={`flex h-8 w-8 items-center justify-center rounded-lg ${accent}`}>
+          {icon}
+        </span>
+      </div>
+      <p className="mt-2.5 font-mono text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+        {value}
+      </p>
+      <p className="mt-0.5 text-[11px] text-slate-400 dark:text-slate-500">{subtitle}</p>
+    </Link>
+  );
+}
+
+function AdminOverviewSkeleton() {
+  return (
+    <div className="space-y-8 pb-16 animate-pulse">
+      <div className="h-36 rounded-3xl border border-slate-200/80 bg-white dark:border-slate-800 dark:bg-slate-900/90" />
+      <div className="grid gap-6 sm:grid-cols-2">
+        <div className="h-44 rounded-3xl border border-slate-200/80 bg-white dark:border-slate-800 dark:bg-slate-900/90" />
+        <div className="h-44 rounded-3xl border border-slate-200/80 bg-white dark:border-slate-800 dark:bg-slate-900/90" />
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {[...Array(8)].map((_, i) => (
+          <div
+            key={i}
+            className="h-24 rounded-2xl border border-slate-200/80 bg-white dark:border-slate-800 dark:bg-slate-900/90"
+          />
+        ))}
+      </div>
+      <div className="h-64 rounded-3xl border border-slate-200/80 bg-white dark:border-slate-800 dark:bg-slate-900/90" />
+    </div>
   );
 }
