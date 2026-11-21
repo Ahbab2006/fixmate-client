@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, type ReactNode } from "react";
 import { AlertCircle, AlertTriangle, CheckCircle2, Loader2, X } from "lucide-react";
 
 interface ConfirmationModalProps {
@@ -8,7 +8,7 @@ interface ConfirmationModalProps {
   onClose: () => void;
   onConfirm: () => void | Promise<void>;
   title: string;
-  description: string;
+  description: ReactNode;
   confirmText?: string;
   cancelText?: string;
   loadingText?: string;
@@ -140,12 +140,12 @@ export default function ConfirmationModal({
                 {title}
               </h3>
 
-              <p
+              <div
                 id="modal-description"
                 className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300"
               >
                 {description}
-              </p>
+              </div>
             </div>
           </div>
 

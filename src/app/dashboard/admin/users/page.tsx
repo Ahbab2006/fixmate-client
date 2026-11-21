@@ -14,8 +14,10 @@ import {
   Mail,
   CalendarDays,
   Loader2,
+  ArrowRight,
 } from "lucide-react";
 import { apiUrl } from "@/lib/api";
+import ConfirmationModal from "@/components/shared/ConfirmationModal";
 
 type User = {
   _id: string;
@@ -31,6 +33,12 @@ export default function ManageUsersPage() {
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [filter, setFilter] = useState("all");
+
+  const [pendingRoleChange, setPendingRoleChange] = useState<{
+    user: User;
+    newRole: User["role"];
+  } | null>(null);
+  const [roleChangeError, setRoleChangeError] = useState<string | null>(null);
 
   const fetchUsers = async () => {
     try {
@@ -78,19 +86,23 @@ export default function ManageUsersPage() {
     };
   }, []);
 
-  const handleRoleChange = async (userId: string, role: string) => {
-    const previousUser = users.find((user) => user._id === userId);
+  const handleRoleSelect = (user: User, newRole: string) => {
+    if (user.role === newRole || updatingId) return;
+    setRoleChangeError(null);
+    setPendingRoleChange({
+      user,
+      newRole: newRole as User["role"],
+    });
+  };
 
-    if (!previousUser || previousUser.role === role) return;
+  const confirmRoleChange = async () => {
+    if (!pendingRoleChange || updatingId) return;
 
-    const confirmed = window.confirm(
-      `Are you sure you want to change ${previousUser.name}'s role to ${role}?`
-    );
-
-    if (!confirmed) return;
+    const { user: targetUser, newRole } = pendingRoleChange;
 
     try {
-      setUpdatingId(userId);
+      setUpdatingId(targetUser._id);
+      setRoleChangeError(null);
 
       const tokenResponse = await authClient.token();
       const token = tokenResponse.data?.token;
@@ -99,13 +111,13 @@ export default function ManageUsersPage() {
         throw new Error("Authentication token not found.");
       }
 
-      const response = await fetch(apiUrl(`/api/users/${userId}/role`), {
+      const response = await fetch(apiUrl(`/api/users/${targetUser._id}/role`), {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ role }),
+        body: JSON.stringify({ role: newRole }),
       });
 
       const data = await response.json();
@@ -115,20 +127,36 @@ export default function ManageUsersPage() {
       }
 
       setUsers((previousUsers) =>
-        previousUsers.map((user) =>
-          user._id === userId
-            ? { ...user, role: role as User["role"] }
-            : user
+        previousUsers.map((u) =>
+          u._id === targetUser._id
+            ? { ...u, role: newRole }
+            : u
         )
       );
 
-      toast.success("User role updated successfully.");
+      const formatRole = (r: string) => r.charAt(0).toUpperCase() + r.slice(1);
+
+      toast.success("User Role Updated", {
+        description: `Successfully changed ${targetUser.name}'s role from ${formatRole(
+          targetUser.role
+        )} to ${formatRole(newRole)}.`,
+      });
+
+      setPendingRoleChange(null);
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Something went wrong."
-      );
+      const errorMsg =
+        error instanceof Error ? error.message : "Something went wrong.";
+      setRoleChangeError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setUpdatingId(null);
+    }
+  };
+
+  const closeRoleChangeModal = () => {
+    if (!updatingId) {
+      setPendingRoleChange(null);
+      setRoleChangeError(null);
     }
   };
 
@@ -408,7 +436,7 @@ export default function ManageUsersPage() {
                             value={user.role}
                             disabled={updatingId === user._id}
                             onChange={(event) =>
-                              handleRoleChange(user._id, event.target.value)
+                              handleRoleSelect(user, event.target.value)
                             }
                             className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 font-mono text-xs font-semibold capitalize text-slate-700 shadow-sm outline-none transition hover:border-slate-300 focus:border-slate-900 focus:ring-1 focus:ring-slate-900/10 disabled:opacity-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:focus:border-blue-500"
                           >
@@ -426,6 +454,84 @@ export default function ManageUsersPage() {
           </div>
         )}
       </div>
+
+      {/* ================= CONFIRMATION MODAL FOR ROLE CHANGE ================= */}
+      <ConfirmationModal
+        isOpen={Boolean(pendingRoleChange)}
+        onClose={closeRoleChangeModal}
+        onConfirm={confirmRoleChange}
+        title="Confirm Role Change?"
+        description={
+          pendingRoleChange ? (
+            <div className="space-y-3.5 text-left">
+              <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+                You are about to reassign system permissions and dashboard access for{" "}
+                <strong className="font-semibold text-slate-900 dark:text-white">
+                  {pendingRoleChange.user.name}
+                </strong>
+                .
+              </p>
+
+              {/* Visual Role Transition Box */}
+              <div className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200/80 bg-slate-50/80 p-3.5 dark:border-slate-800 dark:bg-slate-950/60">
+                <div className="flex flex-col items-start gap-1">
+                  <span className="font-mono text-[9px] uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                    Current Role
+                  </span>
+                  <span
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider ${
+                      getRoleStyle(pendingRoleChange.user.role).pill
+                    }`}
+                  >
+                    <span
+                      className={`h-1.5 w-1.5 rounded-full ${
+                        getRoleStyle(pendingRoleChange.user.role).dot
+                      }`}
+                    />
+                    {pendingRoleChange.user.role}
+                  </span>
+                </div>
+
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-200/70 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                  <ArrowRight size={14} />
+                </div>
+
+                <div className="flex flex-col items-end gap-1">
+                  <span className="font-mono text-[9px] uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                    New Role
+                  </span>
+                  <span
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider ${
+                      getRoleStyle(pendingRoleChange.newRole).pill
+                    }`}
+                  >
+                    <span
+                      className={`h-1.5 w-1.5 rounded-full ${
+                        getRoleStyle(pendingRoleChange.newRole).dot
+                      }`}
+                    />
+                    {pendingRoleChange.newRole}
+                  </span>
+                </div>
+              </div>
+
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                {pendingRoleChange.newRole === "technician"
+                  ? "This user will gain access to the Technician Studio and incoming booking requests."
+                  : pendingRoleChange.newRole === "admin"
+                  ? "This user will gain full administrative privileges across the platform."
+                  : "This user will have standard client booking and payment privileges."}
+              </p>
+            </div>
+          ) : ""
+        }
+        confirmText="Confirm Change"
+        cancelText="Cancel"
+        loadingText="Updating..."
+        isLoading={Boolean(updatingId)}
+        error={roleChangeError}
+        variant="warning"
+      />
     </div>
   );
 }

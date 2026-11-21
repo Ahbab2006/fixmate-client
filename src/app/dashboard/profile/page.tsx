@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { apiUrl } from "@/lib/api";
 import { toast } from "sonner";
@@ -20,6 +20,7 @@ import {
   X,
   Sparkles,
   CheckCircle2,
+  RotateCcw,
 } from "lucide-react";
 
 interface UserProfile {
@@ -407,22 +408,22 @@ export default function ProfilePage() {
     switch (role) {
       case "admin":
         return (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-3.5 py-1 text-xs font-bold text-rose-700 ring-1 ring-rose-600/20 dark:bg-rose-950/60 dark:text-rose-400 dark:ring-rose-500/20">
-            <Shield size={13} />
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-200/80 bg-rose-50 px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/50 dark:text-rose-300">
+            <Shield size={11} />
             Administrator
           </span>
         );
       case "technician":
         return (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-3.5 py-1 text-xs font-bold text-indigo-700 ring-1 ring-indigo-600/20 dark:bg-indigo-950/60 dark:text-indigo-400 dark:ring-indigo-500/20">
-            <Sparkles size={13} />
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-200/80 bg-blue-50 px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-blue-700 dark:border-blue-900/60 dark:bg-blue-950/50 dark:text-blue-300">
+            <Sparkles size={11} />
             Technician
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3.5 py-1 text-xs font-bold text-blue-700 ring-1 ring-blue-600/20 dark:bg-blue-950/60 dark:text-blue-400 dark:ring-blue-500/20">
-            <User size={13} />
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200/80 bg-emerald-50 px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/50 dark:text-emerald-300">
+            <User size={11} />
             Customer
           </span>
         );
@@ -430,26 +431,17 @@ export default function ProfilePage() {
   };
 
   if (loading || sessionLoading) {
-    return (
-      <div className="flex min-h-[65vh] items-center justify-center p-6">
-        <div className="rounded-3xl border border-slate-200/80 bg-white px-10 py-12 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
-          <Loader2 className="mx-auto animate-spin text-blue-600 dark:text-blue-400" size={38} />
-          <p className="mt-4 text-sm font-semibold text-slate-600 dark:text-slate-400">
-            Loading your profile...
-          </p>
-        </div>
-      </div>
-    );
+    return <ProfileSkeleton />;
   }
 
   if (!profile) {
     return (
       <div className="p-6 md:p-10">
         <div className="mx-auto max-w-xl rounded-3xl border border-rose-200 bg-rose-50/80 p-8 text-center shadow-sm dark:border-rose-900/60 dark:bg-rose-950/40">
-          <p className="text-lg font-extrabold text-rose-900 dark:text-rose-200">
+          <p className="font-serif text-lg font-normal text-rose-900 dark:text-rose-200">
             Unable to load profile data.
           </p>
-          <p className="mt-2 text-sm text-rose-700 dark:text-rose-400">
+          <p className="mt-2 text-xs text-rose-700 dark:text-rose-400">
             Please make sure you are signed in and try again.
           </p>
           <button
@@ -457,10 +449,10 @@ export default function ProfilePage() {
               setLoading(true);
               fetchProfile({ forceReset: true });
             }}
-            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-rose-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-rose-700"
+            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-rose-600 px-5 py-2.5 text-xs font-semibold text-white shadow-sm transition hover:bg-rose-700"
           >
-            <RefreshCw size={16} />
-            Retry
+            <RefreshCw size={14} />
+            <span>Retry Connection</span>
           </button>
         </div>
       </div>
@@ -468,28 +460,24 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-12 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+    <div className="min-h-screen bg-slate-50/50 pb-16 text-slate-900 transition-colors duration-200 dark:bg-slate-950 dark:text-slate-100">
       <div className="mx-auto max-w-6xl space-y-8">
-        {/* ================= TOP DARK PREMIUM BANNER ================= */}
-        <div className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8">
-          <div className="pointer-events-none absolute -top-20 right-10 h-64 w-64 rounded-full bg-blue-600/25 blur-[90px]" />
-          <div className="pointer-events-none absolute -bottom-20 left-10 h-64 w-64 rounded-full bg-indigo-500/20 blur-[90px]" />
+        {/* ================= EDITORIAL TOP BANNER ================= */}
+        <div className="relative overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-8 dark:border-slate-800 dark:bg-slate-900/90">
+          <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-blue-500/10 blur-[80px] dark:bg-blue-600/15" />
+          <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-indigo-500/10 blur-[80px] dark:bg-indigo-600/10" />
 
-          <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="relative flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <div className="inline-flex items-center gap-1.5 rounded-full border border-blue-400/20 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-300">
-                <Sparkles size={13} className="text-blue-400" />
-                <span>Account Preferences</span>
+              <div className="inline-flex items-center gap-2 rounded-full border border-blue-200/70 bg-blue-50/70 px-3 py-1 text-xs font-semibold text-blue-700 dark:border-blue-900/60 dark:bg-blue-950/50 dark:text-blue-300">
+                <Sparkles size={12} className="text-blue-600 dark:text-blue-400" />
+                <span className="font-mono text-[11px] uppercase tracking-wider">Account Credentials</span>
               </div>
-              <h1 className="mt-3 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
-                Profile{" "}
-                <span className="bg-gradient-to-r from-blue-400 to-sky-300 bg-clip-text text-transparent">
-                  Settings
-                </span>
+              <h1 className="mt-3 font-serif text-2xl font-normal tracking-tight text-slate-900 sm:text-3xl dark:text-white">
+                Profile &amp; <span className="italic">Identity</span>
               </h1>
-              <p className="mt-1.5 text-sm text-slate-300">
-                Manage your personal information, contact details, and public
-                FixMate identity.
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                Manage your personal credentials, contact coordinates, and public FixMate specialist identity.
               </p>
             </div>
 
@@ -500,10 +488,10 @@ export default function ProfilePage() {
                 fetchProfile({ forceReset: true });
               }}
               disabled={loading || saving}
-              className="inline-flex items-center justify-center gap-2 self-start rounded-xl border border-white/15 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:border-blue-400/40 hover:bg-blue-600 disabled:opacity-50 sm:self-auto"
+              className="inline-flex items-center justify-center gap-2 self-start rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:border-slate-300 disabled:opacity-50 sm:self-auto dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
             >
-              <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
-              Refresh
+              <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
+              <span>Refresh Profile</span>
             </button>
           </div>
         </div>
@@ -512,17 +500,17 @@ export default function ProfilePage() {
         <div className="grid gap-8 lg:grid-cols-12">
           {/* Left Column: Avatar & Account Summary */}
           <div className="lg:col-span-4">
-            <div className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-              {/* Decorative Top Cover Strip */}
-              <div className="relative h-24 bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950">
-                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:20px_20px]" />
+            <div className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900/90">
+              {/* Subtle Top Header Frame */}
+              <div className="relative h-20 bg-slate-100 dark:bg-slate-800/80 border-b border-slate-100 dark:border-slate-800">
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-blue-500/5 via-indigo-500/5 to-transparent" />
               </div>
 
               <div className="px-6 pb-6">
-                <div className="-mt-14 flex flex-col items-center text-center">
+                <div className="-mt-12 flex flex-col items-center text-center">
                   {/* Avatar with Camera Overlay */}
                   <div className="group relative">
-                    <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-gradient-to-tr from-blue-100 to-indigo-100 shadow-lg ring-1 ring-slate-200/80 dark:border-slate-900 dark:from-blue-950 dark:to-indigo-950 dark:ring-slate-700">
+                    <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-slate-100 shadow-md ring-1 ring-slate-200/80 dark:border-slate-900 dark:bg-slate-800 dark:ring-slate-700">
                       {previewUrl ? (
                         <img
                           src={previewUrl}
@@ -530,11 +518,11 @@ export default function ProfilePage() {
                           className="h-full w-full object-cover"
                         />
                       ) : (
-                        <div className="flex h-full w-full items-center justify-center text-3xl font-extrabold text-blue-600 dark:text-blue-400">
+                        <div className="flex h-full w-full items-center justify-center font-serif text-2xl font-normal text-slate-700 dark:text-slate-200">
                           {formData.name ? (
                             formData.name.charAt(0).toUpperCase()
                           ) : (
-                            <User size={44} className="text-slate-400 dark:text-slate-500" />
+                            <User size={36} className="text-slate-400 dark:text-slate-500" />
                           )}
                         </div>
                       )}
@@ -546,9 +534,9 @@ export default function ProfilePage() {
                       onClick={() => fileInputRef.current?.click()}
                       disabled={saving}
                       aria-label="Upload profile photo"
-                      className="absolute right-0 bottom-0 flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg transition hover:scale-105 hover:from-blue-500 hover:to-indigo-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+                      className="absolute right-0 bottom-0 flex h-8 w-8 items-center justify-center rounded-full bg-slate-900 text-white shadow-md transition hover:scale-105 hover:bg-slate-800 focus:outline-none disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-500"
                     >
-                      <Camera size={17} />
+                      <Camera size={15} />
                     </button>
 
                     <input
@@ -562,8 +550,8 @@ export default function ProfilePage() {
 
                   {/* Selected File Notice */}
                   {selectedFile && (
-                    <div className="mt-3.5 inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 ring-1 ring-blue-600/20 dark:bg-blue-950/60 dark:text-blue-400 dark:ring-blue-500/20">
-                      <span className="max-w-[160px] truncate">
+                    <div className="mt-3.5 inline-flex items-center gap-2 rounded-full border border-blue-200/80 bg-blue-50/80 px-3 py-0.5 font-mono text-[10px] font-semibold text-blue-700 dark:border-blue-900/60 dark:bg-blue-950/50 dark:text-blue-300">
+                      <span className="max-w-[150px] truncate">
                         {selectedFile.name}
                       </span>
                       <button
@@ -572,22 +560,22 @@ export default function ProfilePage() {
                         className="text-blue-500 transition hover:text-rose-600 dark:text-blue-400 dark:hover:text-rose-400"
                         title="Discard selected image"
                       >
-                        <X size={14} />
+                        <X size={12} />
                       </button>
                     </div>
                   )}
 
                   {/* Photo Removal Notice */}
                   {!selectedFile && !previewUrl && profile?.image && (
-                    <div className="mt-3.5 inline-flex items-center gap-2 rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 ring-1 ring-amber-600/20 dark:bg-amber-950/60 dark:text-amber-400 dark:ring-amber-500/20">
-                      <span>Photo will be removed</span>
+                    <div className="mt-3.5 inline-flex items-center gap-2 rounded-full border border-amber-200/80 bg-amber-50/80 px-3 py-0.5 font-mono text-[10px] font-semibold text-amber-700 dark:border-amber-900/60 dark:bg-amber-950/50 dark:text-amber-300">
+                      <span>Photo marked for removal</span>
                       <button
                         type="button"
                         onClick={() => setPreviewUrl(profile.image)}
                         className="text-amber-500 transition hover:text-slate-700 dark:text-amber-400 dark:hover:text-slate-200"
                         title="Undo photo removal"
                       >
-                        <X size={14} />
+                        <X size={12} />
                       </button>
                     </div>
                   )}
@@ -603,26 +591,26 @@ export default function ProfilePage() {
                         );
                       }}
                       disabled={saving}
-                      className="mt-2 text-xs font-medium text-slate-500 transition hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400"
+                      className="mt-2 text-xs font-medium text-slate-400 transition hover:text-rose-600 dark:hover:text-rose-400"
                     >
                       Remove photo
                     </button>
                   )}
 
                   {/* User Name & Role */}
-                  <h2 className="mt-4 text-xl font-extrabold text-slate-900 dark:text-white">
-                    {profile.name || "FixMate User"}
+                  <h2 className="mt-3 font-serif text-xl font-normal tracking-tight text-slate-900 dark:text-white">
+                    {profile.name || "FixMate Member"}
                   </h2>
 
-                  <div className="mt-2">{getRoleBadge(profile.role)}</div>
+                  <div className="mt-1.5">{getRoleBadge(profile.role)}</div>
 
-                  <p className="mt-2.5 break-all text-xs font-medium text-slate-500 dark:text-slate-400">
+                  <p className="mt-2 break-all font-mono text-[11px] text-slate-500 dark:text-slate-400">
                     {profile.email}
                   </p>
 
                   {profile.createdAt && (
-                    <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300">
-                      <Calendar size={13} className="text-blue-600 dark:text-blue-400" />
+                    <div className="mt-3.5 inline-flex items-center gap-1.5 font-mono text-[10px] text-slate-400 dark:text-slate-500">
+                      <Calendar size={12} className="text-slate-400 dark:text-slate-500" />
                       <span>
                         Member since{" "}
                         {new Date(profile.createdAt).toLocaleDateString(
@@ -638,31 +626,31 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Upload Guidelines Box */}
-                <div className="mt-6 rounded-2xl border border-slate-100 bg-slate-50/80 p-4 text-xs dark:border-slate-800 dark:bg-slate-950/60">
-                  <p className="font-bold text-slate-800 dark:text-slate-200">
-                    Photo Requirements
-                  </p>
-                  <ul className="mt-2.5 space-y-1.5 text-slate-500 dark:text-slate-400">
+                <div className="mt-6 rounded-2xl border border-slate-100 bg-slate-50/70 p-4 text-xs dark:border-slate-800 dark:bg-slate-950/50">
+                  <span className="font-mono text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                    Photo Standards
+                  </span>
+                  <ul className="mt-2 space-y-1.5 text-xs text-slate-500 dark:text-slate-400">
                     <li className="flex items-center gap-2">
                       <CheckCircle2
                         size={13}
                         className="shrink-0 text-blue-600 dark:text-blue-400"
                       />
-                      <span>Supported formats: JPG, PNG, WEBP</span>
+                      <span>JPEG, PNG, or WebP up to 5MB</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle2
                         size={13}
                         className="shrink-0 text-blue-600 dark:text-blue-400"
                       />
-                      <span>Maximum file size: 5 MB</span>
+                      <span>Square aspect ratio recommended</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle2
                         size={13}
                         className="shrink-0 text-blue-600 dark:text-blue-400"
                       />
-                      <span>Click Save Changes to apply new photo</span>
+                      <span>Applied instantly across Navbar & Sidebar</span>
                     </li>
                   </ul>
                 </div>
@@ -674,15 +662,17 @@ export default function ProfilePage() {
           <div className="lg:col-span-8">
             <form
               onSubmit={handleSubmit}
-              className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-8 dark:border-slate-800 dark:bg-slate-900"
+              className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-8 dark:border-slate-800 dark:bg-slate-900/90"
             >
               <div className="border-b border-slate-100 pb-5 dark:border-slate-800">
-                <h2 className="text-xl font-extrabold text-slate-900 dark:text-white">
+                <span className="font-mono text-[10px] font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                  Account Details
+                </span>
+                <h2 className="mt-1 font-serif text-xl font-normal tracking-tight text-slate-900 dark:text-white">
                   Personal Information
                 </h2>
-                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                  Update your account details. Email address and account role
-                  are managed by system administrators.
+                <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                  Keep your coordinates current. Email address and account authority are locked to your authentication identity.
                 </p>
               </div>
 
@@ -692,13 +682,13 @@ export default function ProfilePage() {
                   <div>
                     <label className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                       <span>Email Address</span>
-                      <span className="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-semibold lowercase text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                      <span className="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2 py-0.5 font-mono text-[10px] lowercase text-slate-500 dark:bg-slate-800 dark:text-slate-400">
                         <Lock size={10} /> read-only
                       </span>
                     </label>
                     <div className="relative mt-2">
                       <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 dark:text-slate-500">
-                        <Mail size={17} />
+                        <Mail size={16} />
                       </div>
                       <input
                         type="email"
@@ -706,7 +696,7 @@ export default function ProfilePage() {
                         readOnly
                         disabled
                         aria-label="Email address (read-only)"
-                        className="w-full cursor-not-allowed select-none rounded-xl border border-slate-200 bg-slate-100/80 py-3 pr-4 pl-10 text-sm font-medium text-slate-500 dark:border-slate-800 dark:bg-slate-950/60 dark:text-slate-400"
+                        className="w-full cursor-not-allowed select-none rounded-xl border border-slate-200/70 bg-slate-50/80 py-2.5 pr-4 pl-10 font-mono text-xs font-medium text-slate-500 dark:border-slate-800 dark:bg-slate-950/50 dark:text-slate-400"
                       />
                     </div>
                   </div>
@@ -714,13 +704,13 @@ export default function ProfilePage() {
                   <div>
                     <label className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                       <span>Account Role</span>
-                      <span className="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-semibold lowercase text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                      <span className="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2 py-0.5 font-mono text-[10px] lowercase text-slate-500 dark:bg-slate-800 dark:text-slate-400">
                         <Lock size={10} /> read-only
                       </span>
                     </label>
                     <div className="relative mt-2">
                       <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 dark:text-slate-500">
-                        <Shield size={17} />
+                        <Shield size={16} />
                       </div>
                       <input
                         type="text"
@@ -731,7 +721,7 @@ export default function ProfilePage() {
                         readOnly
                         disabled
                         aria-label="Account role (read-only)"
-                        className="w-full cursor-not-allowed select-none rounded-xl border border-slate-200 bg-slate-100/80 py-3 pr-4 pl-10 text-sm font-semibold capitalize text-slate-600 dark:border-slate-800 dark:bg-slate-950/60 dark:text-slate-300"
+                        className="w-full cursor-not-allowed select-none rounded-xl border border-slate-200/70 bg-slate-50/80 py-2.5 pr-4 pl-10 font-mono text-xs font-semibold capitalize text-slate-600 dark:border-slate-800 dark:bg-slate-950/50 dark:text-slate-300"
                       />
                     </div>
                   </div>
@@ -747,7 +737,7 @@ export default function ProfilePage() {
                   </label>
                   <div className="relative mt-2">
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 dark:text-slate-500">
-                      <User size={17} />
+                      <User size={16} />
                     </div>
                     <input
                       id="name"
@@ -757,7 +747,7 @@ export default function ProfilePage() {
                       value={formData.name}
                       onChange={handleChange}
                       placeholder="Your full name"
-                      className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-blue-500 dark:focus:ring-blue-500/20"
+                      className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-blue-500 dark:focus:ring-blue-500/20"
                     />
                   </div>
                 </div>
@@ -773,7 +763,7 @@ export default function ProfilePage() {
                     </label>
                     <div className="relative mt-2">
                       <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 dark:text-slate-500">
-                        <Phone size={17} />
+                        <Phone size={16} />
                       </div>
                       <input
                         id="phone"
@@ -782,11 +772,11 @@ export default function ProfilePage() {
                         value={formData.phone}
                         onChange={handleChange}
                         placeholder="+880 1700 000000"
-                        className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-blue-500 dark:focus:ring-blue-500/20"
+                        className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-blue-500 dark:focus:ring-blue-500/20"
                       />
                     </div>
-                    <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">
-                      Helps technicians or customers contact you directly.
+                    <p className="mt-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+                      Used for dispatch coordination and service scheduling.
                     </p>
                   </div>
 
@@ -795,11 +785,11 @@ export default function ProfilePage() {
                       htmlFor="area"
                       className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300"
                     >
-                      Area / City
+                      Area / Region
                     </label>
                     <div className="relative mt-2">
                       <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 dark:text-slate-500">
-                        <MapPin size={17} />
+                        <MapPin size={16} />
                       </div>
                       <input
                         id="area"
@@ -808,26 +798,26 @@ export default function ProfilePage() {
                         value={formData.area}
                         onChange={handleChange}
                         placeholder="e.g. Dhanmondi, Dhaka"
-                        className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-blue-500 dark:focus:ring-blue-500/20"
+                        className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-blue-500 dark:focus:ring-blue-500/20"
                       />
                     </div>
-                    <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">
-                      Your primary service area or living location.
+                    <p className="mt-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+                      Primary coverage zone or residence neighborhood.
                     </p>
                   </div>
                 </div>
 
-                {/* Row 4: Bio / About */}
+                {/* Row 4: Bio / Description */}
                 <div>
                   <label
                     htmlFor="bio"
                     className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300"
                   >
-                    Bio / Description
+                    Biography &amp; Background
                   </label>
                   <div className="relative mt-2">
-                    <div className="pointer-events-none absolute top-3.5 left-0 flex items-start pl-3.5 text-slate-400 dark:text-slate-500">
-                      <FileText size={17} />
+                    <div className="pointer-events-none absolute top-3 left-0 flex items-start pl-3.5 text-slate-400 dark:text-slate-500">
+                      <FileText size={16} />
                     </div>
                     <textarea
                       id="bio"
@@ -835,13 +825,12 @@ export default function ProfilePage() {
                       rows={4}
                       value={formData.bio}
                       onChange={handleChange}
-                      placeholder="Tell us a little bit about yourself, your device preferences, or your repair specialties..."
-                      className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-blue-500 dark:focus:ring-blue-500/20"
+                      placeholder="Outline your background, hardware repair focus, or platform profile notes..."
+                      className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-blue-500 dark:focus:ring-blue-500/20"
                     />
                   </div>
-                  <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">
-                    Brief background or introductory notes visible across your
-                    FixMate activities.
+                  <p className="mt-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+                    Brief synopsis visible across your FixMate service profile.
                   </p>
                 </div>
               </div>
@@ -851,20 +840,21 @@ export default function ProfilePage() {
                 <button
                   type="button"
                   onClick={handleReset}
-                  disabled={saving || uploadingImage}
-                  className="rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 disabled:opacity-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                  disabled={saving || uploadingImage || !isDirty}
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:border-slate-300 disabled:opacity-40 sm:self-auto dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
                 >
-                  Reset
+                  <RotateCcw size={13} />
+                  <span>Reset Changes</span>
                 </button>
 
                 <button
                   type="submit"
                   disabled={saving || uploadingImage}
-                  className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-600/25 transition-all hover:from-blue-500 hover:to-indigo-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-2.5 text-xs font-semibold text-white shadow-sm transition-all hover:bg-slate-800 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60 dark:bg-blue-600 dark:hover:bg-blue-500"
                 >
                   {saving || uploadingImage ? (
                     <>
-                      <Loader2 size={16} className="animate-spin" />
+                      <Loader2 size={15} className="animate-spin" />
                       <span>
                         {uploadingImage
                           ? "Uploading Photo..."
@@ -873,7 +863,7 @@ export default function ProfilePage() {
                     </>
                   ) : (
                     <>
-                      <Save size={16} />
+                      <Save size={14} />
                       <span>Save Changes</span>
                     </>
                   )}
@@ -881,6 +871,20 @@ export default function ProfilePage() {
               </div>
             </form>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProfileSkeleton() {
+  return (
+    <div className="min-h-screen bg-slate-50/50 pb-16 transition-colors duration-200 dark:bg-slate-950 animate-pulse">
+      <div className="mx-auto max-w-6xl space-y-8">
+        <div className="h-36 rounded-3xl border border-slate-200/80 bg-white dark:border-slate-800 dark:bg-slate-900/90" />
+        <div className="grid gap-8 lg:grid-cols-12">
+          <div className="h-96 rounded-3xl border border-slate-200/80 bg-white lg:col-span-4 dark:border-slate-800 dark:bg-slate-900/90" />
+          <div className="h-96 rounded-3xl border border-slate-200/80 bg-white lg:col-span-8 dark:border-slate-800 dark:bg-slate-900/90" />
         </div>
       </div>
     </div>
