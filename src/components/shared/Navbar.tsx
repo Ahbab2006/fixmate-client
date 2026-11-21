@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { apiUrl } from "@/lib/api";
@@ -30,7 +30,7 @@ function ProfileAvatar({
 }) {
   return (
     <div
-      className={`${size} flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-blue-500/20 to-indigo-500/20 text-blue-300 ring-1 ring-blue-400/30`}
+      className={`${size} flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-blue-500/20 to-indigo-500/20 text-blue-600 ring-1 ring-blue-500/25 dark:text-blue-300 dark:ring-blue-400/30`}
     >
       {image ? (
         <img
@@ -39,7 +39,7 @@ function ProfileAvatar({
           className="h-full w-full object-cover"
         />
       ) : (
-        <User size={18} />
+        <User size={16} />
       )}
     </div>
   );
@@ -48,6 +48,7 @@ function ProfileAvatar({
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const profileMenuRef = useRef<HTMLDivElement>(null);
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -96,6 +97,55 @@ export default function Navbar() {
   const displayName = profileData?.name ?? user?.name ?? "";
   const displayImage =
     profileData?.image !== undefined ? profileData.image : user?.image;
+
+  // Close menus when route changes
+  useEffect(() => {
+    setMobileMenuOpen(false);
+    setProfileMenuOpen(false);
+  }, [pathname]);
+
+  // Handle clicking outside profile dropdown & escape key
+  useEffect(() => {
+    if (!profileMenuOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        profileMenuRef.current &&
+        !profileMenuRef.current.contains(event.target as Node)
+      ) {
+        setProfileMenuOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setProfileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [profileMenuOpen]);
+
+  // Handle escape key to close mobile menu
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [mobileMenuOpen]);
 
   // Sync profile data from backend API to keep Navbar accurate across refreshes
   useEffect(() => {
@@ -288,27 +338,27 @@ export default function Navbar() {
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 
-
-
   // Hide public navbar on all dashboard routes
   if (pathname?.startsWith("/dashboard")) {
     return null;
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 text-slate-900 backdrop-blur-xl transition-colors duration-200 dark:border-white/10 dark:bg-slate-950/90 dark:text-white">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 text-slate-900 backdrop-blur-xl transition-colors duration-200 dark:border-slate-800/80 dark:bg-slate-950/90 dark:text-white">
+      <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link
           href="/"
           onClick={closeMenus}
-          className="group flex items-center gap-2.5"
+          className="group flex items-center gap-2.5 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+          aria-label="FixMate Home"
         >
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/25 transition-transform duration-300 group-hover:scale-105">
-            <Wrench size={20} />
+          <span className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-600/25 ring-1 ring-white/20 transition-transform duration-300 group-hover:scale-105">
+            <Wrench size={18} className="sm:hidden" />
+            <Wrench size={20} className="hidden sm:block" />
           </span>
 
-          <span className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+          <span className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
             Fix
             <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-sky-300">
               Mate
@@ -317,17 +367,17 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden items-center gap-1.5 rounded-full border border-slate-200/80 bg-slate-100/70 p-1.5 dark:border-white/10 dark:bg-white/[0.04] md:flex">
+        <div className="hidden items-center gap-1 rounded-full border border-slate-200/80 bg-slate-100/70 p-1 backdrop-blur-md dark:border-slate-800 dark:bg-slate-900/60 md:flex">
           {navLinks.map((link) => {
             const active = isActive(link.href);
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 ${
+                className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
                   active
-                    ? "bg-white text-slate-950 shadow-sm dark:bg-white/10 dark:text-white"
-                    : "text-slate-600 hover:bg-slate-200/50 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-white"
+                    ? "bg-white text-slate-950 font-semibold shadow-xs dark:bg-slate-800 dark:text-white"
+                    : "text-slate-600 hover:text-slate-950 hover:bg-white/50 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800/50"
                 }`}
               >
                 {link.name}
@@ -337,64 +387,65 @@ export default function Navbar() {
         </div>
 
         {/* Desktop Actions & Authentication */}
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-2.5 md:flex">
           {/* Theme Toggle */}
           <ThemeToggle />
 
           {isPending ? (
-            <div className="h-10 w-28 animate-pulse rounded-xl bg-slate-200 dark:bg-slate-800" />
+            <div className="h-9 w-28 animate-pulse rounded-full bg-slate-200/80 dark:bg-slate-800/80" />
           ) : user ? (
-            <div className="relative">
+            <div className="relative" ref={profileMenuRef}>
               <button
                 onClick={() => setProfileMenuOpen(!profileMenuOpen)}
-                className="flex items-center gap-2.5 rounded-full border border-slate-200 bg-white/80 p-1.5 pr-3.5 text-left transition-all hover:border-blue-400/50 hover:bg-slate-50 dark:border-white/15 dark:bg-slate-900/80 dark:hover:border-blue-400/40 dark:hover:bg-slate-800/90"
+                className="flex items-center gap-2.5 rounded-full border border-slate-200/90 bg-white/90 py-1 pl-1 pr-3 text-left shadow-xs transition-all duration-200 hover:border-slate-300 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-slate-800 dark:bg-slate-900/90 dark:hover:border-slate-700 dark:hover:bg-slate-800/90"
                 aria-label="Open profile menu"
                 aria-expanded={profileMenuOpen}
+                aria-haspopup="true"
               >
-                <ProfileAvatar image={displayImage} name={displayName} />
-                <span className="max-w-28 truncate text-sm font-semibold text-slate-800 dark:text-slate-100">
+                <ProfileAvatar size="h-7 w-7" image={displayImage} name={displayName} />
+                <span className="max-w-28 truncate text-xs font-semibold text-slate-800 dark:text-slate-100">
                   {displayName || "My Account"}
                 </span>
                 <ChevronDown
-                  size={16}
-                  className={`text-slate-400 transition-transform duration-200 ${
-                    profileMenuOpen ? "rotate-180 text-blue-500" : ""
+                  size={14}
+                  className={`text-slate-400 transition-transform duration-200 dark:text-slate-500 ${
+                    profileMenuOpen ? "rotate-180 text-blue-600 dark:text-blue-400" : ""
                   }`}
                 />
               </button>
 
               {profileMenuOpen && (
-                <div className="absolute right-0 top-full mt-3 w-68 overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-2xl shadow-slate-950/10 ring-1 ring-black/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-slate-950/60 dark:ring-white/5">
-                  <div className="border-b border-slate-100 bg-slate-50/90 px-4 py-4 dark:border-slate-800 dark:bg-slate-950/60">
+                <div className="absolute right-0 top-full mt-2 w-64 overflow-hidden rounded-2xl border border-slate-200/90 bg-white/95 shadow-xl shadow-slate-950/10 backdrop-blur-xl ring-1 ring-black/5 dark:border-slate-800 dark:bg-slate-900/95 dark:shadow-slate-950/50 dark:ring-white/5">
+                  <div className="border-b border-slate-100 bg-slate-50/80 px-4 py-3.5 dark:border-slate-800 dark:bg-slate-950/50">
                     <p className="truncate text-sm font-bold text-slate-900 dark:text-white">
                       {displayName || "My Account"}
                     </p>
-                    <p className="mt-0.5 truncate text-xs text-slate-500 dark:text-slate-400">
+                    <p className="mt-0.5 truncate text-xs text-slate-500 dark:text-slate-400 font-mono">
                       {user.email}
                     </p>
 
-                    <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700 ring-1 ring-blue-600/15 dark:bg-blue-950/50 dark:text-blue-300 dark:ring-blue-500/20">
-                      <ShieldCheck size={13} />
+                    <span className="mt-2.5 inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-blue-700 ring-1 ring-blue-600/20 dark:bg-blue-950/50 dark:text-blue-300 dark:ring-blue-500/20">
+                      <ShieldCheck size={12} />
                       {roleLabel}
                     </span>
                   </div>
 
-                  <div className="space-y-1 p-2">
+                  <div className="space-y-0.5 p-1.5">
                     <Link
                       href={dashboardPath}
                       onClick={closeMenus}
-                      className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-blue-50 hover:text-blue-600 dark:text-slate-300 dark:hover:bg-blue-500/10 dark:hover:text-blue-400"
+                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 transition-colors hover:bg-blue-50 hover:text-blue-600 dark:text-slate-300 dark:hover:bg-blue-500/10 dark:hover:text-blue-400"
                     >
-                      <LayoutDashboard size={17} className="text-slate-400 dark:text-slate-500" />
+                      <LayoutDashboard size={15} className="text-slate-400 dark:text-slate-500" />
                       Dashboard
                     </Link>
 
                     <Link
                       href="/dashboard/profile"
                       onClick={closeMenus}
-                      className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-blue-50 hover:text-blue-600 dark:text-slate-300 dark:hover:bg-blue-500/10 dark:hover:text-blue-400"
+                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 transition-colors hover:bg-blue-50 hover:text-blue-600 dark:text-slate-300 dark:hover:bg-blue-500/10 dark:hover:text-blue-400"
                     >
-                      <Settings size={17} className="text-slate-400 dark:text-slate-500" />
+                      <Settings size={15} className="text-slate-400 dark:text-slate-500" />
                       Update Profile
                     </Link>
 
@@ -402,9 +453,9 @@ export default function Navbar() {
 
                     <button
                       onClick={handleLogout}
-                      className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-rose-600 transition-colors hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-500/10"
+                      className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-xs font-semibold text-rose-600 transition-colors hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-500/10"
                     >
-                      <LogOut size={17} />
+                      <LogOut size={15} />
                       Sign Out
                     </button>
                   </div>
@@ -412,41 +463,42 @@ export default function Navbar() {
               )}
             </div>
           ) : (
-            <>
+            <div className="flex items-center gap-2">
               <Link
                 href={signInHref}
-                className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-white"
+                className="rounded-xl px-3.5 py-2 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/80 dark:hover:text-white"
               >
                 Sign In
               </Link>
 
               <Link
                 href={signUpHref}
-                className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-600/25 transition-all duration-300 hover:scale-[1.02] hover:from-blue-500 hover:to-indigo-500"
+                className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-sm shadow-blue-600/25 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] hover:from-blue-500 hover:to-indigo-500"
               >
                 Sign Up
               </Link>
-            </>
+            </div>
           )}
         </div>
 
         {/* Mobile Actions: ThemeToggle + Hamburger */}
-        <div className="flex items-center gap-2 md:hidden">
+        <div className="flex items-center gap-1.5 md:hidden">
           <ThemeToggle />
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="rounded-xl border border-slate-200 bg-slate-100/80 p-2 text-slate-700 transition hover:bg-slate-200 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10 dark:hover:text-white"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200/90 bg-slate-100/80 text-slate-700 transition-colors hover:bg-slate-200/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-200 dark:hover:bg-slate-800"
             aria-label="Toggle navigation menu"
+            aria-expanded={mobileMenuOpen}
           >
-            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </nav>
 
-      {/* Mobile Navigation */}
+      {/* Mobile Navigation Drawer */}
       {mobileMenuOpen && (
-        <div className="border-t border-slate-200 bg-white/98 px-4 py-5 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/98 md:hidden">
+        <div className="max-h-[calc(100vh-4rem)] overflow-y-auto border-t border-slate-200/80 bg-white/95 px-4 py-5 shadow-2xl backdrop-blur-2xl dark:border-slate-800 dark:bg-slate-950/95 md:hidden">
           <div className="flex flex-col gap-1.5">
             {navLinks.map((link) => {
               const active = isActive(link.href);
@@ -455,10 +507,10 @@ export default function Navbar() {
                   key={link.href}
                   href={link.href}
                   onClick={closeMenus}
-                  className={`rounded-xl px-4 py-3 text-sm font-semibold transition-all ${
+                  className={`min-h-[44px] flex items-center rounded-xl px-4 py-2.5 text-sm font-semibold transition-all ${
                     active
-                      ? "bg-blue-50 text-blue-700 ring-1 ring-blue-500/30 dark:bg-blue-600/15 dark:text-blue-400"
-                      : "text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-white"
+                      ? "bg-blue-50 text-blue-700 ring-1 ring-blue-500/25 dark:bg-blue-950/40 dark:text-blue-300 dark:ring-blue-500/30"
+                      : "text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-900/80 dark:hover:text-white"
                   }`}
                 >
                   {link.name}
@@ -466,18 +518,22 @@ export default function Navbar() {
               );
             })}
 
-            <div className="mt-3 border-t border-slate-200 pt-4 dark:border-white/10">
+            <div className="mt-3 border-t border-slate-200/80 pt-4 dark:border-slate-800">
               {isPending ? (
-                <div className="h-12 w-full animate-pulse rounded-xl bg-slate-200 dark:bg-slate-800" />
+                <div className="h-12 w-full animate-pulse rounded-xl bg-slate-200/80 dark:bg-slate-800/80" />
               ) : user ? (
                 <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-3.5 dark:border-white/10 dark:bg-slate-900/90">
+                  <div className="flex items-center gap-3 rounded-2xl border border-slate-200/90 bg-slate-50/90 p-3.5 dark:border-slate-800 dark:bg-slate-900/80">
                     <ProfileAvatar size="h-10 w-10" image={displayImage} name={displayName} />
-                    <div className="min-w-0">
+                    <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-bold text-slate-900 dark:text-white">
                         {displayName || "My Account"}
                       </p>
-                      <span className="mt-0.5 inline-block text-xs font-semibold text-blue-600 dark:text-blue-400">
+                      <p className="truncate text-xs text-slate-500 dark:text-slate-400 font-mono">
+                        {user.email}
+                      </p>
+                      <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-semibold text-blue-700 ring-1 ring-blue-600/20 dark:bg-blue-950/50 dark:text-blue-300 dark:ring-blue-500/20">
+                        <ShieldCheck size={11} />
                         {roleLabel}
                       </span>
                     </div>
@@ -486,7 +542,7 @@ export default function Navbar() {
                   <Link
                     href={dashboardPath}
                     onClick={closeMenus}
-                    className="flex items-center gap-3 rounded-xl px-3.5 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/5 dark:hover:text-white"
+                    className="min-h-[44px] flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-900/80 dark:hover:text-white"
                   >
                     <LayoutDashboard size={18} className="text-blue-600 dark:text-blue-400" />
                     Dashboard
@@ -495,7 +551,7 @@ export default function Navbar() {
                   <Link
                     href="/dashboard/profile"
                     onClick={closeMenus}
-                    className="flex items-center gap-3 rounded-xl px-3.5 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/5 dark:hover:text-white"
+                    className="min-h-[44px] flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-900/80 dark:hover:text-white"
                   >
                     <Settings size={18} className="text-blue-600 dark:text-blue-400" />
                     Update Profile
@@ -503,18 +559,18 @@ export default function Navbar() {
 
                   <button
                     onClick={handleLogout}
-                    className="mt-1 flex items-center gap-3 rounded-xl px-3.5 py-3 text-left text-sm font-semibold text-rose-600 transition hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-500/10"
+                    className="min-h-[44px] mt-1 flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-left text-sm font-semibold text-rose-600 transition hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950/30"
                   >
                     <LogOut size={18} />
                     Sign Out
                   </button>
                 </div>
               ) : (
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-2.5">
                   <Link
                     href={signInHref}
                     onClick={closeMenus}
-                    className="rounded-xl border border-slate-300 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-800 transition hover:border-slate-400 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-slate-500 dark:hover:text-white"
+                    className="min-h-[48px] flex items-center justify-center rounded-xl border border-slate-200/90 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-800 shadow-xs transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-200 dark:hover:border-slate-700 dark:hover:bg-slate-800/80"
                   >
                     Sign In
                   </Link>
@@ -522,7 +578,7 @@ export default function Navbar() {
                   <Link
                     href={signUpHref}
                     onClick={closeMenus}
-                    className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3 text-center text-sm font-semibold text-white shadow-lg shadow-blue-600/25"
+                    className="min-h-[48px] flex items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3 text-center text-sm font-semibold text-white shadow-md shadow-blue-600/25 transition-all duration-200 hover:from-blue-500 hover:to-indigo-500 active:scale-[0.99]"
                   >
                     Sign Up
                   </Link>
