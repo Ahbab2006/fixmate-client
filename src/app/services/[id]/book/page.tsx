@@ -38,8 +38,10 @@ export default function BookingPage() {
     if (isPending) return;
 
     if (!session) {
+      const search = typeof window !== "undefined" ? window.location.search : "";
+      const targetUrl = `/services/${serviceId}/book${search}`;
       router.replace(
-        `/sign-in?redirect=${encodeURIComponent(`/services/${serviceId}/book`)}`
+        `/sign-in?redirect=${encodeURIComponent(targetUrl)}`
       );
       return;
     }
@@ -151,8 +153,8 @@ export default function BookingPage() {
 
   if (isPending || loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center gap-3">
-        <Loader2 className="animate-spin" />
+      <div className="flex min-h-screen items-center justify-center gap-3 bg-slate-50 text-slate-700 transition-colors duration-200 dark:bg-slate-950 dark:text-slate-300">
+        <Loader2 className="animate-spin text-blue-600 dark:text-blue-400" />
         Loading booking form...
       </div>
     );
@@ -164,7 +166,7 @@ export default function BookingPage() {
 
   if (!service) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-slate-50 text-slate-900 transition-colors duration-200 dark:bg-slate-950 dark:text-slate-100">
         <h2 className="text-xl font-bold">Service Not Found</h2>
         <Link href="/services" className="mt-4 text-blue-600 underline">
           Back to Services
@@ -174,43 +176,43 @@ export default function BookingPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 px-4 py-12">
+    <main className="min-h-screen bg-slate-50 px-4 py-12 transition-colors duration-200 dark:bg-slate-950 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-3xl">
 
         <Link
           href={`/services/${serviceId}`}
-          className="mb-6 inline-flex items-center gap-2 text-gray-600 hover:text-blue-600"
+          className="mb-6 inline-flex items-center gap-2 text-slate-600 transition hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400"
         >
           <ArrowLeft size={18} />
           Back to Service
         </Link>
 
-        <div className="rounded-2xl border bg-white p-6 shadow-sm sm:p-8">
-          <h1 className="text-2xl font-bold text-gray-900">
+        <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-xl shadow-slate-950/5 dark:border-slate-800 dark:bg-slate-900 sm:p-8">
+          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white">
             Book Repair Service
           </h1>
 
-          <p className="mt-2 text-gray-500">
+          <p className="mt-2 text-slate-500 dark:text-slate-400">
             Submit your repair request to the technician.
           </p>
 
           {/* Selected Service */}
-          <div className="mt-6 flex gap-4 rounded-xl bg-gray-50 p-4">
+          <div className="mt-6 flex gap-4 rounded-2xl border border-slate-100 bg-slate-50/80 p-4 dark:border-slate-800 dark:bg-slate-950/60">
             <img
               src={service.image}
               alt={service.title}
-              className="h-24 w-24 rounded-lg object-cover"
+              className="h-24 w-24 rounded-xl object-cover"
             />
 
             <div>
-              <p className="font-bold text-gray-900">{service.title}</p>
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="font-bold text-slate-900 dark:text-white">{service.title}</p>
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                 {service.category}
               </p>
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                 Technician: {service.technicianName}
               </p>
-              <p className="mt-1 font-bold text-blue-600">
+              <p className="mt-1 font-bold text-blue-600 dark:text-blue-400">
                 ${service.basePrice}
               </p>
             </div>
@@ -220,30 +222,30 @@ export default function BookingPage() {
 
             {/* Customer Information */}
             <div>
-              <label className="mb-2 block text-sm font-semibold">
+              <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                 Customer Name
               </label>
               <input
                 value={session.user.name || ""}
                 readOnly
-                className="w-full rounded-lg border bg-gray-100 px-4 py-3 text-gray-600 outline-none"
+                className="w-full rounded-xl border border-slate-200 bg-slate-100/80 px-4 py-3 text-sm text-slate-600 outline-none dark:border-slate-800 dark:bg-slate-950/50 dark:text-slate-400"
               />
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-semibold">
+              <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                 Email Address
               </label>
               <input
                 value={session.user.email || ""}
                 readOnly
-                className="w-full rounded-lg border bg-gray-100 px-4 py-3 text-gray-600 outline-none"
+                className="w-full rounded-xl border border-slate-200 bg-slate-100/80 px-4 py-3 text-sm text-slate-600 outline-none dark:border-slate-800 dark:bg-slate-950/50 dark:text-slate-400"
               />
             </div>
 
             {/* Phone */}
             <div>
-              <label className="mb-2 block text-sm font-semibold">
+              <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                 Phone Number *
               </label>
               <input
@@ -252,13 +254,13 @@ export default function BookingPage() {
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="Enter your phone number"
                 required
-                className="w-full rounded-lg border px-4 py-3 outline-none focus:border-blue-500"
+                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-blue-500"
               />
             </div>
 
             {/* Address */}
             <div>
-              <label className="mb-2 block text-sm font-semibold">
+              <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                 Address *
               </label>
               <textarea
@@ -267,13 +269,13 @@ export default function BookingPage() {
                 placeholder="Enter your full address"
                 required
                 rows={3}
-                className="w-full rounded-lg border px-4 py-3 outline-none focus:border-blue-500"
+                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-blue-500"
               />
             </div>
 
             {/* Preferred Date */}
             <div>
-              <label className="mb-2 block text-sm font-semibold">
+              <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                 Preferred Service Date *
               </label>
               <input
@@ -282,13 +284,13 @@ export default function BookingPage() {
                 value={preferredDate}
                 onChange={(e) => setPreferredDate(e.target.value)}
                 required
-                className="w-full rounded-lg border px-4 py-3 outline-none focus:border-blue-500"
+                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:border-blue-500"
               />
             </div>
 
             {/* Problem Description */}
             <div>
-              <label className="mb-2 block text-sm font-semibold">
+              <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                 Describe Your Problem *
               </label>
               <textarea
@@ -298,9 +300,9 @@ export default function BookingPage() {
                 required
                 minLength={20}
                 rows={5}
-                className="w-full rounded-lg border px-4 py-3 outline-none focus:border-blue-500"
+                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-blue-500"
               />
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                 Minimum 20 characters.
               </p>
             </div>
@@ -308,7 +310,7 @@ export default function BookingPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white shadow-lg shadow-blue-600/25 transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {submitting ? (
                 <>

@@ -376,7 +376,7 @@ const handleToggleAvailability = async () => {
 
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center gap-5 p-6">
+    <div className="min-h-screen flex flex-col items-center justify-center gap-5 p-6 bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       <h1 className="text-2xl font-bold">
         FixMate - Test Service API
       </h1>
@@ -442,7 +442,7 @@ const handleToggleAvailability = async () => {
 </button>
 
       {result && (
-        <pre className="w-full max-w-xl overflow-auto rounded-lg bg-gray-100 p-4 text-sm text-black">
+        <pre className="w-full max-w-xl overflow-auto rounded-lg bg-gray-100 p-4 text-sm text-black dark:bg-slate-900 dark:text-slate-200 dark:border dark:border-slate-800">
           {result}
         </pre>
       )}

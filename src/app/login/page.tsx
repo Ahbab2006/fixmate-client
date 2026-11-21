@@ -18,29 +18,12 @@ import {
   AlertCircle,
 } from "lucide-react";
 
-function getSafeRedirectUrl(url: string | null): string | null {
-  if (!url) return null;
+import {
+  getSafeRedirectUrl,
+  getFinalRedirectUrl,
+} from "@/lib/auth-redirect";
 
-  // Must be a relative path starting with a single '/'
-  if (!url.startsWith("/")) return null;
-
-  // Prevent protocol-relative URLs (e.g. '//evil.com')
-  if (url.startsWith("//")) return null;
-
-  // Prevent scheme or port tricks (e.g. 'javascript:', 'https:')
-  if (url.includes(":")) return null;
-
-  // Prevent redirect loops back to auth pages
-  if (
-    url.startsWith("/login") ||
-    url.startsWith("/sign-in") ||
-    url.startsWith("/sign-up")
-  ) {
-    return null;
-  }
-
-  return url;
-}
+export { getSafeRedirectUrl } from "@/lib/auth-redirect";
 
 function LoginForm() {
   const router = useRouter();
@@ -58,29 +41,22 @@ function LoginForm() {
     password?: string;
   }>({});
 
+  const redirectParam =
+    searchParams.get("redirect") ||
+    searchParams.get("callbackUrl") ||
+    searchParams.get("returnUrl");
+  const safeRedirect = getSafeRedirectUrl(redirectParam);
+
   // If user is already authenticated, redirect to intended target or role dashboard
   useEffect(() => {
     if (sessionLoading) return;
 
     if (session?.user) {
       const role = session.user.role;
-      const redirectParam =
-        searchParams.get("redirect") ||
-        searchParams.get("callbackUrl") ||
-        searchParams.get("returnUrl");
-      const safeRedirect = getSafeRedirectUrl(redirectParam);
-
-      if (safeRedirect) {
-        router.replace(safeRedirect);
-      } else if (role === "admin") {
-        router.replace("/dashboard/admin");
-      } else if (role === "technician") {
-        router.replace("/dashboard/technician");
-      } else {
-        router.replace("/dashboard/customer");
-      }
+      const destination = getFinalRedirectUrl(safeRedirect, role);
+      router.replace(destination);
     }
-  }, [session, sessionLoading, searchParams, router]);
+  }, [session, sessionLoading, safeRedirect, router]);
 
   const validate = () => {
     const errors: { email?: string; password?: string } = {};
@@ -132,24 +108,9 @@ function LoginForm() {
         (data as { user?: { role?: string } })?.user;
       const role = user?.role;
 
-      // Check for intended destination redirect
-      const redirectParam =
-        searchParams.get("redirect") ||
-        searchParams.get("callbackUrl") ||
-        searchParams.get("returnUrl");
-      const safeRedirect = getSafeRedirectUrl(redirectParam);
-
-      if (safeRedirect) {
-        router.push(safeRedirect);
-      } else if (role === "admin") {
-        router.push("/dashboard/admin");
-      } else if (role === "technician") {
-        router.push("/dashboard/technician");
-      } else {
-        router.push("/dashboard/customer");
-      }
-
-      router.refresh();
+      // Check for intended destination redirect and role authorization
+      const destination = getFinalRedirectUrl(safeRedirect, role);
+      router.push(destination);
     } catch {
       toast.error("Something went wrong during sign-in. Please try again.");
     } finally {
@@ -161,11 +122,6 @@ function LoginForm() {
     setGoogleLoading(true);
 
     try {
-      const redirectParam =
-        searchParams.get("redirect") ||
-        searchParams.get("callbackUrl") ||
-        searchParams.get("returnUrl");
-      const safeRedirect = getSafeRedirectUrl(redirectParam);
       const callbackURL = safeRedirect || "/dashboard/customer";
 
       const res = await authClient.signIn.social({
@@ -189,11 +145,11 @@ function LoginForm() {
   // Prevent flash of sign-in form for already-authenticated users
   if (sessionLoading || session?.user) {
     return (
-      <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-4 py-12">
+      <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-50 px-4 py-12 transition-colors duration-200 dark:bg-slate-950">
         <div className="pointer-events-none absolute top-1/4 left-1/3 h-80 w-80 rounded-full bg-blue-600/20 blur-[110px]" />
-        <div className="rounded-3xl border border-white/10 bg-slate-900/80 p-8 text-center backdrop-blur-xl">
-          <Loader2 className="mx-auto animate-spin text-blue-400" size={34} />
-          <p className="mt-3 text-sm font-medium text-slate-300">
+        <div className="rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-xl dark:border-white/10 dark:bg-slate-900/80 backdrop-blur-xl">
+          <Loader2 className="mx-auto animate-spin text-blue-600 dark:text-blue-400" size={34} />
+          <p className="mt-3 text-sm font-medium text-slate-600 dark:text-slate-300">
             Verifying session...
           </p>
         </div>
@@ -202,14 +158,14 @@ function LoginForm() {
   }
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-4 py-16 sm:px-6">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-50 px-4 py-16 transition-colors duration-200 dark:bg-slate-950 sm:px-6">
       {/* Ambient Background Glows & Grid */}
       <div className="pointer-events-none absolute -top-24 left-1/4 h-96 w-96 rounded-full bg-blue-600/20 blur-[120px]" />
       <div className="pointer-events-none absolute right-1/4 -bottom-24 h-96 w-96 rounded-full bg-indigo-500/20 blur-[120px]" />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:36px_36px]" />
 
       {/* Sign In Card */}
-      <div className="relative z-10 w-full max-w-md overflow-hidden rounded-3xl border border-white/15 bg-white p-8 shadow-2xl shadow-blue-950/50 sm:p-10">
+      <div className="relative z-10 w-full max-w-md overflow-hidden rounded-3xl border border-slate-200/90 bg-white p-8 shadow-2xl shadow-slate-950/5 transition-all dark:border-white/10 dark:bg-slate-900/95 dark:shadow-slate-950/50 sm:p-10">
         {/* Top Brand Emblem */}
         <div className="flex flex-col items-center text-center">
           <Link
@@ -219,18 +175,18 @@ function LoginForm() {
             <Wrench size={22} />
           </Link>
 
-          <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-600 ring-1 ring-blue-600/15">
+          <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700 ring-1 ring-blue-600/15 dark:bg-blue-950/50 dark:text-blue-300 dark:ring-blue-500/20">
             <ShieldCheck size={13} />
             <span>Secure Account Access</span>
           </div>
 
-          <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900">
+          <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
             Welcome Back
           </h1>
 
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
             Sign in to your{" "}
-            <span className="font-bold text-slate-800">FixMate</span> account
+            <span className="font-bold text-slate-800 dark:text-slate-200">FixMate</span> account
             to manage your services
           </p>
         </div>
@@ -239,7 +195,7 @@ function LoginForm() {
         <form onSubmit={handleLogin} className="mt-8 space-y-5" noValidate>
           {/* Email */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
               Email Address
             </label>
             <div className="relative mt-2">
@@ -258,7 +214,7 @@ function LoginForm() {
                 }}
                 required
                 placeholder="you@example.com"
-                className={`w-full rounded-xl border bg-slate-50/50 py-3 pr-4 pl-10 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:bg-white focus:ring-2 disabled:cursor-not-allowed disabled:opacity-60 ${
+                className={`w-full rounded-xl border bg-slate-50/70 py-3 pr-4 pl-10 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:bg-white focus:ring-2 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-800 dark:bg-slate-950/70 dark:text-white dark:placeholder:text-slate-500 dark:focus:bg-slate-950 dark:focus:border-blue-500 ${
                   fieldErrors.email
                     ? "border-rose-500 focus:border-rose-500 focus:ring-rose-500/15"
                     : "border-slate-200 focus:border-blue-600 focus:ring-blue-600/15"
@@ -275,7 +231,7 @@ function LoginForm() {
 
           {/* Password */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
               Password
             </label>
             <div className="relative mt-2">
@@ -297,7 +253,7 @@ function LoginForm() {
                 }}
                 required
                 placeholder="Enter your password"
-                className={`w-full rounded-xl border bg-slate-50/50 py-3 pr-11 pl-10 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:bg-white focus:ring-2 disabled:cursor-not-allowed disabled:opacity-60 ${
+                className={`w-full rounded-xl border bg-slate-50/70 py-3 pr-11 pl-10 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:bg-white focus:ring-2 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-800 dark:bg-slate-950/70 dark:text-white dark:placeholder:text-slate-500 dark:focus:bg-slate-950 dark:focus:border-blue-500 ${
                   fieldErrors.password
                     ? "border-rose-500 focus:border-rose-500 focus:ring-rose-500/15"
                     : "border-slate-200 focus:border-blue-600 focus:ring-blue-600/15"
@@ -347,10 +303,10 @@ function LoginForm() {
         {/* Divider */}
         <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-slate-200" />
+            <div className="w-full border-t border-slate-200 dark:border-slate-800" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-white px-3 font-semibold text-slate-400">
+            <span className="bg-white px-3 font-semibold text-slate-400 dark:bg-slate-900 dark:text-slate-500">
               Or continue with
             </span>
           </div>
@@ -361,7 +317,7 @@ function LoginForm() {
           type="button"
           onClick={handleGoogleSignIn}
           disabled={loading || googleLoading}
-          className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white py-3 text-sm font-bold text-slate-700 shadow-sm transition-all duration-200 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white py-3 text-sm font-bold text-slate-700 shadow-sm transition-all duration-200 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200 dark:hover:border-slate-700 dark:hover:bg-slate-900"
         >
           {googleLoading ? (
             <>
@@ -377,11 +333,15 @@ function LoginForm() {
         </button>
 
         {/* Link to Sign Up */}
-        <div className="mt-7 border-t border-slate-100 pt-6 text-center">
-          <p className="text-sm text-slate-600">
+        <div className="mt-7 border-t border-slate-100 pt-6 text-center dark:border-slate-800">
+          <p className="text-sm text-slate-600 dark:text-slate-400">
             Don&apos;t have an account?{" "}
             <Link
-              href="/sign-up"
+              href={
+                safeRedirect
+                  ? `/sign-up?redirect=${encodeURIComponent(safeRedirect)}`
+                  : "/sign-up"
+              }
               className="font-bold text-blue-600 transition hover:text-indigo-600 hover:underline"
             >
               Create Account
@@ -397,9 +357,9 @@ export default function LoginPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen items-center justify-center bg-slate-950">
-          <div className="rounded-3xl border border-white/10 bg-slate-900/80 p-8 text-center backdrop-blur-xl">
-            <Loader2 className="mx-auto animate-spin text-blue-400" size={34} />
+        <div className="flex min-h-screen items-center justify-center bg-slate-50 transition-colors duration-200 dark:bg-slate-950">
+          <div className="rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-xl dark:border-white/10 dark:bg-slate-900/80 backdrop-blur-xl">
+            <Loader2 className="mx-auto animate-spin text-blue-600 dark:text-blue-400" size={34} />
           </div>
         </div>
       }

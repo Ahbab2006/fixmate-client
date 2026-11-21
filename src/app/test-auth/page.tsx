@@ -61,13 +61,13 @@ const getToken = async () => {
 
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-100 p-4">
-      <div className="w-full max-w-lg rounded-xl bg-white p-8 shadow-lg">
-        <h1 className="mb-3 text-2xl font-bold text-gray-900">
+    <main className="flex min-h-screen items-center justify-center bg-gray-100 p-4 dark:bg-slate-950">
+      <div className="w-full max-w-lg rounded-xl bg-white p-8 shadow-lg dark:border dark:border-slate-800 dark:bg-slate-900">
+        <h1 className="mb-3 text-2xl font-bold text-gray-900 dark:text-white">
           JWT Authentication Test
         </h1>
 
-        <p className="mb-6 text-gray-600">
+        <p className="mb-6 text-gray-600 dark:text-slate-400">
           Test your Better Auth JWT with the FixMate backend.
         </p>
 
@@ -87,7 +87,7 @@ const getToken = async () => {
         </button>
 
         {result && (
-          <pre className="mt-6 overflow-x-auto whitespace-pre-wrap break-words rounded-lg bg-gray-100 p-4 text-sm text-gray-800">
+          <pre className="mt-6 overflow-x-auto whitespace-pre-wrap break-words rounded-lg bg-gray-100 p-4 text-sm text-gray-800 dark:bg-slate-950 dark:text-slate-200">
             {result}
           </pre>
         )}

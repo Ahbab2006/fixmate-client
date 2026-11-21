@@ -98,7 +98,7 @@ export default function AdminTransactionsPage() {
   return (
     <div className="space-y-8 pb-8">
       {/* ================= TOP DARK PREMIUM BANNER ================= */}
-      <div className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8">
+      <div className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8 dark:border dark:border-slate-800">
         <div className="pointer-events-none absolute -top-20 right-10 h-64 w-64 rounded-full bg-blue-600/25 blur-[90px]" />
         <div className="pointer-events-none absolute -bottom-20 left-10 h-64 w-64 rounded-full bg-indigo-500/20 blur-[90px]" />
 
@@ -137,25 +137,25 @@ export default function AdminTransactionsPage() {
       {/* ================= KPI SUMMARY CARDS ================= */}
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {/* Total Transactions */}
-        <div className="group rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg hover:shadow-blue-900/5">
+        <div className="group rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg hover:shadow-blue-900/5 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-semibold text-slate-500">
+            <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
               Total Transactions
             </p>
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600 transition-transform group-hover:scale-110">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600 transition-transform group-hover:scale-110 dark:bg-blue-950/60 dark:text-blue-400">
               <CreditCard size={21} />
             </div>
           </div>
-          <h2 className="mt-4 text-3xl font-extrabold text-slate-900">
+          <h2 className="mt-4 text-3xl font-extrabold text-slate-900 dark:text-white">
             {payments.length}
           </h2>
-          <p className="mt-1 text-xs text-slate-400">
+          <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">
             Completed checkout records
           </p>
         </div>
 
         {/* Total Revenue (Highlighted Premium Card) */}
-        <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 p-6 text-white shadow-lg transition-all duration-300 hover:-translate-y-1">
+        <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 p-6 text-white shadow-lg transition-all duration-300 hover:-translate-y-1 dark:border dark:border-slate-800">
           <div className="pointer-events-none absolute -right-8 -bottom-8 h-32 w-32 rounded-full bg-emerald-500/20 blur-2xl" />
           <div className="relative flex items-center justify-between">
             <p className="text-sm font-semibold text-slate-300">
@@ -178,16 +178,16 @@ export default function AdminTransactionsPage() {
         </div>
 
         {/* Average Payment */}
-        <div className="group rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-900/5 sm:col-span-2 lg:col-span-1">
+        <div className="group rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-900/5 sm:col-span-2 lg:col-span-1 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-semibold text-slate-500">
+            <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
               Average Payment
             </p>
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 transition-transform group-hover:scale-110">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 transition-transform group-hover:scale-110 dark:bg-indigo-950/60 dark:text-indigo-400">
               <TrendingUp size={21} />
             </div>
           </div>
-          <h2 className="mt-4 text-3xl font-extrabold text-slate-900">
+          <h2 className="mt-4 text-3xl font-extrabold text-slate-900 dark:text-white">
             $
             {payments.length
               ? (totalRevenue / payments.length).toLocaleString("en-US", {
@@ -196,27 +196,27 @@ export default function AdminTransactionsPage() {
                 })
               : "0.00"}
           </h2>
-          <p className="mt-1 text-xs text-slate-400">
+          <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">
             Mean value per service booking
           </p>
         </div>
       </div>
 
       {/* ================= PAYMENT HISTORY TABLE CARD ================= */}
-      <div className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm">
+      <div className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
         {/* Table Header Bar */}
-        <div className="flex flex-col gap-2 border-b border-slate-100 bg-slate-50/60 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-2 border-b border-slate-100 bg-slate-50/60 px-6 py-5 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800 dark:bg-slate-900/60">
           <div>
-            <h2 className="text-lg font-bold text-slate-900">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
               Payment History
             </h2>
-            <p className="mt-0.5 text-xs text-slate-500">
+            <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
               Verified Stripe payment logs across all completed services
             </p>
           </div>
 
           {!loading && payments.length > 0 && (
-            <span className="inline-flex items-center gap-1.5 self-start rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 ring-1 ring-emerald-600/20 sm:self-auto">
+            <span className="inline-flex items-center gap-1.5 self-start rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 ring-1 ring-emerald-600/20 sm:self-auto dark:bg-emerald-950/60 dark:text-emerald-400 dark:ring-emerald-500/20">
               <CheckCircle2 size={13} />
               {payments.length} Settled
             </span>
@@ -226,20 +226,20 @@ export default function AdminTransactionsPage() {
         {/* Table Content */}
         {loading ? (
           <div className="flex min-h-64 flex-col items-center justify-center py-16 text-center">
-            <Loader2 className="animate-spin text-blue-600" size={34} />
-            <p className="mt-3 text-sm font-medium text-slate-500">
+            <Loader2 className="animate-spin text-blue-600 dark:text-blue-400" size={34} />
+            <p className="mt-3 text-sm font-medium text-slate-500 dark:text-slate-400">
               Loading transaction records...
             </p>
           </div>
         ) : payments.length === 0 ? (
           <div className="py-16 text-center">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500">
               <CreditCard size={26} />
             </div>
-            <h3 className="mt-4 text-base font-bold text-slate-900">
+            <h3 className="mt-4 text-base font-bold text-slate-900 dark:text-white">
               No Transactions Yet
             </h3>
-            <p className="mx-auto mt-1 max-w-md text-sm text-slate-500">
+            <p className="mx-auto mt-1 max-w-md text-sm text-slate-500 dark:text-slate-400">
               Customer payments will appear here automatically after successful
               Stripe checkouts.
             </p>
@@ -248,7 +248,7 @@ export default function AdminTransactionsPage() {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[920px] text-left text-sm">
               <thead>
-                <tr className="border-b border-slate-100 bg-slate-50/80 text-xs font-bold uppercase tracking-wider text-slate-500">
+                <tr className="border-b border-slate-100 bg-slate-50/80 text-xs font-bold uppercase tracking-wider text-slate-500 dark:border-slate-800 dark:bg-slate-950/50 dark:text-slate-400">
                   <th className="px-6 py-4">Transaction ID</th>
                   <th className="px-6 py-4">Customer</th>
                   <th className="px-6 py-4">Technician</th>
@@ -258,7 +258,7 @@ export default function AdminTransactionsPage() {
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {payments.map((payment) => {
                   const txnId =
                     payment.transactionId ||
@@ -271,36 +271,36 @@ export default function AdminTransactionsPage() {
                   return (
                     <tr
                       key={payment._id}
-                      className="transition-colors hover:bg-slate-50/90"
+                      className="transition-colors hover:bg-slate-50/90 dark:hover:bg-slate-800/50"
                     >
                       {/* Transaction ID */}
                       <td className="px-6 py-4">
                         <div
-                          className="inline-flex max-w-[190px] items-center gap-1.5 rounded-lg border border-slate-200/80 bg-slate-50 px-2.5 py-1.5 font-mono text-xs font-semibold text-slate-700"
+                          className="inline-flex max-w-[190px] items-center gap-1.5 rounded-lg border border-slate-200/80 bg-slate-50 px-2.5 py-1.5 font-mono text-xs font-semibold text-slate-700 dark:border-slate-800 dark:bg-slate-800 dark:text-slate-300"
                           title={txnId}
                         >
-                          <Hash size={12} className="shrink-0 text-slate-400" />
+                          <Hash size={12} className="shrink-0 text-slate-400 dark:text-slate-500" />
                           <span className="truncate">{txnId}</span>
                         </div>
                       </td>
 
                       {/* Customer */}
                       <td className="px-6 py-4">
-                        <p className="font-bold text-slate-900">
+                        <p className="font-bold text-slate-900 dark:text-white">
                           {payment.customerName || "Customer"}
                         </p>
-                        <p className="mt-0.5 max-w-[180px] truncate text-xs text-slate-500">
+                        <p className="mt-0.5 max-w-[180px] truncate text-xs text-slate-500 dark:text-slate-400">
                           {payment.customerEmail || "N/A"}
                         </p>
                       </td>
 
                       {/* Technician */}
                       <td className="px-6 py-4">
-                        <p className="font-semibold text-slate-800">
+                        <p className="font-semibold text-slate-800 dark:text-slate-200">
                           {payment.technicianName || "N/A"}
                         </p>
                         {payment.technicianEmail && (
-                          <p className="mt-0.5 max-w-[180px] truncate text-xs text-slate-500">
+                          <p className="mt-0.5 max-w-[180px] truncate text-xs text-slate-500 dark:text-slate-400">
                             {payment.technicianEmail}
                           </p>
                         )}
@@ -309,7 +309,7 @@ export default function AdminTransactionsPage() {
                       {/* Service */}
                       <td className="px-6 py-4">
                         <span
-                          className="block max-w-[200px] truncate font-medium text-slate-700"
+                          className="block max-w-[200px] truncate font-medium text-slate-700 dark:text-slate-300"
                           title={payment.serviceTitle || "N/A"}
                         >
                           {payment.serviceTitle || "N/A"}
@@ -318,7 +318,7 @@ export default function AdminTransactionsPage() {
 
                       {/* Amount */}
                       <td className="whitespace-nowrap px-6 py-4">
-                        <span className="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-sm font-extrabold text-emerald-700 ring-1 ring-emerald-600/20">
+                        <span className="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-sm font-extrabold text-emerald-700 ring-1 ring-emerald-600/20 dark:bg-emerald-950/60 dark:text-emerald-400 dark:ring-emerald-500/20">
                           $
                           {payment.amount !== undefined &&
                           payment.amount !== null
@@ -331,9 +331,9 @@ export default function AdminTransactionsPage() {
                       </td>
 
                       {/* Payment Date */}
-                      <td className="whitespace-nowrap px-6 py-4 text-slate-600">
+                      <td className="whitespace-nowrap px-6 py-4 text-slate-600 dark:text-slate-400">
                         <div className="inline-flex items-center gap-1.5 font-medium">
-                          <CalendarDays size={15} className="text-slate-400" />
+                          <CalendarDays size={15} className="text-slate-400 dark:text-slate-500" />
                           <span>{formatDate(paymentDate)}</span>
                         </div>
                       </td>

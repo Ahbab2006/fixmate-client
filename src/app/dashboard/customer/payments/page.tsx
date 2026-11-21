@@ -109,9 +109,9 @@ export default function CustomerPaymentsPage() {
   if (loading) {
     return (
       <div className="flex min-h-[65vh] items-center justify-center">
-        <div className="rounded-3xl border border-slate-200/80 bg-white px-10 py-12 text-center shadow-sm">
-          <Loader2 className="mx-auto animate-spin text-blue-600" size={38} />
-          <p className="mt-4 text-sm font-semibold text-slate-600">
+        <div className="rounded-3xl border border-slate-200/80 bg-white px-10 py-12 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <Loader2 className="mx-auto animate-spin text-blue-600 dark:text-blue-400" size={38} />
+          <p className="mt-4 text-sm font-semibold text-slate-600 dark:text-slate-300">
             Loading payment history...
           </p>
         </div>
@@ -120,7 +120,7 @@ export default function CustomerPaymentsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-12 text-slate-900">
+    <div className="min-h-screen bg-slate-50 pb-12 text-slate-900 transition-colors duration-200 dark:bg-slate-950 dark:text-slate-100">
       <div className="mx-auto max-w-7xl space-y-8">
         {/* ================= TOP DARK PREMIUM BANNER ================= */}
         <div className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8">
@@ -161,21 +161,21 @@ export default function CustomerPaymentsPage() {
         {/* ================= SUMMARY KPI CARDS ================= */}
         <div className="grid gap-6 md:grid-cols-2">
           {/* Total Payments Card */}
-          <div className="group rounded-3xl border border-slate-200/80 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg hover:shadow-blue-900/5">
+          <div className="group rounded-3xl border border-slate-200/80 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900 dark:hover:border-blue-500/50">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold text-slate-500">
+                <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
                   Total Payments
                 </p>
-                <h2 className="mt-2.5 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+                <h2 className="mt-2.5 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl dark:text-white">
                   {payments.length}
                 </h2>
               </div>
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 ring-1 ring-blue-600/15 transition-transform group-hover:scale-110">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 ring-1 ring-blue-600/15 dark:bg-blue-950/50 dark:text-blue-400 transition-transform group-hover:scale-110">
                 <CreditCard size={28} />
               </div>
             </div>
-            <p className="mt-4 text-xs font-medium text-slate-400">
+            <p className="mt-4 text-xs font-medium text-slate-400 dark:text-slate-500">
               Completed service payment transactions
             </p>
           </div>
@@ -208,16 +208,16 @@ export default function CustomerPaymentsPage() {
 
         {/* ================= PAYMENT LIST ================= */}
         {payments.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-slate-300 bg-white py-20 text-center">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+          <div className="rounded-3xl border border-dashed border-slate-300 bg-white py-20 text-center dark:border-slate-800 dark:bg-slate-900">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500">
               <Package size={32} />
             </div>
 
-            <h2 className="mt-4 text-xl font-extrabold text-slate-900">
+            <h2 className="mt-4 text-xl font-extrabold text-slate-900 dark:text-white">
               No Payments Found
             </h2>
 
-            <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-500">
+            <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-500 dark:text-slate-400">
               Your completed transactions and digital receipts will appear here
               after paying for a service.
             </p>
@@ -236,27 +236,27 @@ export default function CustomerPaymentsPage() {
               return (
                 <div
                   key={payment._id}
-                  className="group overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:border-blue-200 hover:shadow-xl hover:shadow-slate-900/5 sm:p-7"
+                  className="group overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:border-blue-200 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900 dark:hover:border-blue-500/50 sm:p-7"
                 >
                   {/* Top Header Row */}
                   <div className="flex flex-wrap items-start justify-between gap-4">
                     <div className="space-y-2.5">
                       <div className="flex items-center gap-2.5">
-                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/50 dark:text-blue-400">
                           <Receipt size={18} />
                         </span>
-                        <h2 className="text-xl font-extrabold text-slate-900">
+                        <h2 className="text-xl font-extrabold text-slate-900 dark:text-white">
                           {payment.serviceTitle || "Service Repair"}
                         </h2>
                       </div>
 
                       <div className="flex flex-wrap items-center gap-2.5 pt-1 text-xs">
-                        <div className="inline-flex max-w-full items-center gap-1.5 rounded-lg border border-slate-200/80 bg-slate-50 px-2.5 py-1 font-mono font-semibold text-slate-700">
+                        <div className="inline-flex max-w-full items-center gap-1.5 rounded-lg border border-slate-200/80 bg-slate-50 px-2.5 py-1 font-mono font-semibold text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300">
                           <Hash size={12} className="shrink-0 text-slate-400" />
                           <span className="break-all">Txn: {txnId}</span>
                         </div>
 
-                        <div className="inline-flex max-w-full items-center gap-1.5 rounded-lg border border-slate-200/80 bg-slate-50 px-2.5 py-1 font-mono font-medium text-slate-600">
+                        <div className="inline-flex max-w-full items-center gap-1.5 rounded-lg border border-slate-200/80 bg-slate-50 px-2.5 py-1 font-mono font-medium text-slate-600 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400">
                           <span className="break-all">
                             Booking: {payment.bookingId || "N/A"}
                           </span>
@@ -264,19 +264,19 @@ export default function CustomerPaymentsPage() {
                       </div>
                     </div>
 
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3.5 py-1.5 text-xs font-bold capitalize text-emerald-700 ring-1 ring-emerald-600/20">
-                      <CheckCircle2 size={14} className="text-emerald-600" />
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3.5 py-1.5 text-xs font-bold capitalize text-emerald-700 ring-1 ring-emerald-600/20 dark:bg-emerald-950/50 dark:text-emerald-300 dark:ring-emerald-500/30">
+                      <CheckCircle2 size={14} className="text-emerald-600 dark:text-emerald-400" />
                       {payment.paymentStatus || "paid"}
                     </span>
                   </div>
 
                   {/* Metadata Grid */}
-                  <div className="mt-6 grid gap-4 rounded-2xl border border-slate-100 bg-slate-50/80 p-5 sm:grid-cols-2 lg:grid-cols-5">
+                  <div className="mt-6 grid gap-4 rounded-2xl border border-slate-100 bg-slate-50/80 p-5 dark:border-slate-800 dark:bg-slate-950/60 sm:grid-cols-2 lg:grid-cols-5">
                     <div>
                       <p className="text-xs font-medium text-slate-400">
                         Payment Amount
                       </p>
-                      <p className="mt-1 text-2xl font-extrabold text-slate-900">
+                      <p className="mt-1 text-2xl font-extrabold text-slate-900 dark:text-white">
                         $
                         {payment.amount !== undefined && payment.amount !== null
                           ? payment.amount.toLocaleString("en-US", {
@@ -291,8 +291,8 @@ export default function CustomerPaymentsPage() {
                       <p className="text-xs font-medium text-slate-400">
                         Payment Date
                       </p>
-                      <p className="mt-1.5 flex items-center gap-1.5 text-sm font-bold text-slate-800">
-                        <CalendarDays size={16} className="text-blue-600" />
+                      <p className="mt-1.5 flex items-center gap-1.5 text-sm font-bold text-slate-800 dark:text-slate-200">
+                        <CalendarDays size={16} className="text-blue-600 dark:text-blue-400" />
                         <span>{formatDate(paymentDate)}</span>
                       </p>
                     </div>
@@ -301,8 +301,8 @@ export default function CustomerPaymentsPage() {
                       <p className="text-xs font-medium text-slate-400">
                         Technician
                       </p>
-                      <p className="mt-1.5 flex items-center gap-1.5 text-sm font-bold text-slate-800">
-                        <UserCheck size={16} className="text-indigo-600" />
+                      <p className="mt-1.5 flex items-center gap-1.5 text-sm font-bold text-slate-800 dark:text-slate-200">
+                        <UserCheck size={16} className="text-indigo-600 dark:text-indigo-400" />
                         <span>{payment.technicianName || "N/A"}</span>
                       </p>
                     </div>
@@ -311,7 +311,7 @@ export default function CustomerPaymentsPage() {
                       <p className="text-xs font-medium text-slate-400">
                         Customer Email
                       </p>
-                      <p className="mt-1.5 flex items-center gap-1.5 break-all text-sm font-semibold text-slate-700">
+                      <p className="mt-1.5 flex items-center gap-1.5 break-all text-sm font-semibold text-slate-700 dark:text-slate-300">
                         <Mail size={15} className="shrink-0 text-slate-400" />
                         <span>{payment.customerEmail || "N/A"}</span>
                       </p>
@@ -321,8 +321,8 @@ export default function CustomerPaymentsPage() {
                       <p className="text-xs font-medium text-slate-400">
                         Payment Method
                       </p>
-                      <div className="mt-1.5 inline-flex items-center gap-1.5 rounded-lg bg-white px-2.5 py-1 text-xs font-bold text-slate-800 shadow-sm ring-1 ring-slate-200/80">
-                        <ShieldCheck size={14} className="text-blue-600" />
+                      <div className="mt-1.5 inline-flex items-center gap-1.5 rounded-lg bg-white px-2.5 py-1 text-xs font-bold text-slate-800 shadow-sm ring-1 ring-slate-200/80 dark:bg-slate-900 dark:text-slate-200 dark:ring-slate-800">
+                        <ShieldCheck size={14} className="text-blue-600 dark:text-blue-400" />
                         <span>Stripe</span>
                       </div>
                     </div>

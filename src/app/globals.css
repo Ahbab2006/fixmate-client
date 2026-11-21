@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #111317;
 
   /* Editorial Design Foundation */
   --canvas-editorial: #FBFBF9;
@@ -12,6 +14,20 @@
   --text-secondary: #5A606B;
   --accent-terracotta: #C2410C;
   --border-subtle: rgba(0, 0, 0, 0.08);
+}
+
+.dark {
+  --background: #0b0f17;
+  --foreground: #f8fafc;
+
+  /* Dark Editorial Foundation */
+  --canvas-editorial: #070a0f;
+  --surface-white: #131b2a;
+  --color-obsidian: #020617;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --accent-terracotta: #f97316;
+  --border-subtle: rgba(255, 255, 255, 0.08);
 }
 
 @theme inline {
@@ -30,17 +46,19 @@
   --color-border-subtle: var(--border-subtle);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 /* Minimal Editorial Typography & Surface Utility Classes */

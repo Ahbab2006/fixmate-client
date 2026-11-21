@@ -13,7 +13,7 @@ import {
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white">
+    <main className="min-h-screen bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white transition-colors duration-200 dark:bg-slate-950 dark:text-slate-100">
       {/* ================= HERO SECTION ================= */}
       <section className="relative overflow-hidden bg-slate-950 px-4 pt-20 pb-24 text-white sm:px-6 lg:px-8 lg:pt-24 lg:pb-28">
         {/* Ambient Glows & Subtle Grid */}
@@ -63,47 +63,47 @@ export default function AboutPage() {
       </section>
 
       {/* ================= OUR STORY SECTION ================= */}
-      <section className="bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+      <section className="bg-white px-4 py-20 transition-colors duration-200 dark:bg-slate-900 sm:px-6 lg:px-8 lg:py-28">
         <div className="mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-12">
           {/* Left Narrative */}
           <div className="lg:col-span-6">
-            <span className="inline-flex items-center rounded-full bg-blue-50 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-blue-600 ring-1 ring-blue-600/15">
+            <span className="inline-flex items-center rounded-full bg-blue-50 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-blue-600 ring-1 ring-blue-600/15 dark:bg-blue-950/50 dark:text-blue-300 dark:ring-blue-500/20">
               Who We Are
             </span>
 
-            <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+            <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl dark:text-white">
               About Our Platform
             </h2>
 
-            <p className="mt-6 text-base leading-relaxed text-slate-600">
+            <p className="mt-6 text-base leading-relaxed text-slate-600 dark:text-slate-300">
               Finding a reliable technician for home repairs can be
               challenging. FixMate aims to make that process simple by bringing
               customers and skilled service providers together in one trusted
               platform.
             </p>
 
-            <p className="mt-4 text-base leading-relaxed text-slate-600">
+            <p className="mt-4 text-base leading-relaxed text-slate-600 dark:text-slate-300">
               From smartphone and laptop repairs to essential home appliance
               maintenance, customers can explore services, submit booking
               requests, and track their service progress conveniently from
               start to finish.
             </p>
 
-            <div className="mt-8 grid grid-cols-2 gap-4 border-t border-slate-100 pt-7">
-              <div className="flex items-center gap-2.5 text-sm font-semibold text-slate-800">
-                <CheckCircle2 size={18} className="shrink-0 text-blue-600" />
+            <div className="mt-8 grid grid-cols-2 gap-4 border-t border-slate-100 pt-7 dark:border-slate-800">
+              <div className="flex items-center gap-2.5 text-sm font-semibold text-slate-800 dark:text-slate-200">
+                <CheckCircle2 size={18} className="shrink-0 text-blue-600 dark:text-blue-400" />
                 <span>Verified Specialists</span>
               </div>
-              <div className="flex items-center gap-2.5 text-sm font-semibold text-slate-800">
-                <CheckCircle2 size={18} className="shrink-0 text-blue-600" />
+              <div className="flex items-center gap-2.5 text-sm font-semibold text-slate-800 dark:text-slate-200">
+                <CheckCircle2 size={18} className="shrink-0 text-blue-600 dark:text-blue-400" />
                 <span>Transparent Pricing</span>
               </div>
-              <div className="flex items-center gap-2.5 text-sm font-semibold text-slate-800">
-                <CheckCircle2 size={18} className="shrink-0 text-blue-600" />
+              <div className="flex items-center gap-2.5 text-sm font-semibold text-slate-800 dark:text-slate-200">
+                <CheckCircle2 size={18} className="shrink-0 text-blue-600 dark:text-blue-400" />
                 <span>Real-time Tracking</span>
               </div>
-              <div className="flex items-center gap-2.5 text-sm font-semibold text-slate-800">
-                <CheckCircle2 size={18} className="shrink-0 text-blue-600" />
+              <div className="flex items-center gap-2.5 text-sm font-semibold text-slate-800 dark:text-slate-200">
+                <CheckCircle2 size={18} className="shrink-0 text-blue-600 dark:text-blue-400" />
                 <span>Secure Payments</span>
               </div>
             </div>
@@ -113,28 +113,28 @@ export default function AboutPage() {
           <div className="relative lg:col-span-6">
             <div className="pointer-events-none absolute -inset-4 rounded-3xl bg-gradient-to-tr from-blue-600/10 via-indigo-500/10 to-sky-400/10 blur-2xl" />
 
-            <div className="relative rounded-3xl border border-slate-200/80 bg-white p-7 shadow-xl shadow-slate-900/5 sm:p-9">
+            <div className="relative rounded-3xl border border-slate-200/80 bg-white p-7 shadow-xl shadow-slate-900/5 sm:p-9 dark:border-slate-800 dark:bg-slate-950/80">
               <div className="grid grid-cols-2 gap-5">
-                <div className="rounded-2xl border border-slate-100 bg-slate-50/80 p-6 transition hover:border-blue-200 hover:bg-blue-50/40">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600/10 text-blue-600">
+                <div className="rounded-2xl border border-slate-100 bg-slate-50/80 p-6 transition hover:border-blue-200 hover:bg-blue-50/40 dark:border-slate-800 dark:bg-slate-900/80 dark:hover:border-slate-700">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600/10 text-blue-600 dark:bg-blue-950/50 dark:text-blue-400">
                     <Wrench size={24} />
                   </div>
-                  <h3 className="mt-4 text-base font-bold text-slate-900">
+                  <h3 className="mt-4 text-base font-bold text-slate-900 dark:text-white">
                     Repair Services
                   </h3>
-                  <p className="mt-1.5 text-xs leading-relaxed text-slate-500">
+                  <p className="mt-1.5 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
                     7+ specialized home &amp; tech service categories
                   </p>
                 </div>
 
-                <div className="rounded-2xl border border-slate-100 bg-slate-50/80 p-6 transition hover:border-blue-200 hover:bg-blue-50/40">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-600/10 text-indigo-600">
+                <div className="rounded-2xl border border-slate-100 bg-slate-50/80 p-6 transition hover:border-blue-200 hover:bg-blue-50/40 dark:border-slate-800 dark:bg-slate-900/80 dark:hover:border-slate-700">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-600/10 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400">
                     <Users size={24} />
                   </div>
-                  <h3 className="mt-4 text-base font-bold text-slate-900">
+                  <h3 className="mt-4 text-base font-bold text-slate-900 dark:text-white">
                     Skilled Technicians
                   </h3>
-                  <p className="mt-1.5 text-xs leading-relaxed text-slate-500">
+                  <p className="mt-1.5 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
                     Connecting homeowners with vetted professionals
                   </p>
                 </div>
@@ -164,18 +164,18 @@ export default function AboutPage() {
       </section>
 
       {/* ================= MISSION & VISION SECTION ================= */}
-      <section className="border-y border-slate-200/70 bg-slate-50/80 px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+      <section className="border-y border-slate-200/70 bg-slate-50/80 px-4 py-20 transition-colors duration-200 dark:border-slate-800 dark:bg-slate-950 sm:px-6 lg:px-8 lg:py-28">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-2xl text-center">
-            <span className="inline-flex items-center rounded-full bg-blue-100/70 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-blue-700">
+            <span className="inline-flex items-center rounded-full bg-blue-100/70 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-blue-700 dark:bg-blue-950/50 dark:text-blue-300">
               Our Purpose
             </span>
 
-            <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+            <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl dark:text-white">
               Our Mission &amp; Vision
             </h2>
 
-            <p className="mt-3 text-base text-slate-600">
+            <p className="mt-3 text-base text-slate-600 dark:text-slate-400">
               Driven by trust, technology, and a commitment to seamless home
               maintenance.
             </p>
@@ -183,16 +183,16 @@ export default function AboutPage() {
 
           <div className="mt-14 grid gap-8 md:grid-cols-2">
             {/* Mission Card */}
-            <div className="group rounded-3xl border border-slate-200/80 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl hover:shadow-blue-900/5 sm:p-10">
+            <div className="group rounded-3xl border border-slate-200/80 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl hover:shadow-blue-900/5 sm:p-10 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-blue-500/50">
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/20 transition-transform duration-300 group-hover:scale-110">
                 <Target size={26} />
               </div>
 
-              <h3 className="mt-7 text-2xl font-bold text-slate-900">
+              <h3 className="mt-7 text-2xl font-bold text-slate-900 dark:text-white">
                 Our Mission
               </h3>
 
-              <p className="mt-4 text-base leading-relaxed text-slate-600">
+              <p className="mt-4 text-base leading-relaxed text-slate-600 dark:text-slate-300">
                 To simplify home repair services by making it effortless for
                 customers to discover, request, and manage professional repair
                 solutions with complete confidence.
@@ -200,16 +200,16 @@ export default function AboutPage() {
             </div>
 
             {/* Vision Card */}
-            <div className="group rounded-3xl border border-slate-200/80 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl hover:shadow-blue-900/5 sm:p-10">
+            <div className="group rounded-3xl border border-slate-200/80 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl hover:shadow-blue-900/5 sm:p-10 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-blue-500/50">
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 text-white shadow-lg shadow-sky-500/20 transition-transform duration-300 group-hover:scale-110">
                 <Eye size={26} />
               </div>
 
-              <h3 className="mt-7 text-2xl font-bold text-slate-900">
+              <h3 className="mt-7 text-2xl font-bold text-slate-900 dark:text-white">
                 Our Vision
               </h3>
 
-              <p className="mt-4 text-base leading-relaxed text-slate-600">
+              <p className="mt-4 text-base leading-relaxed text-slate-600 dark:text-slate-300">
                 To become the most trusted home care ecosystem where customers
                 reliably find dependable technicians and skilled professionals
                 grow sustainable service careers.
@@ -220,18 +220,18 @@ export default function AboutPage() {
       </section>
 
       {/* ================= CORE VALUES SECTION ================= */}
-      <section className="bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+      <section className="bg-white px-4 py-20 transition-colors duration-200 dark:bg-slate-900 sm:px-6 lg:px-8 lg:py-28">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-2xl text-center">
-            <span className="inline-flex items-center rounded-full bg-blue-50 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-blue-600 ring-1 ring-blue-600/15">
+            <span className="inline-flex items-center rounded-full bg-blue-50 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-blue-600 ring-1 ring-blue-600/15 dark:bg-blue-950/50 dark:text-blue-300 dark:ring-blue-500/20">
               What Matters to Us
             </span>
 
-            <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+            <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl dark:text-white">
               Our Core Values
             </h2>
 
-            <p className="mt-3 text-base text-slate-600">
+            <p className="mt-3 text-base text-slate-600 dark:text-slate-400">
               The principles that guide every repair, booking, and interaction
               on FixMate.
             </p>
@@ -239,42 +239,42 @@ export default function AboutPage() {
 
           <div className="mt-14 grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
             {/* Value 1 */}
-            <div className="group rounded-3xl border border-slate-200/80 bg-slate-50/60 p-8 transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-200 hover:bg-white hover:shadow-xl hover:shadow-blue-900/5">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600/10 text-blue-600 transition-transform duration-300 group-hover:scale-110">
+            <div className="group rounded-3xl border border-slate-200/80 bg-slate-50/60 p-8 transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-200 hover:bg-white hover:shadow-xl hover:shadow-blue-900/5 dark:border-slate-800 dark:bg-slate-950/60 dark:hover:bg-slate-950 dark:hover:border-blue-500/50">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600/10 text-blue-600 dark:bg-blue-950/50 dark:text-blue-400 transition-transform duration-300 group-hover:scale-110">
                 <ShieldCheck size={28} />
               </div>
-              <h3 className="mt-6 text-xl font-bold text-slate-900">
+              <h3 className="mt-6 text-xl font-bold text-slate-900 dark:text-white">
                 Trust &amp; Safety
               </h3>
-              <p className="mt-3 text-sm leading-relaxed text-slate-600">
+              <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
                 We emphasize strict service approval, verified technician
                 profiles, and responsible platform management.
               </p>
             </div>
 
             {/* Value 2 */}
-            <div className="group rounded-3xl border border-slate-200/80 bg-slate-50/60 p-8 transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-200 hover:bg-white hover:shadow-xl hover:shadow-blue-900/5">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-600/10 text-indigo-600 transition-transform duration-300 group-hover:scale-110">
+            <div className="group rounded-3xl border border-slate-200/80 bg-slate-50/60 p-8 transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-200 hover:bg-white hover:shadow-xl hover:shadow-blue-900/5 dark:border-slate-800 dark:bg-slate-950/60 dark:hover:bg-slate-950 dark:hover:border-blue-500/50">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-600/10 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400 transition-transform duration-300 group-hover:scale-110">
                 <HeartHandshake size={28} />
               </div>
-              <h3 className="mt-6 text-xl font-bold text-slate-900">
+              <h3 className="mt-6 text-xl font-bold text-slate-900 dark:text-white">
                 Customer Satisfaction
               </h3>
-              <p className="mt-3 text-sm leading-relaxed text-slate-600">
+              <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
                 We aim to make every service experience transparent,
                 convenient, and genuinely user-friendly.
               </p>
             </div>
 
             {/* Value 3 */}
-            <div className="group rounded-3xl border border-slate-200/80 bg-slate-50/60 p-8 transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-200 hover:bg-white hover:shadow-xl hover:shadow-blue-900/5 sm:col-span-2 lg:col-span-1">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-sky-600/10 text-sky-600 transition-transform duration-300 group-hover:scale-110">
+            <div className="group rounded-3xl border border-slate-200/80 bg-slate-50/60 p-8 transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-200 hover:bg-white hover:shadow-xl hover:shadow-blue-900/5 sm:col-span-2 lg:col-span-1 dark:border-slate-800 dark:bg-slate-950/60 dark:hover:bg-slate-950 dark:hover:border-blue-500/50">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-sky-600/10 text-sky-600 dark:bg-sky-950/50 dark:text-sky-400 transition-transform duration-300 group-hover:scale-110">
                 <Users size={28} />
               </div>
-              <h3 className="mt-6 text-xl font-bold text-slate-900">
+              <h3 className="mt-6 text-xl font-bold text-slate-900 dark:text-white">
                 Professional Growth
               </h3>
-              <p className="mt-3 text-sm leading-relaxed text-slate-600">
+              <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
                 We empower skilled technicians with meaningful opportunities to
                 connect with customers and grow their business.
               </p>
@@ -284,7 +284,7 @@ export default function AboutPage() {
       </section>
 
       {/* ================= BOTTOM CTA SECTION ================= */}
-      <section className="bg-white px-4 pb-20 sm:px-6 lg:px-8 lg:pb-24">
+      <section className="bg-white px-4 pb-20 transition-colors duration-200 dark:bg-slate-900 sm:px-6 lg:px-8 lg:pb-24">
         <div className="mx-auto max-w-7xl">
           <div className="relative overflow-hidden rounded-[2rem] bg-slate-950 px-6 py-16 text-center shadow-2xl sm:px-12 lg:py-20">
             {/* Ambient Glows */}

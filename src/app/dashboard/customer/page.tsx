@@ -135,9 +135,9 @@ export default function CustomerDashboard() {
   if (loading) {
     return (
       <div className="flex min-h-[65vh] items-center justify-center">
-        <div className="rounded-3xl border border-slate-200/80 bg-white px-10 py-12 text-center shadow-sm">
-          <Loader2 className="mx-auto animate-spin text-blue-600" size={38} />
-          <p className="mt-4 text-sm font-semibold text-slate-600">
+        <div className="rounded-3xl border border-slate-200/80 bg-white px-10 py-12 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <Loader2 className="mx-auto animate-spin text-blue-600 dark:text-blue-400" size={38} />
+          <p className="mt-4 text-sm font-semibold text-slate-600 dark:text-slate-300">
             Loading your dashboard...
           </p>
         </div>
@@ -146,7 +146,7 @@ export default function CustomerDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-12 text-slate-900">
+    <div className="min-h-screen bg-slate-50 pb-12 text-slate-900 transition-colors duration-200 dark:bg-slate-950 dark:text-slate-100">
       <div className="mx-auto max-w-7xl space-y-8">
         {/* ================= TOP DARK PREMIUM WELCOME BANNER ================= */}
         <div className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8">
@@ -191,7 +191,7 @@ export default function CustomerDashboard() {
             value={bookings.length}
             subtitle="All repair requests"
             icon={<CalendarDays size={21} />}
-            accent="bg-blue-50 text-blue-600"
+            accent="bg-blue-50 text-blue-600 dark:bg-blue-950/50 dark:text-blue-400"
           />
 
           <StatCard
@@ -199,7 +199,7 @@ export default function CustomerDashboard() {
             value={requestedCount}
             subtitle="Awaiting technician"
             icon={<Clock size={21} />}
-            accent="bg-amber-50 text-amber-600"
+            accent="bg-amber-50 text-amber-600 dark:bg-amber-950/50 dark:text-amber-400"
           />
 
           <StatCard
@@ -207,7 +207,7 @@ export default function CustomerDashboard() {
             value={completedCount}
             subtitle="Successfully resolved"
             icon={<CheckCircle size={21} />}
-            accent="bg-emerald-50 text-emerald-600"
+            accent="bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400"
           />
 
           <StatCard
@@ -215,7 +215,7 @@ export default function CustomerDashboard() {
             value={cancelledCount}
             subtitle="Cancelled bookings"
             icon={<XCircle size={21} />}
-            accent="bg-rose-50 text-rose-600"
+            accent="bg-rose-50 text-rose-600 dark:bg-rose-950/50 dark:text-rose-400"
           />
         </div>
 
@@ -269,30 +269,30 @@ export default function CustomerDashboard() {
         <div className="space-y-5">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
-              <h2 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
+              <h2 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl dark:text-white">
                 My Recent Bookings
               </h2>
-              <p className="mt-0.5 text-xs text-slate-500">
+              <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                 Your latest 5 service requests and their live status
               </p>
             </div>
 
-            <span className="rounded-full bg-blue-50 px-3.5 py-1 text-xs font-bold text-blue-700 ring-1 ring-blue-600/15">
+            <span className="rounded-full bg-blue-50 px-3.5 py-1 text-xs font-bold text-blue-700 ring-1 ring-blue-600/15 dark:bg-blue-950/50 dark:text-blue-300 dark:ring-blue-500/20">
               {bookings.length} Total
             </span>
           </div>
 
           {bookings.length === 0 ? (
-            <div className="rounded-3xl border border-dashed border-slate-300 bg-white py-20 text-center">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+            <div className="rounded-3xl border border-dashed border-slate-300 bg-white py-20 text-center dark:border-slate-800 dark:bg-slate-900">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500">
                 <Package size={32} />
               </div>
 
-              <h3 className="mt-4 text-xl font-extrabold text-slate-900">
+              <h3 className="mt-4 text-xl font-extrabold text-slate-900 dark:text-white">
                 No Bookings Yet
               </h3>
 
-              <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-500">
+              <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-500 dark:text-slate-400">
                 Your repair service bookings will appear here once you submit
                 your first request.
               </p>
@@ -302,10 +302,10 @@ export default function CustomerDashboard() {
               {bookings.slice(0, 5).map((booking) => (
                 <div
                   key={booking._id}
-                  className="group flex flex-col gap-5 rounded-3xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-xl hover:shadow-slate-900/5 sm:flex-row sm:items-center sm:p-6"
+                  className="group flex flex-col gap-5 rounded-3xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-xl hover:shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-blue-500/50 sm:flex-row sm:items-center sm:p-6"
                 >
                   {/* Service Thumbnail */}
-                  <div className="relative h-28 w-full shrink-0 overflow-hidden rounded-2xl bg-slate-100 sm:w-36">
+                  <div className="relative h-28 w-full shrink-0 overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-800 sm:w-36">
                     <img
                       src={booking.serviceImage}
                       alt={booking.serviceTitle}
@@ -315,27 +315,27 @@ export default function CustomerDashboard() {
 
                   {/* Info */}
                   <div className="flex-1 space-y-2">
-                    <span className="inline-block rounded-full bg-blue-50 px-3 py-0.5 text-xs font-bold text-blue-600">
+                    <span className="inline-block rounded-full bg-blue-50 px-3 py-0.5 text-xs font-bold text-blue-600 dark:bg-blue-950/50 dark:text-blue-400">
                       {booking.category}
                     </span>
 
-                    <h3 className="text-lg font-extrabold text-slate-900 transition-colors group-hover:text-blue-600">
+                    <h3 className="text-lg font-extrabold text-slate-900 transition-colors group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400">
                       {booking.serviceTitle}
                     </h3>
 
-                    <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 pt-1 text-xs font-medium text-slate-500">
+                    <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 pt-1 text-xs font-medium text-slate-500 dark:text-slate-400">
                       <span className="inline-flex items-center gap-1.5">
-                        <UserCheck size={14} className="text-blue-600" />
+                        <UserCheck size={14} className="text-blue-600 dark:text-blue-400" />
                         Technician:{" "}
-                        <strong className="font-semibold text-slate-700">
+                        <strong className="font-semibold text-slate-700 dark:text-slate-200">
                           {booking.technicianName}
                         </strong>
                       </span>
 
                       <span className="inline-flex items-center gap-1.5">
-                        <CalendarDays size={14} className="text-indigo-600" />
+                        <CalendarDays size={14} className="text-indigo-600 dark:text-indigo-400" />
                         Preferred Date:{" "}
-                        <strong className="font-semibold text-slate-700">
+                        <strong className="font-semibold text-slate-700 dark:text-slate-200">
                           {new Date(
                             booking.preferredDate
                           ).toLocaleDateString()}
@@ -343,16 +343,16 @@ export default function CustomerDashboard() {
                       </span>
 
                       <span className="inline-flex items-center gap-1.5">
-                        <DollarSign size={14} className="text-emerald-600" />
+                        <DollarSign size={14} className="text-emerald-600 dark:text-emerald-400" />
                         Base Price:{" "}
-                        <strong className="font-bold text-slate-800">
+                        <strong className="font-bold text-slate-800 dark:text-slate-200">
                           ${booking.basePrice}
                         </strong>
                         {booking.finalAmount !== undefined && (
-                          <span className="text-slate-700">
+                          <span className="text-slate-700 dark:text-slate-300">
                             {" "}
                             | Final:{" "}
-                            <strong className="font-extrabold text-blue-600">
+                            <strong className="font-extrabold text-blue-600 dark:text-blue-400">
                               ${booking.finalAmount}
                             </strong>
                           </span>
@@ -362,7 +362,7 @@ export default function CustomerDashboard() {
                   </div>
 
                   {/* Status & Payment Column */}
-                  <div className="flex flex-row items-center justify-between border-t border-slate-100 pt-3 sm:flex-col sm:items-end sm:justify-center sm:border-t-0 sm:pt-0">
+                  <div className="flex flex-row items-center justify-between border-t border-slate-100 pt-3 dark:border-slate-800 sm:flex-col sm:items-end sm:justify-center sm:border-t-0 sm:pt-0">
                     <span
                       className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold capitalize ${getStatusStyle(
                         booking.status
@@ -376,13 +376,13 @@ export default function CustomerDashboard() {
                       {booking.status.replace("-", " ")}
                     </span>
 
-                    <p className="mt-0 text-xs font-semibold text-slate-500 sm:mt-2.5">
+                    <p className="mt-0 text-xs font-semibold text-slate-500 dark:text-slate-400 sm:mt-2.5">
                       Payment:{" "}
                       <span
                         className={`capitalize ${
                           booking.paymentStatus === "paid"
-                            ? "font-bold text-emerald-600"
-                            : "text-slate-700"
+                            ? "font-bold text-emerald-600 dark:text-emerald-400"
+                            : "text-slate-700 dark:text-slate-300"
                         }`}
                       >
                         {booking.paymentStatus}
@@ -413,9 +413,9 @@ function StatCard({
   accent: string;
 }) {
   return (
-    <div className="group rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg hover:shadow-blue-900/5">
+    <div className="group rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900 dark:hover:border-blue-500/50">
       <div className="flex items-center justify-between">
-        <p className="text-sm font-semibold text-slate-500">{title}</p>
+        <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">{title}</p>
 
         <span
           className={`flex h-11 w-11 items-center justify-center rounded-xl transition-transform group-hover:scale-110 ${accent}`}
@@ -424,8 +424,8 @@ function StatCard({
         </span>
       </div>
 
-      <p className="mt-4 text-3xl font-extrabold text-slate-900">{value}</p>
-      <p className="mt-1 text-xs text-slate-400">{subtitle}</p>
+      <p className="mt-4 text-3xl font-extrabold text-slate-900 dark:text-white">{value}</p>
+      <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">{subtitle}</p>
     </div>
   );
 }

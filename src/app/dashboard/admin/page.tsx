@@ -193,15 +193,15 @@ export default function AdminDashboard() {
   const getBookingStatusStyle = (status: string) => {
     switch (status) {
       case "completed":
-        return "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20";
+        return "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20 dark:bg-emerald-950/60 dark:text-emerald-400 dark:ring-emerald-500/20";
       case "accepted":
       case "in-progress":
-        return "bg-blue-50 text-blue-700 ring-1 ring-blue-600/20";
+        return "bg-blue-50 text-blue-700 ring-1 ring-blue-600/20 dark:bg-blue-950/60 dark:text-blue-400 dark:ring-blue-500/20";
       case "rejected":
       case "cancelled":
-        return "bg-rose-50 text-rose-700 ring-1 ring-rose-600/20";
+        return "bg-rose-50 text-rose-700 ring-1 ring-rose-600/20 dark:bg-rose-950/60 dark:text-rose-400 dark:ring-rose-500/20";
       default:
-        return "bg-amber-50 text-amber-700 ring-1 ring-amber-600/20";
+        return "bg-amber-50 text-amber-700 ring-1 ring-amber-600/20 dark:bg-amber-950/60 dark:text-amber-400 dark:ring-amber-500/20";
     }
   };
 
@@ -225,88 +225,88 @@ export default function AdminDashboard() {
       title: "Total Users",
       value: users.length,
       icon: Users,
-      color: "bg-blue-50 text-blue-600 ring-1 ring-blue-600/15",
+      color: "bg-blue-50 text-blue-600 ring-1 ring-blue-600/15 dark:bg-blue-950/60 dark:text-blue-400 dark:ring-blue-500/20",
     },
     {
       title: "Customers",
       value: customers,
       icon: UserRound,
-      color: "bg-emerald-50 text-emerald-600 ring-1 ring-emerald-600/15",
+      color: "bg-emerald-50 text-emerald-600 ring-1 ring-emerald-600/15 dark:bg-emerald-950/60 dark:text-emerald-400 dark:ring-emerald-500/20",
     },
     {
       title: "Technicians",
       value: technicians,
       icon: Wrench,
-      color: "bg-indigo-50 text-indigo-600 ring-1 ring-indigo-600/15",
+      color: "bg-indigo-50 text-indigo-600 ring-1 ring-indigo-600/15 dark:bg-indigo-950/60 dark:text-indigo-400 dark:ring-indigo-500/20",
     },
     {
       title: "Admins",
       value: admins,
       icon: ShieldCheck,
-      color: "bg-amber-50 text-amber-600 ring-1 ring-amber-600/15",
+      color: "bg-amber-50 text-amber-600 ring-1 ring-amber-600/15 dark:bg-amber-950/60 dark:text-amber-400 dark:ring-amber-500/20",
     },
     {
       title: "Total Services",
       value: serviceStats.totalServices,
       icon: Wrench,
-      color: "bg-sky-50 text-sky-600 ring-1 ring-sky-600/15",
+      color: "bg-sky-50 text-sky-600 ring-1 ring-sky-600/15 dark:bg-sky-950/60 dark:text-sky-400 dark:ring-sky-500/20",
     },
     {
       title: "Approved Services",
       value: serviceStats.approvedServices,
       icon: CheckCircle,
-      color: "bg-emerald-50 text-emerald-600 ring-1 ring-emerald-600/15",
+      color: "bg-emerald-50 text-emerald-600 ring-1 ring-emerald-600/15 dark:bg-emerald-950/60 dark:text-emerald-400 dark:ring-emerald-500/20",
     },
     {
       title: "Pending Services",
       value: serviceStats.pendingServices,
       icon: Clock,
-      color: "bg-amber-50 text-amber-600 ring-1 ring-amber-600/15",
+      color: "bg-amber-50 text-amber-600 ring-1 ring-amber-600/15 dark:bg-amber-950/60 dark:text-amber-400 dark:ring-amber-500/20",
     },
     {
       title: "Rejected Services",
       value: serviceStats.rejectedServices,
       icon: ShieldCheck,
-      color: "bg-rose-50 text-rose-600 ring-1 ring-rose-600/15",
+      color: "bg-rose-50 text-rose-600 ring-1 ring-rose-600/15 dark:bg-rose-950/60 dark:text-rose-400 dark:ring-rose-500/20",
     },
     {
       title: "Total Bookings",
       value: bookings.length,
       icon: ClipboardList,
-      color: "bg-indigo-50 text-indigo-600 ring-1 ring-indigo-600/15",
+      color: "bg-indigo-50 text-indigo-600 ring-1 ring-indigo-600/15 dark:bg-indigo-950/60 dark:text-indigo-400 dark:ring-indigo-500/20",
     },
     {
       title: "Pending Bookings",
       value: pendingBookings,
       icon: Clock,
-      color: "bg-amber-50 text-amber-600 ring-1 ring-amber-600/15",
+      color: "bg-amber-50 text-amber-600 ring-1 ring-amber-600/15 dark:bg-amber-950/60 dark:text-amber-400 dark:ring-amber-500/20",
     },
     {
       title: "Active Jobs",
       value: activeBookings,
       icon: Wrench,
-      color: "bg-blue-50 text-blue-600 ring-1 ring-blue-600/15",
+      color: "bg-blue-50 text-blue-600 ring-1 ring-blue-600/15 dark:bg-blue-950/60 dark:text-blue-400 dark:ring-blue-500/20",
     },
     {
       title: "Completed Jobs",
       value: completedBookings,
       icon: CheckCircle,
-      color: "bg-emerald-50 text-emerald-600 ring-1 ring-emerald-600/15",
+      color: "bg-emerald-50 text-emerald-600 ring-1 ring-emerald-600/15 dark:bg-emerald-950/60 dark:text-emerald-400 dark:ring-emerald-500/20",
     },
     {
       title: "Total Transactions",
       value: payments.length,
       icon: CreditCard,
-      color: "bg-purple-50 text-purple-600 ring-1 ring-purple-600/15",
+      color: "bg-purple-50 text-purple-600 ring-1 ring-purple-600/15 dark:bg-purple-950/60 dark:text-purple-400 dark:ring-purple-500/20",
     },
   ];
 
   if (loading) {
     return (
       <div className="flex min-h-[65vh] items-center justify-center">
-        <div className="rounded-3xl border border-slate-200/80 bg-white px-10 py-12 text-center shadow-sm">
-          <Loader2 className="mx-auto animate-spin text-blue-600" size={38} />
-          <p className="mt-4 text-sm font-semibold text-slate-600">
+        <div className="rounded-3xl border border-slate-200/80 bg-white px-10 py-12 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <Loader2 className="mx-auto animate-spin text-blue-600 dark:text-blue-400" size={38} />
+          <p className="mt-4 text-sm font-semibold text-slate-600 dark:text-slate-400">
             Loading Admin Dashboard...
           </p>
         </div>
@@ -317,7 +317,7 @@ export default function AdminDashboard() {
   return (
     <main className="space-y-8 pb-10">
       {/* ================= TOP DARK PREMIUM BANNER ================= */}
-      <div className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8">
+      <div className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8 dark:border dark:border-slate-800">
         <div className="pointer-events-none absolute -top-20 right-10 h-64 w-64 rounded-full bg-blue-600/25 blur-[90px]" />
         <div className="pointer-events-none absolute -bottom-20 left-10 h-64 w-64 rounded-full bg-indigo-500/20 blur-[90px]" />
 
@@ -356,7 +356,7 @@ export default function AdminDashboard() {
       {/* ================= REVENUE & TRANSACTIONS HIGHLIGHT ================= */}
       <div className="grid gap-6 sm:grid-cols-2">
         {/* Total Revenue Highlight Card */}
-        <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 p-7 text-white shadow-lg transition-all duration-300 hover:-translate-y-1">
+        <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 p-7 text-white shadow-lg transition-all duration-300 hover:-translate-y-1 dark:border dark:border-slate-800">
           <div className="pointer-events-none absolute -right-10 -bottom-10 h-40 w-40 rounded-full bg-emerald-500/20 blur-2xl" />
           <div className="relative flex items-center justify-between">
             <div>
@@ -381,21 +381,21 @@ export default function AdminDashboard() {
         </div>
 
         {/* Total Transactions Card */}
-        <div className="group rounded-3xl border border-slate-200/80 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg hover:shadow-blue-900/5">
+        <div className="group rounded-3xl border border-slate-200/80 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg hover:shadow-blue-900/5 dark:border-slate-800 dark:bg-slate-900">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-semibold text-slate-500">
+              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
                 Total Transactions
               </p>
-              <h2 className="mt-2.5 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+              <h2 className="mt-2.5 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl dark:text-white">
                 {payments.length}
               </h2>
             </div>
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 ring-1 ring-blue-600/15 transition-transform group-hover:scale-110">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 ring-1 ring-blue-600/15 transition-transform group-hover:scale-110 dark:bg-blue-950/60 dark:text-blue-400 dark:ring-blue-500/20">
               <CreditCard size={28} />
             </div>
           </div>
-          <p className="mt-4 text-xs font-medium text-slate-400">
+          <p className="mt-4 text-xs font-medium text-slate-400 dark:text-slate-500">
             Successfully recorded customer checkout sessions
           </p>
         </div>
@@ -405,10 +405,10 @@ export default function AdminDashboard() {
       <section>
         <div className="mb-5 flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-extrabold tracking-tight text-slate-900">
+            <h2 className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">
               Platform Statistics
             </h2>
-            <p className="mt-0.5 text-xs text-slate-500">
+            <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
               Key operational metrics across users, services, and bookings
             </p>
           </div>
@@ -421,10 +421,10 @@ export default function AdminDashboard() {
             return (
               <div
                 key={card.title}
-                className="group rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg hover:shadow-blue-900/5"
+                className="group rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg hover:shadow-blue-900/5 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700"
               >
                 <div className="flex items-center justify-between gap-2">
-                  <p className="text-xs font-semibold text-slate-500">
+                  <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
                     {card.title}
                   </p>
                   <div
@@ -434,7 +434,7 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
-                <h3 className="mt-4 text-2xl font-extrabold text-slate-900">
+                <h3 className="mt-4 text-2xl font-extrabold text-slate-900 dark:text-white">
                   {card.value}
                 </h3>
               </div>
@@ -444,30 +444,30 @@ export default function AdminDashboard() {
       </section>
 
       {/* ================= RECENT BOOKINGS TABLE ================= */}
-      <section className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm">
-        <div className="flex flex-col gap-1 border-b border-slate-100 bg-slate-50/60 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
+      <section className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <div className="flex flex-col gap-1 border-b border-slate-100 bg-slate-50/60 px-6 py-5 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800 dark:bg-slate-900/60">
           <div>
-            <h2 className="text-lg font-bold text-slate-900">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
               Recent Bookings
             </h2>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Latest customer service requests across the platform
             </p>
           </div>
-          <span className="self-start rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700 ring-1 ring-blue-600/15 sm:self-auto">
+          <span className="self-start rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700 ring-1 ring-blue-600/15 sm:self-auto dark:bg-blue-950/60 dark:text-blue-400 dark:ring-blue-500/20">
             Latest 5 records
           </span>
         </div>
 
         {recentBookings.length === 0 ? (
-          <p className="py-12 text-center text-sm font-medium text-slate-500">
+          <p className="py-12 text-center text-sm font-medium text-slate-500 dark:text-slate-400">
             No bookings available.
           </p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[680px] text-left text-sm">
               <thead>
-                <tr className="border-b border-slate-100 bg-slate-50/80 text-xs font-bold uppercase tracking-wider text-slate-500">
+                <tr className="border-b border-slate-100 bg-slate-50/80 text-xs font-bold uppercase tracking-wider text-slate-500 dark:border-slate-800 dark:bg-slate-950/50 dark:text-slate-400">
                   <th className="px-6 py-4">Service</th>
                   <th className="px-6 py-4">Customer</th>
                   <th className="px-6 py-4">Technician</th>
@@ -476,19 +476,19 @@ export default function AdminDashboard() {
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {recentBookings.map((booking) => (
                   <tr
                     key={booking._id}
-                    className="transition-colors hover:bg-slate-50/90"
+                    className="transition-colors hover:bg-slate-50/90 dark:hover:bg-slate-800/50"
                   >
-                    <td className="px-6 py-4 font-bold text-slate-900">
+                    <td className="px-6 py-4 font-bold text-slate-900 dark:text-white">
                       {booking.serviceTitle}
                     </td>
-                    <td className="px-6 py-4 font-medium text-slate-700">
+                    <td className="px-6 py-4 font-medium text-slate-700 dark:text-slate-300">
                       {booking.customerName}
                     </td>
-                    <td className="px-6 py-4 font-medium text-slate-700">
+                    <td className="px-6 py-4 font-medium text-slate-700 dark:text-slate-300">
                       {booking.technicianName}
                     </td>
                     <td className="px-6 py-4">
@@ -501,9 +501,9 @@ export default function AdminDashboard() {
                         {booking.status.replace("-", " ")}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-right text-slate-600">
+                    <td className="px-6 py-4 text-right text-slate-600 dark:text-slate-400">
                       <div className="inline-flex items-center gap-1.5 font-medium">
-                        <CalendarDays size={14} className="text-slate-400" />
+                        <CalendarDays size={14} className="text-slate-400 dark:text-slate-500" />
                         <span>{formatDate(booking.createdAt)}</span>
                       </div>
                     </td>
@@ -516,30 +516,30 @@ export default function AdminDashboard() {
       </section>
 
       {/* ================= RECENT TRANSACTIONS TABLE ================= */}
-      <section className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm">
-        <div className="flex flex-col gap-1 border-b border-slate-100 bg-slate-50/60 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
+      <section className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <div className="flex flex-col gap-1 border-b border-slate-100 bg-slate-50/60 px-6 py-5 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800 dark:bg-slate-900/60">
           <div>
-            <h2 className="text-lg font-bold text-slate-900">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
               Recent Transactions
             </h2>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Most recent settled customer payments
             </p>
           </div>
-          <span className="self-start rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 ring-1 ring-emerald-600/15 sm:self-auto">
+          <span className="self-start rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 ring-1 ring-emerald-600/15 sm:self-auto dark:bg-emerald-950/60 dark:text-emerald-400 dark:ring-emerald-500/20">
             Latest 5 payments
           </span>
         </div>
 
         {recentPayments.length === 0 ? (
-          <p className="py-12 text-center text-sm font-medium text-slate-500">
+          <p className="py-12 text-center text-sm font-medium text-slate-500 dark:text-slate-400">
             No transactions available.
           </p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[650px] text-left text-sm">
               <thead>
-                <tr className="border-b border-slate-100 bg-slate-50/80 text-xs font-bold uppercase tracking-wider text-slate-500">
+                <tr className="border-b border-slate-100 bg-slate-50/80 text-xs font-bold uppercase tracking-wider text-slate-500 dark:border-slate-800 dark:bg-slate-950/50 dark:text-slate-400">
                   <th className="px-6 py-4">Transaction ID</th>
                   <th className="px-6 py-4">Customer</th>
                   <th className="px-6 py-4">Amount</th>
@@ -547,28 +547,28 @@ export default function AdminDashboard() {
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {recentPayments.map((payment) => {
                   const txnId = payment.stripeSessionId || payment._id;
                   return (
                     <tr
                       key={payment._id}
-                      className="transition-colors hover:bg-slate-50/90"
+                      className="transition-colors hover:bg-slate-50/90 dark:hover:bg-slate-800/50"
                     >
                       <td className="px-6 py-4">
                         <div
-                          className="inline-flex max-w-[220px] items-center gap-1.5 rounded-lg border border-slate-200/80 bg-slate-50 px-2.5 py-1.5 font-mono text-xs font-semibold text-slate-700"
+                          className="inline-flex max-w-[220px] items-center gap-1.5 rounded-lg border border-slate-200/80 bg-slate-50 px-2.5 py-1.5 font-mono text-xs font-semibold text-slate-700 dark:border-slate-800 dark:bg-slate-800 dark:text-slate-300"
                           title={txnId}
                         >
-                          <Hash size={12} className="shrink-0 text-slate-400" />
+                          <Hash size={12} className="shrink-0 text-slate-400 dark:text-slate-500" />
                           <span className="truncate">{txnId}</span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 font-medium text-slate-700">
+                      <td className="px-6 py-4 font-medium text-slate-700 dark:text-slate-300">
                         {payment.customerEmail}
                       </td>
                       <td className="px-6 py-4">
-                        <span className="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-sm font-extrabold text-emerald-700 ring-1 ring-emerald-600/20">
+                        <span className="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-sm font-extrabold text-emerald-700 ring-1 ring-emerald-600/20 dark:bg-emerald-950/60 dark:text-emerald-400 dark:ring-emerald-500/20">
                           $
                           {payment.amount.toLocaleString("en-US", {
                             minimumFractionDigits: 2,
@@ -576,9 +576,9 @@ export default function AdminDashboard() {
                           })}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-right text-slate-600">
+                      <td className="px-6 py-4 text-right text-slate-600 dark:text-slate-400">
                         <div className="inline-flex items-center gap-1.5 font-medium">
-                          <CalendarDays size={14} className="text-slate-400" />
+                          <CalendarDays size={14} className="text-slate-400 dark:text-slate-500" />
                           <span>{formatDate(payment.createdAt)}</span>
                         </div>
                       </td>

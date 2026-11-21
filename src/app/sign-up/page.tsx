@@ -1,9 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
+import {
+  getSafeRedirectUrl,
+  getFinalRedirectUrl,
+} from "@/lib/auth-redirect";
 import { toast } from "sonner";
 import {
   Check,
@@ -21,8 +25,9 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
-export default function SignUpPage() {
+function SignUpForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { data: session, isPending: sessionLoading } = authClient.useSession();
 
   const [name, setName] = useState("");
@@ -38,21 +43,22 @@ export default function SignUpPage() {
     password?: string;
   }>({});
 
+  const redirectParam =
+    searchParams.get("redirect") ||
+    searchParams.get("callbackUrl") ||
+    searchParams.get("returnUrl");
+  const safeRedirect = getSafeRedirectUrl(redirectParam);
+
   // Redirect authenticated users away from sign-up
   useEffect(() => {
     if (sessionLoading) return;
 
     if (session?.user) {
       const userRole = session.user.role;
-      if (userRole === "admin") {
-        router.replace("/dashboard/admin");
-      } else if (userRole === "technician") {
-        router.replace("/dashboard/technician");
-      } else {
-        router.replace("/dashboard/customer");
-      }
+      const destination = getFinalRedirectUrl(safeRedirect, userRole);
+      router.replace(destination);
     }
-  }, [session, sessionLoading, router]);
+  }, [session, sessionLoading, safeRedirect, router]);
 
   // Password validation rules per Assignment 9 PDF
   const hasMinLength = password.length >= 6;
@@ -132,15 +138,15 @@ export default function SignUpPage() {
 
       if (user) {
         const userRole = user.role || role;
-        if (userRole === "technician") {
-          router.push("/dashboard/technician");
-        } else {
-          router.push("/dashboard/customer");
-        }
-        router.refresh();
+        const destination = getFinalRedirectUrl(safeRedirect, userRole);
+        router.push(destination);
       } else {
         toast.info("Please sign in with your new account credentials.");
-        router.push("/sign-in");
+        router.push(
+          safeRedirect
+            ? `/sign-in?redirect=${encodeURIComponent(safeRedirect)}`
+            : "/sign-in"
+        );
       }
     } catch {
       toast.error("Something went wrong. Please try again.");
@@ -151,11 +157,11 @@ export default function SignUpPage() {
 
   if (sessionLoading || session?.user) {
     return (
-      <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-4">
+      <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-50 px-4 transition-colors duration-200 dark:bg-slate-950">
         <div className="pointer-events-none absolute top-1/4 left-1/3 h-80 w-80 rounded-full bg-blue-600/20 blur-[110px]" />
-        <div className="rounded-3xl border border-white/10 bg-slate-900/80 p-8 text-center backdrop-blur-xl">
-          <Loader2 className="mx-auto animate-spin text-blue-400" size={34} />
-          <p className="mt-3 text-sm font-medium text-slate-300">
+        <div className="rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-xl dark:border-white/10 dark:bg-slate-900/80 backdrop-blur-xl">
+          <Loader2 className="mx-auto animate-spin text-blue-600 dark:text-blue-400" size={34} />
+          <p className="mt-3 text-sm font-medium text-slate-600 dark:text-slate-300">
             Redirecting...
           </p>
         </div>
@@ -164,14 +170,14 @@ export default function SignUpPage() {
   }
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-4 py-16 sm:px-6">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-50 px-4 py-16 transition-colors duration-200 dark:bg-slate-950 sm:px-6">
       {/* Ambient Background Glows & Subtle Grid */}
       <div className="pointer-events-none absolute -top-24 left-1/4 h-96 w-96 rounded-full bg-blue-600/20 blur-[120px]" />
       <div className="pointer-events-none absolute right-1/4 -bottom-24 h-96 w-96 rounded-full bg-indigo-500/20 blur-[120px]" />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:36px_36px]" />
 
       {/* Sign Up Card */}
-      <div className="relative z-10 w-full max-w-lg overflow-hidden rounded-3xl border border-white/15 bg-white p-8 shadow-2xl shadow-blue-950/50 sm:p-10">
+      <div className="relative z-10 w-full max-w-lg overflow-hidden rounded-3xl border border-slate-200/90 bg-white p-8 shadow-2xl shadow-slate-950/5 transition-all dark:border-white/10 dark:bg-slate-900/95 dark:shadow-slate-950/50 sm:p-10">
         {/* Top Brand Header */}
         <div className="flex flex-col items-center text-center">
           <Link
@@ -181,16 +187,16 @@ export default function SignUpPage() {
             <Wrench size={22} />
           </Link>
 
-          <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-600 ring-1 ring-blue-600/15">
+          <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700 ring-1 ring-blue-600/15 dark:bg-blue-950/50 dark:text-blue-300 dark:ring-blue-500/20">
             <Sparkles size={13} />
             <span>Join FixMate Ecosystem</span>
           </div>
 
-          <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900">
+          <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
             Create Account
           </h1>
 
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
             Get started as a homeowner or certified repair technician
           </p>
         </div>
@@ -199,7 +205,7 @@ export default function SignUpPage() {
         <form onSubmit={handleSignUp} className="mt-8 space-y-5" noValidate>
           {/* Full Name */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
               Full Name
             </label>
             <div className="relative mt-2">
@@ -216,7 +222,7 @@ export default function SignUpPage() {
                   }
                 }}
                 required
-                className={`w-full rounded-xl border bg-slate-50/50 py-3 pr-4 pl-10 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:bg-white focus:ring-2 ${
+                className={`w-full rounded-xl border bg-slate-50/70 py-3 pr-4 pl-10 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:bg-white focus:ring-2 dark:border-slate-800 dark:bg-slate-950/70 dark:text-white dark:placeholder:text-slate-500 dark:focus:bg-slate-950 dark:focus:border-blue-500 ${
                   fieldErrors.name
                     ? "border-rose-500 focus:border-rose-500 focus:ring-rose-500/15"
                     : "border-slate-200 focus:border-blue-600 focus:ring-blue-600/15"
@@ -234,7 +240,7 @@ export default function SignUpPage() {
 
           {/* Email */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
               Email Address
             </label>
             <div className="relative mt-2">
@@ -251,7 +257,7 @@ export default function SignUpPage() {
                   }
                 }}
                 required
-                className={`w-full rounded-xl border bg-slate-50/50 py-3 pr-4 pl-10 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:bg-white focus:ring-2 ${
+                className={`w-full rounded-xl border bg-slate-50/70 py-3 pr-4 pl-10 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:bg-white focus:ring-2 dark:border-slate-800 dark:bg-slate-950/70 dark:text-white dark:placeholder:text-slate-500 dark:focus:bg-slate-950 dark:focus:border-blue-500 ${
                   fieldErrors.email
                     ? "border-rose-500 focus:border-rose-500 focus:ring-rose-500/15"
                     : "border-slate-200 focus:border-blue-600 focus:ring-blue-600/15"
@@ -269,7 +275,7 @@ export default function SignUpPage() {
 
           {/* Password with real-time requirement indicator */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
               Password
             </label>
             <div className="relative mt-2">
@@ -289,7 +295,7 @@ export default function SignUpPage() {
                   }
                 }}
                 required
-                className={`w-full rounded-xl border bg-slate-50/50 py-3 pr-11 pl-10 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:bg-white focus:ring-2 ${
+                className={`w-full rounded-xl border bg-slate-50/70 py-3 pr-11 pl-10 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:bg-white focus:ring-2 dark:border-slate-800 dark:bg-slate-950/70 dark:text-white dark:placeholder:text-slate-500 dark:focus:bg-slate-950 dark:focus:border-blue-500 ${
                   fieldErrors.password
                     ? "border-rose-500 focus:border-rose-500 focus:ring-rose-500/15"
                     : "border-slate-200 focus:border-blue-600 focus:ring-blue-600/15"
@@ -314,25 +320,25 @@ export default function SignUpPage() {
 
             {/* Password Validation Checklist */}
             {password.length > 0 && (
-              <div className="mt-3 space-y-1.5 rounded-2xl border border-slate-100 bg-slate-50/90 p-3.5 text-xs">
-                <p className="font-bold text-slate-700">
+              <div className="mt-3 space-y-1.5 rounded-2xl border border-slate-100 bg-slate-50/90 p-3.5 text-xs dark:border-slate-800 dark:bg-slate-950/60">
+                <p className="font-bold text-slate-700 dark:text-slate-300">
                   Password Requirements:
                 </p>
                 <div className="flex items-center gap-2">
                   {hasMinLength ? (
-                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400">
                       <Check size={11} strokeWidth={3} />
                     </span>
                   ) : (
-                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-rose-100 text-rose-600">
+                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-rose-100 text-rose-600 dark:bg-rose-950/50 dark:text-rose-400">
                       <X size={11} strokeWidth={3} />
                     </span>
                   )}
                   <span
                     className={
                       hasMinLength
-                        ? "font-semibold text-emerald-700"
-                        : "text-slate-500"
+                        ? "font-semibold text-emerald-700 dark:text-emerald-400"
+                        : "text-slate-500 dark:text-slate-400"
                     }
                   >
                     At least 6 characters
@@ -340,19 +346,19 @@ export default function SignUpPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   {hasUppercase ? (
-                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400">
                       <Check size={11} strokeWidth={3} />
                     </span>
                   ) : (
-                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-rose-100 text-rose-600">
+                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-rose-100 text-rose-600 dark:bg-rose-950/50 dark:text-rose-400">
                       <X size={11} strokeWidth={3} />
                     </span>
                   )}
                   <span
                     className={
                       hasUppercase
-                        ? "font-semibold text-emerald-700"
-                        : "text-slate-500"
+                        ? "font-semibold text-emerald-700 dark:text-emerald-400"
+                        : "text-slate-500 dark:text-slate-400"
                     }
                   >
                     At least one uppercase letter (A-Z)
@@ -360,19 +366,19 @@ export default function SignUpPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   {hasLowercase ? (
-                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400">
                       <Check size={11} strokeWidth={3} />
                     </span>
                   ) : (
-                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-rose-100 text-rose-600">
+                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-rose-100 text-rose-600 dark:bg-rose-950/50 dark:text-rose-400">
                       <X size={11} strokeWidth={3} />
                     </span>
                   )}
                   <span
                     className={
                       hasLowercase
-                        ? "font-semibold text-emerald-700"
-                        : "text-slate-500"
+                        ? "font-semibold text-emerald-700 dark:text-emerald-400"
+                        : "text-slate-500 dark:text-slate-400"
                     }
                   >
                     At least one lowercase letter (a-z)
@@ -384,7 +390,7 @@ export default function SignUpPage() {
 
           {/* Role Selection: Selectable Cards / Radio Buttons */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
               Register As
             </label>
             <div
@@ -396,8 +402,8 @@ export default function SignUpPage() {
               <label
                 className={`relative flex cursor-pointer flex-col items-center justify-center rounded-2xl border p-4 text-center transition-all duration-200 ${
                   role === "customer"
-                    ? "border-blue-600 bg-blue-50/70 shadow-sm ring-2 ring-blue-600/20"
-                    : "border-slate-200 bg-slate-50/40 hover:border-slate-300 hover:bg-white"
+                    ? "border-blue-600 bg-blue-50/70 shadow-sm ring-2 ring-blue-600/20 dark:border-blue-500 dark:bg-blue-950/40"
+                    : "border-slate-200 bg-slate-50/40 hover:border-slate-300 hover:bg-white dark:border-slate-800 dark:bg-slate-950/40 dark:hover:border-slate-700 dark:hover:bg-slate-900"
                 }`}
               >
                 <input
@@ -411,22 +417,22 @@ export default function SignUpPage() {
                 {role === "customer" && (
                   <CheckCircle2
                     size={16}
-                    className="absolute top-3 right-3 text-blue-600"
+                    className="absolute top-3 right-3 text-blue-600 dark:text-blue-400"
                   />
                 )}
                 <div
                   className={`mb-2.5 flex h-11 w-11 items-center justify-center rounded-xl transition-colors ${
                     role === "customer"
                       ? "bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-600/25"
-                      : "bg-slate-200/70 text-slate-600"
+                      : "bg-slate-200/70 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
                   }`}
                 >
                   <User size={20} />
                 </div>
-                <span className="text-sm font-extrabold text-slate-900">
+                <span className="text-sm font-extrabold text-slate-900 dark:text-white">
                   Customer
                 </span>
-                <span className="mt-0.5 text-xs text-slate-500">
+                <span className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                   Book repair services
                 </span>
               </label>
@@ -435,8 +441,8 @@ export default function SignUpPage() {
               <label
                 className={`relative flex cursor-pointer flex-col items-center justify-center rounded-2xl border p-4 text-center transition-all duration-200 ${
                   role === "technician"
-                    ? "border-blue-600 bg-blue-50/70 shadow-sm ring-2 ring-blue-600/20"
-                    : "border-slate-200 bg-slate-50/40 hover:border-slate-300 hover:bg-white"
+                    ? "border-blue-600 bg-blue-50/70 shadow-sm ring-2 ring-blue-600/20 dark:border-blue-500 dark:bg-blue-950/40"
+                    : "border-slate-200 bg-slate-50/40 hover:border-slate-300 hover:bg-white dark:border-slate-800 dark:bg-slate-950/40 dark:hover:border-slate-700 dark:hover:bg-slate-900"
                 }`}
               >
                 <input
@@ -450,22 +456,22 @@ export default function SignUpPage() {
                 {role === "technician" && (
                   <CheckCircle2
                     size={16}
-                    className="absolute top-3 right-3 text-blue-600"
+                    className="absolute top-3 right-3 text-blue-600 dark:text-blue-400"
                   />
                 )}
                 <div
                   className={`mb-2.5 flex h-11 w-11 items-center justify-center rounded-xl transition-colors ${
                     role === "technician"
                       ? "bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-600/25"
-                      : "bg-slate-200/70 text-slate-600"
+                      : "bg-slate-200/70 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
                   }`}
                 >
                   <Wrench size={20} />
                 </div>
-                <span className="text-sm font-extrabold text-slate-900">
+                <span className="text-sm font-extrabold text-slate-900 dark:text-white">
                   Technician
                 </span>
-                <span className="mt-0.5 text-xs text-slate-500">
+                <span className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                   Provide repair services
                 </span>
               </label>
@@ -496,11 +502,15 @@ export default function SignUpPage() {
         </form>
 
         {/* Link to Sign In */}
-        <div className="mt-7 border-t border-slate-100 pt-6 text-center">
-          <p className="text-sm text-slate-600">
+        <div className="mt-7 border-t border-slate-100 pt-6 text-center dark:border-slate-800">
+          <p className="text-sm text-slate-600 dark:text-slate-400">
             Already have an account?{" "}
             <Link
-              href="/sign-in"
+              href={
+                safeRedirect
+                  ? `/sign-in?redirect=${encodeURIComponent(safeRedirect)}`
+                  : "/sign-in"
+              }
               className="font-bold text-blue-600 transition hover:text-indigo-600 hover:underline"
             >
               Sign In
@@ -509,5 +519,21 @@ export default function SignUpPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function SignUpPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-slate-50 transition-colors duration-200 dark:bg-slate-950">
+          <div className="rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-xl dark:border-white/10 dark:bg-slate-900/80 backdrop-blur-xl">
+            <Loader2 className="mx-auto animate-spin text-blue-600 dark:text-blue-400" size={34} />
+          </div>
+        </div>
+      }
+    >
+      <SignUpForm />
+    </Suspense>
   );
 }

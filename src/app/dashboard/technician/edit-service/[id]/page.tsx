@@ -209,9 +209,9 @@ export default function EditServicePage() {
   if (loading) {
     return (
       <div className="flex min-h-[65vh] items-center justify-center">
-        <div className="rounded-3xl border border-slate-200/80 bg-white px-10 py-12 text-center shadow-sm">
-          <Loader2 className="mx-auto animate-spin text-blue-600" size={38} />
-          <p className="mt-4 text-sm font-semibold text-slate-600">
+        <div className="rounded-3xl border border-slate-200/80 bg-white px-10 py-12 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <Loader2 className="mx-auto animate-spin text-blue-600 dark:text-blue-400" size={38} />
+          <p className="mt-4 text-sm font-semibold text-slate-600 dark:text-slate-400">
             Loading service details...
           </p>
         </div>
@@ -220,10 +220,10 @@ export default function EditServicePage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-12 text-slate-900">
+    <div className="min-h-screen bg-slate-50 pb-12 text-slate-900 transition-colors duration-200 dark:bg-slate-950 dark:text-slate-100">
       <div className="mx-auto max-w-6xl space-y-8">
         {/* ================= TOP DARK PREMIUM BANNER ================= */}
-        <div className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8">
+        <div className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8 dark:border dark:border-slate-800">
           <div className="pointer-events-none absolute -top-20 right-10 h-64 w-64 rounded-full bg-blue-600/25 blur-[90px]" />
           <div className="pointer-events-none absolute -bottom-20 left-10 h-64 w-64 rounded-full bg-indigo-500/20 blur-[90px]" />
 
@@ -259,12 +259,12 @@ export default function EditServicePage() {
         <form onSubmit={handleSubmit} className="grid gap-8 lg:grid-cols-12">
           {/* Left Column: Service Information Card */}
           <div className="space-y-6 lg:col-span-7">
-            <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-8">
-              <div className="border-b border-slate-100 pb-5">
-                <h2 className="text-xl font-extrabold text-slate-900">
+            <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-8 dark:border-slate-800 dark:bg-slate-900">
+              <div className="border-b border-slate-100 pb-5 dark:border-slate-800">
+                <h2 className="text-xl font-extrabold text-slate-900 dark:text-white">
                   Service Information
                 </h2>
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                   Update your listing specifications below.
                 </p>
               </div>
@@ -272,7 +272,7 @@ export default function EditServicePage() {
               <div className="mt-6 space-y-6">
                 {/* Service Title */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                     Service Title <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative mt-2">
@@ -284,7 +284,7 @@ export default function EditServicePage() {
                       value={formData.title}
                       onChange={handleChange}
                       placeholder="Service title"
-                      className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15"
+                      className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15 dark:border-slate-700 dark:bg-slate-950/60 dark:text-white dark:placeholder:text-slate-500"
                       required
                     />
                   </div>
@@ -293,7 +293,7 @@ export default function EditServicePage() {
                 {/* Category & Service Mode */}
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                       Category <span className="text-rose-500">*</span>
                     </label>
                     <div className="relative mt-2">
@@ -304,7 +304,7 @@ export default function EditServicePage() {
                         name="category"
                         value={formData.category}
                         onChange={handleChange}
-                        className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15"
+                        className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15 dark:border-slate-700 dark:bg-slate-950/60 dark:text-white"
                         required
                       >
                         {categories.map((category) => (
@@ -317,7 +317,7 @@ export default function EditServicePage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                       Service Mode <span className="text-rose-500">*</span>
                     </label>
                     <div className="relative mt-2">
@@ -328,7 +328,7 @@ export default function EditServicePage() {
                         name="serviceMode"
                         value={formData.serviceMode}
                         onChange={handleChange}
-                        className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15"
+                        className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15 dark:border-slate-700 dark:bg-slate-950/60 dark:text-white"
                         required
                       >
                         {serviceModes.map((mode) => (
@@ -344,7 +344,7 @@ export default function EditServicePage() {
                 {/* Base Price & Estimated Duration */}
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                       Base Price ($) <span className="text-rose-500">*</span>
                     </label>
                     <div className="relative mt-2">
@@ -357,14 +357,14 @@ export default function EditServicePage() {
                         min="1"
                         value={formData.basePrice}
                         onChange={handleChange}
-                        className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15"
+                        className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15 dark:border-slate-700 dark:bg-slate-950/60 dark:text-white dark:placeholder:text-slate-500"
                         required
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                       Estimated Duration{" "}
                       <span className="text-rose-500">*</span>
                     </label>
@@ -376,7 +376,7 @@ export default function EditServicePage() {
                         name="estimatedDuration"
                         value={formData.estimatedDuration}
                         onChange={handleChange}
-                        className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15"
+                        className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15 dark:border-slate-700 dark:bg-slate-950/60 dark:text-white dark:placeholder:text-slate-500"
                         required
                       />
                     </div>
@@ -385,7 +385,7 @@ export default function EditServicePage() {
 
                 {/* Service Area */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                     Service Area <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative mt-2">
@@ -396,7 +396,7 @@ export default function EditServicePage() {
                       name="serviceArea"
                       value={formData.serviceArea}
                       onChange={handleChange}
-                      className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15"
+                      className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15 dark:border-slate-700 dark:bg-slate-950/60 dark:text-white dark:placeholder:text-slate-500"
                       required
                     />
                   </div>
@@ -404,7 +404,7 @@ export default function EditServicePage() {
 
                 {/* Description */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                     Description <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative mt-2">
@@ -416,7 +416,7 @@ export default function EditServicePage() {
                       value={formData.description}
                       onChange={handleChange}
                       rows={4}
-                      className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15"
+                      className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15 dark:border-slate-700 dark:bg-slate-950/60 dark:text-white dark:placeholder:text-slate-500"
                       required
                     />
                   </div>
@@ -428,24 +428,24 @@ export default function EditServicePage() {
           {/* Right Column: Image URL, Preview & Actions */}
           <div className="space-y-6 lg:col-span-5">
             {/* Image Preview & URL Input Card */}
-            <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-7">
+            <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-7 dark:border-slate-800 dark:bg-slate-900">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-lg font-extrabold text-slate-900">
+                  <h2 className="text-lg font-extrabold text-slate-900 dark:text-white">
                     Service Image URL <span className="text-rose-500">*</span>
                   </h2>
-                  <p className="mt-0.5 text-xs text-slate-500">
+                  <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                     Live preview of your service cover image
                   </p>
                 </div>
-                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400">
                   <ImageIcon size={18} />
                 </span>
               </div>
 
               {/* Live Cover Image Preview */}
               {formData.image && (
-                <div className="relative mt-4 h-48 overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-100">
+                <div className="relative mt-4 h-48 overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-100 dark:border-slate-800 dark:bg-slate-800">
                   <img
                     src={formData.image}
                     alt={formData.title || "Service preview"}
@@ -455,7 +455,7 @@ export default function EditServicePage() {
               )}
 
               <div className="mt-4">
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                   Image URL
                 </label>
                 <div className="relative mt-2">
@@ -468,42 +468,42 @@ export default function EditServicePage() {
                     value={formData.image}
                     onChange={handleChange}
                     placeholder="https://..."
-                    className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15"
+                    className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15 dark:border-slate-700 dark:bg-slate-950/60 dark:text-white dark:placeholder:text-slate-500"
                     required
                   />
                 </div>
-                <p className="mt-1.5 text-xs text-slate-500">
+                <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">
                   Paste an image URL to change the service image.
                 </p>
               </div>
             </div>
 
             {/* Technician Information Card */}
-            <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-7">
-              <h3 className="text-base font-extrabold text-slate-900">
+            <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-7 dark:border-slate-800 dark:bg-slate-900">
+              <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
                 Technician Details
               </h3>
-              <div className="mt-4 space-y-3 rounded-2xl border border-slate-100 bg-slate-50/80 p-4 text-sm">
+              <div className="mt-4 space-y-3 rounded-2xl border border-slate-100 bg-slate-50/80 p-4 text-sm dark:border-slate-800 dark:bg-slate-950/50">
                 <div className="flex items-center gap-2.5">
-                  <UserCheck size={16} className="shrink-0 text-blue-600" />
-                  <span className="text-slate-500">Technician:</span>
-                  <strong className="truncate font-bold text-slate-900">
+                  <UserCheck size={16} className="shrink-0 text-blue-600 dark:text-blue-400" />
+                  <span className="text-slate-500 dark:text-slate-400">Technician:</span>
+                  <strong className="truncate font-bold text-slate-900 dark:text-slate-100">
                     {session?.user?.name}
                   </strong>
                 </div>
 
                 <div className="flex items-center gap-2.5">
-                  <Mail size={16} className="shrink-0 text-indigo-600" />
-                  <span className="text-slate-500">Email:</span>
-                  <strong className="truncate font-semibold text-slate-700">
+                  <Mail size={16} className="shrink-0 text-indigo-600 dark:text-indigo-400" />
+                  <span className="text-slate-500 dark:text-slate-400">Email:</span>
+                  <strong className="truncate font-semibold text-slate-700 dark:text-slate-300">
                     {session?.user?.email}
                   </strong>
                 </div>
               </div>
 
               {/* Re-approval Notice */}
-              <div className="mt-4 flex items-start gap-2.5 rounded-2xl border border-amber-200/80 bg-amber-50/70 p-3.5 text-xs text-amber-800">
-                <Info size={16} className="mt-0.5 shrink-0 text-amber-600" />
+              <div className="mt-4 flex items-start gap-2.5 rounded-2xl border border-amber-200/80 bg-amber-50/70 p-3.5 text-xs text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-300">
+                <Info size={16} className="mt-0.5 shrink-0 text-amber-600 dark:text-amber-400" />
                 <p className="leading-relaxed">
                   Updating a service resets its status to{" "}
                   <strong className="font-bold">Pending</strong> until an
@@ -514,13 +514,12 @@ export default function EditServicePage() {
 
             {/* Action Buttons */}
             <div className="grid grid-cols-2 gap-3.5">
-              <button
-                type="button"
-                onClick={() => router.back()}
-                className="rounded-2xl border border-slate-200 bg-white py-3.5 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-100"
+              <Link
+                href="/dashboard/technician/my-services"
+                className="rounded-2xl border border-slate-200 bg-white py-3.5 text-center text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
               >
                 Cancel
-              </button>
+              </Link>
 
               <button
                 type="submit"

@@ -210,7 +210,6 @@ export default function AddServicePage() {
       setImagePreview(null);
 
       router.push("/dashboard/technician/my-services");
-      router.refresh();
     } catch (error) {
       const message =
         error instanceof Error
@@ -224,10 +223,10 @@ export default function AddServicePage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-12 text-slate-900">
+    <div className="min-h-screen bg-slate-50 pb-12 text-slate-900 transition-colors duration-200 dark:bg-slate-950 dark:text-slate-100">
       <div className="mx-auto max-w-6xl space-y-8">
         {/* ================= TOP DARK PREMIUM BANNER ================= */}
-        <div className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8">
+        <div className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8 dark:border dark:border-slate-800">
           <div className="pointer-events-none absolute -top-20 right-10 h-64 w-64 rounded-full bg-blue-600/25 blur-[90px]" />
           <div className="pointer-events-none absolute -bottom-20 left-10 h-64 w-64 rounded-full bg-indigo-500/20 blur-[90px]" />
 
@@ -263,12 +262,12 @@ export default function AddServicePage() {
         <form onSubmit={handleSubmit} className="grid gap-8 lg:grid-cols-12">
           {/* Left Column: Service Details Card */}
           <div className="space-y-6 lg:col-span-7">
-            <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-8">
-              <div className="border-b border-slate-100 pb-5">
-                <h2 className="text-xl font-extrabold text-slate-900">
+            <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-8 dark:border-slate-800 dark:bg-slate-900">
+              <div className="border-b border-slate-100 pb-5 dark:border-slate-800">
+                <h2 className="text-xl font-extrabold text-slate-900 dark:text-white">
                   Service Information
                 </h2>
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                   Provide clear, accurate details so customers can easily find
                   and book your service.
                 </p>
@@ -277,7 +276,7 @@ export default function AddServicePage() {
               <div className="mt-6 space-y-6">
                 {/* Service Title */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                     Service Title <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative mt-2">
@@ -290,7 +289,7 @@ export default function AddServicePage() {
                       value={formData.title}
                       onChange={handleChange}
                       placeholder="e.g. Complete Laptop Diagnostics & Repair"
-                      className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15"
+                      className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15 dark:border-slate-700 dark:bg-slate-950/60 dark:text-white dark:placeholder:text-slate-500"
                       required
                     />
                   </div>
@@ -299,7 +298,7 @@ export default function AddServicePage() {
                 {/* Category & Service Mode */}
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                       Category <span className="text-rose-500">*</span>
                     </label>
                     <div className="relative mt-2">
@@ -310,7 +309,7 @@ export default function AddServicePage() {
                         name="category"
                         value={formData.category}
                         onChange={handleChange}
-                        className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15"
+                        className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15 dark:border-slate-700 dark:bg-slate-950/60 dark:text-white"
                         required
                       >
                         <option value="">Select Category</option>
@@ -324,7 +323,7 @@ export default function AddServicePage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                       Service Mode <span className="text-rose-500">*</span>
                     </label>
                     <div className="relative mt-2">
@@ -335,7 +334,7 @@ export default function AddServicePage() {
                         name="serviceMode"
                         value={formData.serviceMode}
                         onChange={handleChange}
-                        className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15"
+                        className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15 dark:border-slate-700 dark:bg-slate-950/60 dark:text-white"
                         required
                       >
                         <option value="">Select Service Mode</option>
@@ -352,7 +351,7 @@ export default function AddServicePage() {
                 {/* Base Price & Estimated Duration */}
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                       Base Price ($) <span className="text-rose-500">*</span>
                     </label>
                     <div className="relative mt-2">
@@ -366,14 +365,14 @@ export default function AddServicePage() {
                         onChange={handleChange}
                         min="1"
                         placeholder="50"
-                        className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15"
+                        className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15 dark:border-slate-700 dark:bg-slate-950/60 dark:text-white dark:placeholder:text-slate-500"
                         required
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                       Estimated Duration{" "}
                       <span className="text-rose-500">*</span>
                     </label>
@@ -387,7 +386,7 @@ export default function AddServicePage() {
                         value={formData.estimatedDuration}
                         onChange={handleChange}
                         placeholder="e.g. 2-3 Hours"
-                        className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15"
+                        className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15 dark:border-slate-700 dark:bg-slate-950/60 dark:text-white dark:placeholder:text-slate-500"
                         required
                       />
                     </div>
@@ -396,7 +395,7 @@ export default function AddServicePage() {
 
                 {/* Service Area */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                     Service Area <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative mt-2">
@@ -409,7 +408,7 @@ export default function AddServicePage() {
                       value={formData.serviceArea}
                       onChange={handleChange}
                       placeholder="e.g. Sylhet City"
-                      className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15"
+                      className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15 dark:border-slate-700 dark:bg-slate-950/60 dark:text-white dark:placeholder:text-slate-500"
                       required
                     />
                   </div>
@@ -417,7 +416,7 @@ export default function AddServicePage() {
 
                 {/* Description */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                     Service Description <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative mt-2">
@@ -430,7 +429,7 @@ export default function AddServicePage() {
                       onChange={handleChange}
                       rows={4}
                       placeholder="Describe what is included in this repair service, tools/parts handled, and warranty details..."
-                      className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15"
+                      className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm font-medium text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15 dark:border-slate-700 dark:bg-slate-950/60 dark:text-white dark:placeholder:text-slate-500"
                       required
                     />
                   </div>
@@ -442,24 +441,24 @@ export default function AddServicePage() {
           {/* Right Column: Image Upload & Technician Info */}
           <div className="space-y-6 lg:col-span-5">
             {/* Image Upload Card */}
-            <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-7">
+            <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-7 dark:border-slate-800 dark:bg-slate-900">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-lg font-extrabold text-slate-900">
+                  <h2 className="text-lg font-extrabold text-slate-900 dark:text-white">
                     Service Cover Image <span className="text-rose-500">*</span>
                   </h2>
-                  <p className="mt-0.5 text-xs text-slate-500">
+                  <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                     High-quality cover photo attracts more bookings
                   </p>
                 </div>
-                <span className="rounded-full bg-blue-50 px-2.5 py-1 text-[11px] font-bold text-blue-600">
+                <span className="rounded-full bg-blue-50 px-2.5 py-1 text-[11px] font-bold text-blue-600 dark:bg-blue-950/60 dark:text-blue-400">
                   Max 5MB
                 </span>
               </div>
 
               {/* Preview Box */}
               {imagePreview && (
-                <div className="relative mt-4 h-48 overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-100">
+                <div className="relative mt-4 h-48 overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-100 dark:border-slate-800 dark:bg-slate-800">
                   <img
                     src={imagePreview}
                     alt="Service cover preview"
@@ -476,14 +475,14 @@ export default function AddServicePage() {
               )}
 
               {/* File Picker Input */}
-              <label className="mt-4 flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50/70 p-6 text-center transition hover:border-blue-400 hover:bg-blue-50/40">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600/10 text-blue-600">
+              <label className="mt-4 flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50/70 p-6 text-center transition hover:border-blue-400 hover:bg-blue-50/40 dark:border-slate-700 dark:bg-slate-950/50 dark:hover:border-blue-500/50 dark:hover:bg-blue-950/20">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600/10 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">
                   <ImagePlus size={24} />
                 </div>
-                <p className="mt-3 text-sm font-bold text-slate-800">
+                <p className="mt-3 text-sm font-bold text-slate-800 dark:text-slate-200">
                   {image ? "Change Service Image" : "Click to Upload Image"}
                 </p>
-                <p className="mt-1 text-xs text-slate-500">
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                   Supports JPG, PNG, WEBP up to 5MB
                 </p>
                 <input
@@ -497,24 +496,24 @@ export default function AddServicePage() {
             </div>
 
             {/* Technician Information Card */}
-            <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-7">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+            <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-7 dark:border-slate-800 dark:bg-slate-900">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
                 <div>
-                  <h3 className="text-base font-extrabold text-slate-900">
+                  <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
                     Technician Information
                   </h3>
-                  <p className="mt-0.5 text-xs text-slate-500">
+                  <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                     Automatically linked from your verified account
                   </p>
                 </div>
-                <span className="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-500">
+                <span className="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-500 dark:bg-slate-800 dark:text-slate-400">
                   <Lock size={10} /> Verified
                 </span>
               </div>
 
               <div className="mt-5 space-y-4">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Technician Name
                   </label>
                   <div className="relative mt-1.5">
@@ -524,13 +523,13 @@ export default function AddServicePage() {
                     <input
                       value={session?.user?.name || ""}
                       readOnly
-                      className="w-full cursor-not-allowed rounded-xl border border-slate-200 bg-slate-100/80 py-2.5 pr-4 pl-10 text-sm font-semibold text-slate-600"
+                      className="w-full cursor-not-allowed rounded-xl border border-slate-200 bg-slate-100/80 py-2.5 pr-4 pl-10 text-sm font-semibold text-slate-600 dark:border-slate-800 dark:bg-slate-950/50 dark:text-slate-400"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Technician Email
                   </label>
                   <div className="relative mt-1.5">
@@ -540,7 +539,7 @@ export default function AddServicePage() {
                     <input
                       value={session?.user?.email || ""}
                       readOnly
-                      className="w-full cursor-not-allowed rounded-xl border border-slate-200 bg-slate-100/80 py-2.5 pr-4 pl-10 text-sm font-medium text-slate-500"
+                      className="w-full cursor-not-allowed rounded-xl border border-slate-200 bg-slate-100/80 py-2.5 pr-4 pl-10 text-sm font-medium text-slate-500 dark:border-slate-800 dark:bg-slate-950/50 dark:text-slate-400"
                     />
                   </div>
                 </div>

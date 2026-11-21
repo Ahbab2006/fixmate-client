@@ -137,7 +137,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white">
+    <main className="min-h-screen bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white transition-colors duration-200 dark:bg-slate-950 dark:text-slate-100">
       {/* ================= HERO SECTION ================= */}
       <section className="relative overflow-hidden bg-slate-950 pt-16 pb-24 text-white lg:pt-24 lg:pb-32">
         {/* Ambient Glow Effects */}
@@ -290,18 +290,18 @@ export default function Home() {
       </section>
 
       {/* ================= SERVICE CATEGORIES SECTION ================= */}
-      <section className="relative bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+      <section className="relative bg-white px-4 py-20 transition-colors duration-200 dark:bg-slate-900 sm:px-6 lg:px-8 lg:py-28">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-2xl text-center">
-            <span className="inline-flex items-center rounded-full bg-blue-50 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-blue-600 ring-1 ring-blue-600/15">
+            <span className="inline-flex items-center rounded-full bg-blue-50 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-blue-600 ring-1 ring-blue-600/15 dark:bg-blue-950/50 dark:text-blue-300 dark:ring-blue-500/20">
               What We Offer
             </span>
 
-            <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+            <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl dark:text-white">
               Explore Our Service Categories
             </h2>
 
-            <p className="mt-4 text-base leading-relaxed text-slate-600">
+            <p className="mt-4 text-base leading-relaxed text-slate-600 dark:text-slate-400">
               From precision electronics repair to essential home appliances,
               connect with certified specialists tailored to your needs.
             </p>
@@ -314,7 +314,7 @@ export default function Home() {
                 <Link
                   key={category.name}
                   href={`/services?category=${encodeURIComponent(category.name)}`}
-                  className="group relative flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-900/5"
+                  className="group relative flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-900/5 dark:border-slate-800 dark:bg-slate-950/60 dark:hover:border-blue-500/50"
                 >
                   <div>
                     <div
@@ -323,16 +323,16 @@ export default function Home() {
                       <IconComponent size={26} strokeWidth={2} />
                     </div>
 
-                    <h3 className="mt-5 text-lg font-bold text-slate-900 transition-colors group-hover:text-blue-600">
+                    <h3 className="mt-5 text-lg font-bold text-slate-900 transition-colors group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400">
                       {category.name}
                     </h3>
 
-                    <p className="mt-2 text-sm leading-relaxed text-slate-500">
+                    <p className="mt-2 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
                       {category.description}
                     </p>
                   </div>
 
-                  <div className="mt-6 flex items-center gap-1.5 text-sm font-semibold text-blue-600">
+                  <div className="mt-6 flex items-center gap-1.5 text-sm font-semibold text-blue-600 dark:text-blue-400">
                     <span>Explore Services</span>
                     <ArrowRight
                       size={16}
@@ -347,19 +347,19 @@ export default function Home() {
       </section>
 
       {/* ================= FEATURED SERVICES SECTION ================= */}
-      <section className="border-y border-slate-200/70 bg-slate-50/80 px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+      <section className="border-y border-slate-200/70 bg-slate-50/80 px-4 py-20 transition-colors duration-200 dark:border-slate-800 dark:bg-slate-950 sm:px-6 lg:px-8 lg:py-28">
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
             <div>
-              <span className="inline-flex items-center rounded-full bg-blue-100/70 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-blue-700">
+              <span className="inline-flex items-center rounded-full bg-blue-100/70 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-blue-700 dark:bg-blue-950/50 dark:text-blue-300">
                 Popular Services
               </span>
 
-              <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+              <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl dark:text-white">
                 Featured Services
               </h2>
 
-              <p className="mt-3 max-w-2xl text-base text-slate-600">
+              <p className="mt-3 max-w-2xl text-base text-slate-600 dark:text-slate-400">
                 Top-rated repair and maintenance packages delivered by
                 verified technicians.
               </p>
@@ -367,7 +367,7 @@ export default function Home() {
 
             <Link
               href="/services"
-              className="group inline-flex items-center gap-2 self-start rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-800 shadow-sm transition-all hover:border-blue-300 hover:text-blue-600 sm:self-auto"
+              className="group inline-flex items-center gap-2 self-start rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-800 shadow-sm transition-all hover:border-blue-300 hover:text-blue-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-blue-500 dark:hover:text-blue-400 sm:self-auto"
             >
               View All Services
               <ArrowRight
@@ -378,21 +378,21 @@ export default function Home() {
           </div>
 
           {loadingServices ? (
-            <div className="mt-14 flex min-h-60 flex-col items-center justify-center rounded-3xl border border-slate-200/70 bg-white">
-              <Loader2 className="animate-spin text-blue-600" size={38} />
-              <p className="mt-3 text-sm font-medium text-slate-500">
+            <div className="mt-14 flex min-h-60 flex-col items-center justify-center rounded-3xl border border-slate-200/70 bg-white dark:border-slate-800 dark:bg-slate-900">
+              <Loader2 className="animate-spin text-blue-600 dark:text-blue-400" size={38} />
+              <p className="mt-3 text-sm font-medium text-slate-500 dark:text-slate-400">
                 Loading featured services...
               </p>
             </div>
           ) : featuredServices.length === 0 ? (
-            <div className="mt-14 rounded-3xl border border-dashed border-slate-300 bg-white py-20 text-center">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+            <div className="mt-14 rounded-3xl border border-dashed border-slate-300 bg-white py-20 text-center dark:border-slate-800 dark:bg-slate-900">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-400 dark:bg-slate-800">
                 <Wrench size={30} />
               </div>
-              <h3 className="mt-4 text-lg font-bold text-slate-900">
+              <h3 className="mt-4 text-lg font-bold text-slate-900 dark:text-white">
                 No Services Available Yet
               </h3>
-              <p className="mt-1.5 text-sm text-slate-500">
+              <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">
                 Approved services will appear here shortly.
               </p>
             </div>
@@ -401,10 +401,10 @@ export default function Home() {
               {featuredServices.map((service) => (
                 <div
                   key={service._id}
-                  className="group flex flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-200 hover:shadow-xl hover:shadow-slate-900/5"
+                  className="group flex flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-200 hover:shadow-xl hover:shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-blue-500/50"
                 >
                   {/* Card Image */}
-                  <div className="relative h-56 overflow-hidden bg-slate-100">
+                  <div className="relative h-56 overflow-hidden bg-slate-100 dark:bg-slate-800">
                     <img
                       src={service.image}
                       alt={service.title}
@@ -412,7 +412,7 @@ export default function Home() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent" />
 
-                    <span className="absolute top-4 left-4 rounded-full border border-white/40 bg-white/90 px-3.5 py-1 text-xs font-bold text-slate-800 shadow-sm backdrop-blur-md">
+                    <span className="absolute top-4 left-4 rounded-full border border-white/40 bg-white/90 px-3.5 py-1 text-xs font-bold text-slate-800 shadow-sm backdrop-blur-md dark:border-slate-700 dark:bg-slate-900/90 dark:text-slate-200">
                       {service.category}
                     </span>
                   </div>
@@ -420,43 +420,43 @@ export default function Home() {
                   {/* Card Body */}
                   <div className="flex flex-1 flex-col justify-between p-6">
                     <div>
-                      <h3 className="line-clamp-1 text-xl font-bold text-slate-900 transition-colors group-hover:text-blue-600">
+                      <h3 className="line-clamp-1 text-xl font-bold text-slate-900 transition-colors group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400">
                         {service.title}
                       </h3>
 
-                      <p className="mt-2.5 line-clamp-2 min-h-[3rem] text-sm leading-relaxed text-slate-500">
+                      <p className="mt-2.5 line-clamp-2 min-h-[3rem] text-sm leading-relaxed text-slate-500 dark:text-slate-400">
                         {service.description}
                       </p>
                     </div>
 
                     <div className="mt-6">
                       {/* Technician Pill */}
-                      <div className="mb-4 flex items-center gap-2 text-xs font-medium text-slate-500">
-                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-50 text-blue-600">
+                      <div className="mb-4 flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
+                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-50 text-blue-600 dark:bg-blue-950/50 dark:text-blue-400">
                           <UserCheck size={13} />
                         </span>
                         <span>
                           Technician:{" "}
-                          <strong className="font-semibold text-slate-700">
+                          <strong className="font-semibold text-slate-700 dark:text-slate-200">
                             {service.technicianName}
                           </strong>
                         </span>
                       </div>
 
                       {/* Price & Action Footer */}
-                      <div className="flex items-center justify-between border-t border-slate-100 pt-4">
+                      <div className="flex items-center justify-between border-t border-slate-100 pt-4 dark:border-slate-800">
                         <div>
                           <p className="text-[11px] font-medium uppercase tracking-wider text-slate-400">
                             Starting from
                           </p>
-                          <p className="text-2xl font-extrabold text-slate-900">
+                          <p className="text-2xl font-extrabold text-slate-900 dark:text-white">
                             ${service.basePrice}
                           </p>
                         </div>
 
                         <Link
                           href={`/services/${service._id}`}
-                          className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-blue-600 hover:shadow-md hover:shadow-blue-600/20"
+                          className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-blue-600 hover:shadow-md hover:shadow-blue-600/20 dark:bg-blue-600 dark:hover:bg-blue-500"
                         >
                           View Details
                           <ArrowRight size={16} />
@@ -472,18 +472,18 @@ export default function Home() {
       </section>
 
       {/* ================= HOW IT WORKS SECTION ================= */}
-      <section className="bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+      <section className="bg-white px-4 py-20 transition-colors duration-200 dark:bg-slate-900 sm:px-6 lg:px-8 lg:py-28">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-2xl text-center">
-            <span className="inline-flex items-center rounded-full bg-blue-50 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-blue-600 ring-1 ring-blue-600/15">
+            <span className="inline-flex items-center rounded-full bg-blue-50 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-blue-600 ring-1 ring-blue-600/15 dark:bg-blue-950/50 dark:text-blue-300 dark:ring-blue-500/20">
               Simple Process
             </span>
 
-            <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+            <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl dark:text-white">
               How FixMate Works
             </h2>
 
-            <p className="mt-4 text-base text-slate-600">
+            <p className="mt-4 text-base text-slate-600 dark:text-slate-400">
               Getting your home repaired has never been easier. Follow four
               seamless steps from booking to completion.
             </p>
@@ -495,22 +495,22 @@ export default function Home() {
               return (
                 <div
                   key={item.step}
-                  className="group relative rounded-3xl border border-slate-200/80 bg-slate-50/60 p-8 transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-200 hover:bg-white hover:shadow-xl hover:shadow-blue-900/5"
+                  className="group relative rounded-3xl border border-slate-200/80 bg-slate-50/60 p-8 transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-200 hover:bg-white hover:shadow-xl hover:shadow-blue-900/5 dark:border-slate-800 dark:bg-slate-950/60 dark:hover:bg-slate-950 dark:hover:border-blue-500/50"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-lg shadow-blue-600/20 transition-transform duration-300 group-hover:scale-110">
                       <StepIcon size={24} />
                     </div>
-                    <span className="text-3xl font-black text-slate-200 transition-colors group-hover:text-blue-100">
+                    <span className="text-3xl font-black text-slate-200 transition-colors group-hover:text-blue-100 dark:text-slate-800 dark:group-hover:text-blue-900/40">
                       {item.step}
                     </span>
                   </div>
 
-                  <h3 className="mt-7 text-xl font-bold text-slate-900">
+                  <h3 className="mt-7 text-xl font-bold text-slate-900 dark:text-white">
                     {item.title}
                   </h3>
 
-                  <p className="mt-3 text-sm leading-relaxed text-slate-600">
+                  <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
                     {item.description}
                   </p>
                 </div>
@@ -534,20 +534,20 @@ export default function Home() {
       </section>
 
       {/* ================= WHY CHOOSE FIXMATE SECTION ================= */}
-      <section className="border-t border-slate-200/70 bg-slate-50 px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+      <section className="border-t border-slate-200/70 bg-slate-50 px-4 py-20 transition-colors duration-200 dark:border-slate-800 dark:bg-slate-950 sm:px-6 lg:px-8 lg:py-28">
         <div className="mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-12">
           {/* Left Content */}
           <div className="lg:col-span-6">
-            <span className="inline-flex items-center rounded-full bg-blue-100/70 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-blue-700">
+            <span className="inline-flex items-center rounded-full bg-blue-100/70 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-blue-700 dark:bg-blue-950/50 dark:text-blue-300">
               Why FixMate
             </span>
 
-            <h2 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-4xl">
+            <h2 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-4xl dark:text-white">
               Making Home Services{" "}
-              <span className="text-blue-600">Simple & Reliable</span>
+              <span className="text-blue-600 dark:text-blue-400">Simple &amp; Reliable</span>
             </h2>
 
-            <p className="mt-5 text-base leading-relaxed text-slate-600">
+            <p className="mt-5 text-base leading-relaxed text-slate-600 dark:text-slate-400">
               FixMate connects you with skilled, vetted technicians to make
               your home repair experience effortless, transparent, and
               worry-free.
@@ -555,14 +555,14 @@ export default function Home() {
 
             <div className="mt-9 space-y-6">
               <div className="flex gap-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-blue-600 shadow-sm ring-1 ring-slate-200/80">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-blue-600 shadow-sm ring-1 ring-slate-200/80 dark:bg-slate-900 dark:text-blue-400 dark:ring-slate-800">
                   <ShieldCheck size={22} />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-slate-900">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
                     Verified Service Providers
                   </h3>
-                  <p className="mt-1 text-sm leading-relaxed text-slate-600">
+                  <p className="mt-1 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
                     Work with professionals whose profiles and services are
                     reviewed and approved by our platform.
                   </p>
@@ -570,14 +570,14 @@ export default function Home() {
               </div>
 
               <div className="flex gap-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-blue-600 shadow-sm ring-1 ring-slate-200/80">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-blue-600 shadow-sm ring-1 ring-slate-200/80 dark:bg-slate-900 dark:text-blue-400 dark:ring-slate-800">
                   <Clock size={22} />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-slate-900">
-                    Quick & Easy Booking
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                    Quick &amp; Easy Booking
                   </h3>
-                  <p className="mt-1 text-sm leading-relaxed text-slate-600">
+                  <p className="mt-1 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
                     Request a service online in under a minute without
                     unnecessary phone calls or hidden fees.
                   </p>
@@ -585,14 +585,14 @@ export default function Home() {
               </div>
 
               <div className="flex gap-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-blue-600 shadow-sm ring-1 ring-slate-200/80">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-blue-600 shadow-sm ring-1 ring-slate-200/80 dark:bg-slate-900 dark:text-blue-400 dark:ring-slate-800">
                   <CreditCard size={22} />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-slate-900">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
                     Secure Online Payments
                   </h3>
-                  <p className="mt-1 text-sm leading-relaxed text-slate-600">
+                  <p className="mt-1 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
                     Pay safely through our integrated Stripe checkout only
                     after your repair is completed.
                   </p>
@@ -600,14 +600,14 @@ export default function Home() {
               </div>
 
               <div className="flex gap-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-blue-600 shadow-sm ring-1 ring-slate-200/80">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-blue-600 shadow-sm ring-1 ring-slate-200/80 dark:bg-slate-900 dark:text-blue-400 dark:ring-slate-800">
                   <Activity size={22} />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-slate-900">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
                     Track Your Service Requests
                   </h3>
-                  <p className="mt-1 text-sm leading-relaxed text-slate-600">
+                  <p className="mt-1 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
                     Monitor real-time booking progress and payment receipts
                     directly from your personal dashboard.
                   </p>
@@ -617,7 +617,7 @@ export default function Home() {
 
             <Link
               href="/services"
-              className="group mt-10 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-7 py-3.5 text-sm font-semibold text-white transition-all hover:bg-blue-600"
+              className="group mt-10 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-7 py-3.5 text-sm font-semibold text-white transition-all hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-500"
             >
               Explore Services
               <ArrowRight
@@ -631,52 +631,52 @@ export default function Home() {
           <div className="relative lg:col-span-6">
             <div className="pointer-events-none absolute -inset-4 rounded-3xl bg-gradient-to-tr from-blue-600/10 via-indigo-500/10 to-sky-400/10 blur-2xl" />
 
-            <div className="relative rounded-3xl border border-slate-200/80 bg-white p-7 shadow-xl shadow-slate-900/5 sm:p-10">
+            <div className="relative rounded-3xl border border-slate-200/80 bg-white p-7 shadow-xl shadow-slate-900/5 sm:p-10 dark:border-slate-800 dark:bg-slate-900">
               <div className="grid grid-cols-2 gap-4 sm:gap-5">
-                <div className="rounded-2xl border border-slate-100 bg-slate-50/80 p-6 transition hover:border-blue-200 hover:bg-blue-50/40">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600/10 text-blue-600">
+                <div className="rounded-2xl border border-slate-100 bg-slate-50/80 p-6 transition hover:border-blue-200 hover:bg-blue-50/40 dark:border-slate-800 dark:bg-slate-950/60 dark:hover:border-slate-700">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600/10 text-blue-600 dark:bg-blue-950/50 dark:text-blue-400">
                     <UserCheck size={22} />
                   </div>
-                  <h3 className="mt-4 text-base font-bold text-slate-900">
+                  <h3 className="mt-4 text-base font-bold text-slate-900 dark:text-white">
                     Skilled
                   </h3>
-                  <p className="mt-1 text-xs font-medium text-slate-500">
+                  <p className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">
                     Certified Technicians
                   </p>
                 </div>
 
-                <div className="rounded-2xl border border-slate-100 bg-slate-50/80 p-6 transition hover:border-blue-200 hover:bg-blue-50/40">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-600/10 text-indigo-600">
+                <div className="rounded-2xl border border-slate-100 bg-slate-50/80 p-6 transition hover:border-blue-200 hover:bg-blue-50/40 dark:border-slate-800 dark:bg-slate-950/60 dark:hover:border-slate-700">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-600/10 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400">
                     <Wrench size={22} />
                   </div>
-                  <h3 className="mt-4 text-base font-bold text-slate-900">
+                  <h3 className="mt-4 text-base font-bold text-slate-900 dark:text-white">
                     Complete
                   </h3>
-                  <p className="mt-1 text-xs font-medium text-slate-500">
+                  <p className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">
                     Home Repair Solutions
                   </p>
                 </div>
 
-                <div className="rounded-2xl border border-slate-100 bg-slate-50/80 p-6 transition hover:border-blue-200 hover:bg-blue-50/40">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-600/10 text-emerald-600">
+                <div className="rounded-2xl border border-slate-100 bg-slate-50/80 p-6 transition hover:border-blue-200 hover:bg-blue-50/40 dark:border-slate-800 dark:bg-slate-950/60 dark:hover:border-slate-700">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-600/10 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400">
                     <ShieldCheck size={22} />
                   </div>
-                  <h3 className="mt-4 text-base font-bold text-slate-900">
+                  <h3 className="mt-4 text-base font-bold text-slate-900 dark:text-white">
                     Secure
                   </h3>
-                  <p className="mt-1 text-xs font-medium text-slate-500">
+                  <p className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">
                     Stripe Checkout Protection
                   </p>
                 </div>
 
-                <div className="rounded-2xl border border-slate-100 bg-slate-50/80 p-6 transition hover:border-blue-200 hover:bg-blue-50/40">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600">
+                <div className="rounded-2xl border border-slate-100 bg-slate-50/80 p-6 transition hover:border-blue-200 hover:bg-blue-50/40 dark:border-slate-800 dark:bg-slate-950/60 dark:hover:border-slate-700">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:bg-amber-950/50 dark:text-amber-400">
                     <Star size={22} />
                   </div>
-                  <h3 className="mt-4 text-base font-bold text-slate-900">
+                  <h3 className="mt-4 text-base font-bold text-slate-900 dark:text-white">
                     Reliable
                   </h3>
-                  <p className="mt-1 text-xs font-medium text-slate-500">
+                  <p className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">
                     5-Star Service Experience
                   </p>
                 </div>
@@ -703,7 +703,7 @@ export default function Home() {
       </section>
 
       {/* ================= CALL TO ACTION SECTION ================= */}
-      <section className="bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
+      <section className="bg-white px-4 py-20 transition-colors duration-200 dark:bg-slate-900 sm:px-6 lg:px-8 lg:py-24">
         <div className="mx-auto max-w-7xl">
           <div className="relative overflow-hidden rounded-[2rem] bg-slate-950 px-6 py-16 text-center shadow-2xl sm:px-12 lg:py-20">
             {/* Ambient Glows */}

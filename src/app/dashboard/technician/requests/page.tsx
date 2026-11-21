@@ -237,16 +237,16 @@ export default function TechnicianRequestsPage() {
   const getStatusStyle = (status: Booking["status"]) => {
     switch (status) {
       case "accepted":
-        return "bg-blue-50 text-blue-700 ring-1 ring-blue-600/20";
+        return "bg-blue-50 text-blue-700 ring-1 ring-blue-600/20 dark:bg-blue-950/60 dark:text-blue-400 dark:ring-blue-500/20";
       case "rejected":
       case "cancelled":
-        return "bg-rose-50 text-rose-700 ring-1 ring-rose-600/20";
+        return "bg-rose-50 text-rose-700 ring-1 ring-rose-600/20 dark:bg-rose-950/60 dark:text-rose-400 dark:ring-rose-500/20";
       case "in-progress":
-        return "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-600/20";
+        return "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-600/20 dark:bg-indigo-950/60 dark:text-indigo-400 dark:ring-indigo-500/20";
       case "completed":
-        return "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20";
+        return "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20 dark:bg-emerald-950/60 dark:text-emerald-400 dark:ring-emerald-500/20";
       default:
-        return "bg-amber-50 text-amber-700 ring-1 ring-amber-600/20";
+        return "bg-amber-50 text-amber-700 ring-1 ring-amber-600/20 dark:bg-amber-950/60 dark:text-amber-400 dark:ring-amber-500/20";
     }
   };
 
@@ -304,9 +304,9 @@ export default function TechnicianRequestsPage() {
   if (loading) {
     return (
       <div className="flex min-h-[65vh] items-center justify-center">
-        <div className="rounded-3xl border border-slate-200/80 bg-white px-10 py-12 text-center shadow-sm">
-          <Loader2 className="mx-auto animate-spin text-blue-600" size={38} />
-          <p className="mt-4 text-sm font-semibold text-slate-600">
+        <div className="rounded-3xl border border-slate-200/80 bg-white px-10 py-12 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <Loader2 className="mx-auto animate-spin text-blue-600 dark:text-blue-400" size={38} />
+          <p className="mt-4 text-sm font-semibold text-slate-600 dark:text-slate-400">
             Loading booking requests...
           </p>
         </div>
@@ -315,10 +315,10 @@ export default function TechnicianRequestsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-12 text-slate-900">
+    <div className="min-h-screen bg-slate-50 pb-12 text-slate-900 transition-colors duration-200 dark:bg-slate-950 dark:text-slate-100">
       <div className="mx-auto max-w-7xl space-y-8">
         {/* ================= TOP DARK PREMIUM BANNER ================= */}
-        <div className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8">
+        <div className="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8 dark:border dark:border-slate-800">
           <div className="pointer-events-none absolute -top-20 right-10 h-64 w-64 rounded-full bg-blue-600/25 blur-[90px]" />
           <div className="pointer-events-none absolute -bottom-20 left-10 h-64 w-64 rounded-full bg-indigo-500/20 blur-[90px]" />
 
@@ -360,7 +360,7 @@ export default function TechnicianRequestsPage() {
             value={bookings.length}
             subtitle="All assigned requests"
             icon={<CalendarDays size={21} />}
-            accent="bg-blue-50 text-blue-600"
+            accent="bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400"
           />
 
           <StatCard
@@ -368,7 +368,7 @@ export default function TechnicianRequestsPage() {
             value={requestedCount}
             subtitle="Awaiting confirmation"
             icon={<Clock size={21} />}
-            accent="bg-amber-50 text-amber-600"
+            accent="bg-amber-50 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400"
           />
 
           <StatCard
@@ -376,7 +376,7 @@ export default function TechnicianRequestsPage() {
             value={activeCount}
             subtitle="Accepted or in progress"
             icon={<Wrench size={21} />}
-            accent="bg-indigo-50 text-indigo-600"
+            accent="bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400"
           />
 
           <StatCard
@@ -384,12 +384,12 @@ export default function TechnicianRequestsPage() {
             value={completedCount}
             subtitle="Successfully finished"
             icon={<CheckCircle size={21} />}
-            accent="bg-emerald-50 text-emerald-600"
+            accent="bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400"
           />
         </div>
 
         {/* ================= STATUS FILTER TABS ================= */}
-        <div className="inline-flex flex-wrap gap-2 rounded-2xl border border-slate-200/80 bg-white p-1.5 shadow-sm">
+        <div className="inline-flex flex-wrap gap-2 rounded-2xl border border-slate-200/80 bg-white p-1.5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
           {filterTabs.map((tab) => {
             const active = statusFilter === tab.value;
             return (
@@ -398,16 +398,16 @@ export default function TechnicianRequestsPage() {
                 onClick={() => setStatusFilter(tab.value)}
                 className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-all ${
                   active
-                    ? "bg-slate-900 text-white shadow-sm"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                    ? "bg-slate-900 text-white shadow-sm dark:bg-blue-600"
+                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
                 }`}
               >
                 <span>{tab.label}</span>
                 <span
                   className={`rounded-full px-2 py-0.5 text-xs font-extrabold ${
                     active
-                      ? "bg-blue-600 text-white"
-                      : "bg-slate-100 text-slate-600"
+                      ? "bg-blue-600 text-white dark:bg-slate-900/40"
+                      : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
                   }`}
                 >
                   {tab.count}
@@ -419,31 +419,31 @@ export default function TechnicianRequestsPage() {
 
         {/* ================= BOOKING LIST ================= */}
         {bookings.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-slate-300 bg-white py-20 text-center">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+          <div className="rounded-3xl border border-dashed border-slate-300 bg-white py-20 text-center dark:border-slate-800 dark:bg-slate-900">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500">
               <CalendarDays size={32} />
             </div>
 
-            <h2 className="mt-4 text-xl font-extrabold text-slate-900">
+            <h2 className="mt-4 text-xl font-extrabold text-slate-900 dark:text-white">
               No Booking Requests
             </h2>
 
-            <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-500">
+            <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-500 dark:text-slate-400">
               New customer service requests will appear here as soon as clients
               book your services.
             </p>
           </div>
         ) : filteredBookings.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-slate-300 bg-white py-20 text-center">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+          <div className="rounded-3xl border border-dashed border-slate-300 bg-white py-20 text-center dark:border-slate-800 dark:bg-slate-900">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500">
               <CalendarDays size={32} />
             </div>
 
-            <h2 className="mt-4 text-xl font-extrabold text-slate-900">
+            <h2 className="mt-4 text-xl font-extrabold text-slate-900 dark:text-white">
               No Requests Found
             </h2>
 
-            <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-500">
+            <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-500 dark:text-slate-400">
               No bookings found with status &quot;
               {filterTabs.find((t) => t.value === statusFilter)?.label}&quot;.
             </p>
@@ -453,18 +453,18 @@ export default function TechnicianRequestsPage() {
             {filteredBookings.map((booking) => (
               <div
                 key={booking._id}
-                className="group overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm transition-all duration-300 hover:border-blue-200 hover:shadow-xl hover:shadow-slate-900/5"
+                className="group overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm transition-all duration-300 hover:border-blue-200 hover:shadow-xl hover:shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700"
               >
                 <div className="grid md:grid-cols-[250px_1fr] lg:grid-cols-[280px_1fr]">
                   {/* Service Image */}
-                  <div className="relative h-56 overflow-hidden bg-slate-100 md:h-full">
+                  <div className="relative h-56 overflow-hidden bg-slate-100 md:h-full dark:bg-slate-800">
                     <img
                       src={booking.serviceImage}
                       alt={booking.serviceTitle}
                       className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent md:hidden" />
-                    <span className="absolute top-4 left-4 rounded-full border border-white/40 bg-white/95 px-3.5 py-1 text-xs font-bold text-slate-800 shadow-sm backdrop-blur-md">
+                    <span className="absolute top-4 left-4 rounded-full border border-white/40 bg-white/95 px-3.5 py-1 text-xs font-bold text-slate-800 shadow-sm backdrop-blur-md dark:border-slate-700 dark:bg-slate-900/90 dark:text-slate-200">
                       {booking.category}
                     </span>
                   </div>
@@ -475,11 +475,11 @@ export default function TechnicianRequestsPage() {
                       {/* Title & Status */}
                       <div className="flex flex-wrap items-start justify-between gap-3">
                         <div>
-                          <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                          <span className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
                             {booking.category}
                           </span>
 
-                          <h2 className="mt-1 text-xl font-extrabold text-slate-900 sm:text-2xl">
+                          <h2 className="mt-1 text-xl font-extrabold text-slate-900 sm:text-2xl dark:text-white">
                             {booking.serviceTitle}
                           </h2>
                         </div>
@@ -499,17 +499,17 @@ export default function TechnicianRequestsPage() {
                       </div>
 
                       {/* Customer Information Grid */}
-                      <div className="mt-5 grid gap-3.5 rounded-2xl border border-slate-100 bg-slate-50/80 p-4 text-sm sm:grid-cols-2">
+                      <div className="mt-5 grid gap-3.5 rounded-2xl border border-slate-100 bg-slate-50/80 p-4 text-sm sm:grid-cols-2 dark:border-slate-800 dark:bg-slate-950/50">
                         <div className="flex items-start gap-2.5">
                           <User
                             size={16}
-                            className="mt-0.5 shrink-0 text-blue-600"
+                            className="mt-0.5 shrink-0 text-blue-600 dark:text-blue-400"
                           />
                           <div>
-                            <p className="text-xs font-medium text-slate-400">
+                            <p className="text-xs font-medium text-slate-400 dark:text-slate-500">
                               Customer
                             </p>
-                            <p className="font-bold text-slate-900">
+                            <p className="font-bold text-slate-900 dark:text-slate-100">
                               {booking.customerName}
                             </p>
                           </div>
@@ -518,13 +518,13 @@ export default function TechnicianRequestsPage() {
                         <div className="flex items-start gap-2.5">
                           <Phone
                             size={16}
-                            className="mt-0.5 shrink-0 text-emerald-600"
+                            className="mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"
                           />
                           <div>
-                            <p className="text-xs font-medium text-slate-400">
+                            <p className="text-xs font-medium text-slate-400 dark:text-slate-500">
                               Phone Number
                             </p>
-                            <p className="font-bold text-slate-800">
+                            <p className="font-bold text-slate-800 dark:text-slate-200">
                               {booking.customerPhone}
                             </p>
                           </div>
@@ -533,13 +533,13 @@ export default function TechnicianRequestsPage() {
                         <div className="flex items-start gap-2.5">
                           <Mail
                             size={16}
-                            className="mt-0.5 shrink-0 text-indigo-600"
+                            className="mt-0.5 shrink-0 text-indigo-600 dark:text-indigo-400"
                           />
                           <div className="min-w-0">
-                            <p className="text-xs font-medium text-slate-400">
+                            <p className="text-xs font-medium text-slate-400 dark:text-slate-500">
                               Email Address
                             </p>
-                            <p className="truncate font-semibold text-slate-700">
+                            <p className="truncate font-semibold text-slate-700 dark:text-slate-300">
                               {booking.customerEmail}
                             </p>
                           </div>
@@ -548,13 +548,13 @@ export default function TechnicianRequestsPage() {
                         <div className="flex items-start gap-2.5">
                           <CalendarDays
                             size={16}
-                            className="mt-0.5 shrink-0 text-sky-600"
+                            className="mt-0.5 shrink-0 text-sky-600 dark:text-sky-400"
                           />
                           <div>
-                            <p className="text-xs font-medium text-slate-400">
+                            <p className="text-xs font-medium text-slate-400 dark:text-slate-500">
                               Preferred Date
                             </p>
-                            <p className="font-bold text-slate-800">
+                            <p className="font-bold text-slate-800 dark:text-slate-200">
                               {new Date(
                                 booking.preferredDate
                               ).toLocaleDateString()}
@@ -565,13 +565,13 @@ export default function TechnicianRequestsPage() {
                         <div className="flex items-start gap-2.5 sm:col-span-2">
                           <MapPin
                             size={16}
-                            className="mt-0.5 shrink-0 text-rose-500"
+                            className="mt-0.5 shrink-0 text-rose-500 dark:text-rose-400"
                           />
                           <div>
-                            <p className="text-xs font-medium text-slate-400">
+                            <p className="text-xs font-medium text-slate-400 dark:text-slate-500">
                               Service Address
                             </p>
-                            <p className="font-semibold text-slate-800">
+                            <p className="font-semibold text-slate-800 dark:text-slate-200">
                               {booking.address}
                             </p>
                           </div>
@@ -579,44 +579,44 @@ export default function TechnicianRequestsPage() {
                       </div>
 
                       {/* Problem Description */}
-                      <div className="mt-4 rounded-2xl border border-slate-200/70 bg-white p-4">
-                        <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500">
-                          <FileText size={14} className="text-blue-600" />
+                      <div className="mt-4 rounded-2xl border border-slate-200/70 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+                        <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                          <FileText size={14} className="text-blue-600 dark:text-blue-400" />
                           <span>Customer Problem</span>
                         </div>
 
-                        <p className="mt-1.5 text-sm leading-relaxed text-slate-600">
+                        <p className="mt-1.5 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
                           {booking.problemDescription}
                         </p>
                       </div>
 
                       {/* Pricing & Payment Strip */}
                       <div className="mt-4 flex flex-wrap items-center gap-4 text-sm">
-                        <div className="inline-flex items-center gap-1.5 rounded-xl bg-slate-100/80 px-3.5 py-1.5">
-                          <DollarSign size={15} className="text-slate-500" />
-                          <span className="text-slate-600">Base Price:</span>
-                          <strong className="font-extrabold text-slate-900">
+                        <div className="inline-flex items-center gap-1.5 rounded-xl bg-slate-100/80 px-3.5 py-1.5 dark:bg-slate-800/80">
+                          <DollarSign size={15} className="text-slate-500 dark:text-slate-400" />
+                          <span className="text-slate-600 dark:text-slate-400">Base Price:</span>
+                          <strong className="font-extrabold text-slate-900 dark:text-white">
                             ${booking.basePrice}
                           </strong>
                         </div>
 
                         {booking.finalAmount !== undefined && (
-                          <div className="inline-flex items-center gap-1.5 rounded-xl bg-blue-50 px-3.5 py-1.5">
-                            <DollarSign size={15} className="text-blue-600" />
-                            <span className="text-blue-700">Final Amount:</span>
-                            <strong className="font-extrabold text-blue-700">
+                          <div className="inline-flex items-center gap-1.5 rounded-xl bg-blue-50 px-3.5 py-1.5 dark:bg-blue-950/60">
+                            <DollarSign size={15} className="text-blue-600 dark:text-blue-400" />
+                            <span className="text-blue-700 dark:text-blue-300">Final Amount:</span>
+                            <strong className="font-extrabold text-blue-700 dark:text-blue-400">
                               ${booking.finalAmount}
                             </strong>
                           </div>
                         )}
 
-                        <div className="inline-flex items-center gap-1.5 rounded-xl bg-slate-100/80 px-3.5 py-1.5">
-                          <span className="text-slate-600">Payment:</span>
+                        <div className="inline-flex items-center gap-1.5 rounded-xl bg-slate-100/80 px-3.5 py-1.5 dark:bg-slate-800/80">
+                          <span className="text-slate-600 dark:text-slate-400">Payment:</span>
                           <span
                             className={`font-bold capitalize ${
                               booking.paymentStatus === "paid"
-                                ? "text-emerald-600"
-                                : "text-amber-600"
+                                ? "text-emerald-600 dark:text-emerald-400"
+                                : "text-amber-600 dark:text-amber-400"
                             }`}
                           >
                             {booking.paymentStatus}
@@ -626,7 +626,7 @@ export default function TechnicianRequestsPage() {
                     </div>
 
                     {/* Workflow Actions */}
-                    <div className="mt-5 border-t border-slate-100 pt-5">
+                    <div className="mt-5 border-t border-slate-100 pt-5 dark:border-slate-800">
                       {booking.status === "requested" && (
                         <div className="flex flex-wrap gap-3">
                           <button
@@ -646,7 +646,7 @@ export default function TechnicianRequestsPage() {
                               setRejectError(null);
                             }}
                             disabled={updatingId === booking._id}
-                            className="inline-flex items-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-6 py-2.5 text-sm font-bold text-rose-600 transition hover:bg-rose-600 hover:text-white disabled:opacity-50"
+                            className="inline-flex items-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-6 py-2.5 text-sm font-bold text-rose-600 transition hover:bg-rose-600 hover:text-white disabled:opacity-50 dark:border-rose-900/60 dark:bg-rose-950/40 dark:text-rose-400 dark:hover:bg-rose-600 dark:hover:text-white"
                           >
                             <XCircle size={17} />
                             Reject
@@ -668,9 +668,9 @@ export default function TechnicianRequestsPage() {
                       )}
 
                       {booking.status === "in-progress" && (
-                        <div className="flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-slate-50/70 p-4 sm:flex-row sm:items-end">
+                        <div className="flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-slate-50/70 p-4 sm:flex-row sm:items-end dark:border-slate-800 dark:bg-slate-950/50">
                           <div className="flex-1 sm:max-w-xs">
-                            <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700">
+                            <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                               Final Amount ($)
                             </label>
 
@@ -684,12 +684,12 @@ export default function TechnicianRequestsPage() {
                                 placeholder="Enter final amount"
                                 value={finalAmounts[booking._id] || ""}
                                 onChange={(e) =>
-                                  setFinalAmounts((prev) => ({
+                                   setFinalAmounts((prev) => ({
                                     ...prev,
                                     [booking._id]: e.target.value,
                                   }))
                                 }
-                                className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pr-4 pl-9 text-sm font-semibold text-slate-900 shadow-sm outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15"
+                                className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pr-4 pl-9 text-sm font-semibold text-slate-900 shadow-sm outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
                               />
                             </div>
                           </div>
@@ -708,21 +708,21 @@ export default function TechnicianRequestsPage() {
                       )}
 
                       {booking.status === "completed" && (
-                        <div className="inline-flex items-center gap-2 text-sm font-bold text-emerald-600">
+                        <div className="inline-flex items-center gap-2 text-sm font-bold text-emerald-600 dark:text-emerald-400">
                           <CheckCircle size={18} />
                           <span>Repair completed successfully.</span>
                         </div>
                       )}
 
                       {booking.status === "rejected" && (
-                        <div className="inline-flex items-center gap-2 text-sm font-semibold text-rose-600">
+                        <div className="inline-flex items-center gap-2 text-sm font-semibold text-rose-600 dark:text-rose-400">
                           <XCircle size={17} />
                           <span>This booking request was rejected.</span>
                         </div>
                       )}
 
                       {booking.status === "cancelled" && (
-                        <div className="inline-flex items-center gap-2 text-sm font-medium text-slate-500">
+                        <div className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 dark:text-slate-400">
                           <XCircle size={17} />
                           <span>Customer cancelled this booking.</span>
                         </div>
@@ -777,9 +777,9 @@ function StatCard({
   accent: string;
 }) {
   return (
-    <div className="group rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg hover:shadow-blue-900/5">
+    <div className="group rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg hover:shadow-blue-900/5 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700">
       <div className="flex items-center justify-between">
-        <p className="text-sm font-semibold text-slate-500">{title}</p>
+        <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">{title}</p>
         <span
           className={`flex h-11 w-11 items-center justify-center rounded-xl transition-transform group-hover:scale-110 ${accent}`}
         >
@@ -787,8 +787,8 @@ function StatCard({
         </span>
       </div>
 
-      <p className="mt-4 text-3xl font-extrabold text-slate-900">{value}</p>
-      <p className="mt-1 text-xs text-slate-400">{subtitle}</p>
+      <p className="mt-4 text-3xl font-extrabold text-slate-900 dark:text-white">{value}</p>
+      <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">{subtitle}</p>
     </div>
   );
 }
