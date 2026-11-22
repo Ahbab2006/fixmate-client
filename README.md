@@ -29,6 +29,7 @@
 - [Stripe Checkout & Testing Instructions](#stripe-checkout--testing-instructions)
 - [Production Deployment Guide](#production-deployment-guide)
 - [Repositories & Links](#repositories--links)
+  - [Admin Demo Credentials](#admin-demo-credentials)
 
 ---
 
@@ -317,6 +318,11 @@ When running in Stripe Test Mode (`sk_test_...` / `pk_test_...`), use official S
 - **Backend Server Repository:** [https://github.com/Ahbab2006/fixmate-server](https://github.com/Ahbab2006/fixmate-server)
 - **Live Client Application:** [https://fixmate-client-three.vercel.app/](https://fixmate-client-three.vercel.app/) *(Deploy target)*
 - **Live Backend API:** [https://fixmate-server-mt4l.onrender.com](https://fixmate-server-mt4l.onrender.com) *(Deploy target)*
+
+### Admin Demo Credentials
+
+- **Email:** [hamza15@gmail.com]
+- **Password:** [Hamza12345]
 
 ---
 
