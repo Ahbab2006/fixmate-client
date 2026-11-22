@@ -1,9 +1,26 @@
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
-import { MongoClient } from "mongodb";
+import { MongoClient, MongoClientOptions } from "mongodb";
 import { jwt } from "better-auth/plugins";
 
-const mongoClient = new MongoClient(process.env.MONGODB_URI!);
+const clientOptions: MongoClientOptions = {
+  maxPoolSize: 10,
+  minPoolSize: 0,
+  maxIdleTimeMS: 10000,
+  serverSelectionTimeoutMS: 10000,
+  connectTimeoutMS: 10000,
+};
+
+declare global {
+  var _mongoClient: MongoClient | undefined;
+}
+
+let mongoClient: MongoClient;
+
+if (!global._mongoClient) {
+  global._mongoClient = new MongoClient(process.env.MONGODB_URI!, clientOptions);
+}
+mongoClient = global._mongoClient;
 
 const db = mongoClient.db("fix-mate");
 
